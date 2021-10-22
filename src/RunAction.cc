@@ -31,9 +31,6 @@
 #include "RunAction.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "DetectorConstruction.hh"
-// #include "Run.hh"
-// #include "DetectorAnalysis.hh"
-
 #include "G4RunManager.hh"
 #include "G4Run.hh"
 #include "G4AccumulableManager.hh"
@@ -41,7 +38,6 @@
 #include "G4LogicalVolume.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
-// #include "HistoManager.hh"
 
 
 #include <fstream>
@@ -68,20 +64,6 @@ void RunAction::BeginOfRunAction(const G4Run*)
   std::ofstream hitFile;
   hitFile.open("../analysis/data/hits.csv", std::ios_base::app);
 
-  /*
-  if (!fFileName.empty()){
-
-    hitFile << fFileName << "\n";
-
-  }
-  else{
-
-    hitFile << "NFN\n"; // No File Name code
-
-  }
-
-  hitFile.close();
- */
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

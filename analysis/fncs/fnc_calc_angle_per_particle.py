@@ -9,16 +9,16 @@ from scipy.stats import norm, skewnorm
 # Extracts and returns actual inital particle source angles
 from .fnc_findSourceAngle import findSourceAngle
 
-def calculateAnglePerParticle(gap_in_cm):
+# read in the detector hits and extract useful info
+def get_det_hits(fname):
     # Read in raw hit data
-    detector_hits = pd.read_csv('./data/hits.csv',
+    detector_hits = pd.read_csv(fname,
                                names=["det","x", "y", "z","energy"],
                                dtype={"det": np.int8, "x":np.float64,
                                "y": np.float64, "z":np.float64, "energy":np.float64},
                                delimiter=',',
-                               error_bad_lines=False,
+                                on_bad_lines='skip',
                                engine='c')
-
 
     n_entries = len(detector_hits['det'])
 
@@ -31,6 +31,7 @@ def calculateAnglePerParticle(gap_in_cm):
     deltaZ = np.zeros(n_entries, dtype=np.float64)
 
     array_counter = 0
+    energies = []
     for count, el in enumerate(detector_hits['det']):
         # pandas series can throw a KeyError if character starts line
         # TODO: replace this with parse command that doesn't import keyerror throwing lines
@@ -56,6 +57,7 @@ def calculateAnglePerParticle(gap_in_cm):
         if np.equal(pos1, 1) & np.equal(pos2, 2):
             deltaX[array_counter] = detector_hits['x'][count+1] - detector_hits['x'][count]
             deltaZ[array_counter] = detector_hits['z'][count+1] - detector_hits['z'][count]
+            energies.append(detector_hits['energy'][count])
 
             # Successful pair, continues to next possible pair
             count = count + 2
@@ -70,6 +72,13 @@ def calculateAnglePerParticle(gap_in_cm):
 
     del deltaX
     del deltaZ
+
+    return detector_hits, deltaX_rm, deltaZ_rm, energies
+
+# -----------------------------------------------------
+def calculateAnglePerParticle(gap_in_cm):
+    # call read in function
+    detector_hits, deltaX_rm, deltaZ_rm, energies = get_det_hits('./data/hits.csv')
 
     # Find angles in degrees
     theta = np.rad2deg(np.arctan2(deltaZ_rm, gap_in_cm))
@@ -123,3 +132,8 @@ def calculateAnglePerParticle(gap_in_cm):
         ',' + str(round(mu_phi, 4)) + ',' + str(round(std_phi, 4)) +
         ',' + str(round(mean_t,4)) + ',' + str(round(sig_t,4)) +
         ',' + str(round(mean_p,4)) + ',' + str(round(sig_p,4)) + '\n')
+    
+    avg_KE = np.average(np.array(energies))
+    return theta, theta_actual, avg_KE
+
+# ---------------------------------------------------------------------------------------

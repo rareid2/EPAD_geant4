@@ -1,4 +1,4 @@
-# Geant4_electron_detector
+# EPAD
 
 Forward and reverse Monte Carlo simulation of electrons passing through a window
 material, first detector plate, and second detector plate.

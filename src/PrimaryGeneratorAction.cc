@@ -34,7 +34,6 @@
 #include "G4LogicalVolume.hh"
 #include "G4Box.hh"
 #include "G4RunManager.hh"
-// #include "G4ParticleGun.hh"
 #include "G4GeneralParticleSource.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
@@ -48,7 +47,6 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(),
   fParticleGun(0)
 {
-  // G4int n_particle = 1;
   fParticleGun  = new G4GeneralParticleSource();
 
 }
@@ -64,8 +62,7 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  //this function is called at the begining of each event
-
+  // this function is called at the begining of each event
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 

@@ -21,7 +21,7 @@ def generateAutoRunFile(theta_in_deg, phi_in_deg, n_particles, energy_in_keV):
 
     # Calculate the particle starting position such that hit is in center of window
     y_offset = -5 # cm
-    z_pos = abs(y_offset) * np.tan(theta)
+    z_pos = y_offset * np.tan(theta)
     x_pos = abs(y_offset) * np.tan(phi)
 
     position_string = str(x_pos) + ' ' + str(y_offset) + ' ' + str(z_pos)
@@ -35,10 +35,10 @@ def generateAutoRunFile(theta_in_deg, phi_in_deg, n_particles, energy_in_keV):
 
     with open('../macros/auto_run_file.mac', 'w') as f:
         f.write('/run/initialize \n')
-        f.write('/control/verbose 0 \n')
-        f.write('/run/verbose 0 \n')
-        f.write('/event/verbose 0 \n')
-        f.write('/tracking/verbose 0 \n')
+        f.write('/control/verbose 1 \n')
+        f.write('/run/verbose 1 \n')
+        f.write('/event/verbose 1 \n')
+        f.write('/tracking/verbose 1 \n')
 
         f.write('/gps/particle e- \n')
         f.write('/gps/energy ' + str(energy_in_keV) + ' keV \n')
@@ -99,11 +99,11 @@ def main():
     ####### Edit these parameters #######
     #####################################
 
-    angle_resolution = 1
-    min_angle = -5.
-    max_angle = 5.
+    angle_resolution = 0.5
+    min_angle = 0.
+    max_angle = 0.5
 
-    numberOfParticles = 1000
+    numberOfParticles = 10
 
     #####################################
     ####### ^^^^^^^^^^^^^^^^^^^^^ #######
@@ -130,7 +130,7 @@ def main():
             executeAutoRunFile()
 
             # Processes raw hit data into statistical estimates, appends to results.txt
-            calculateAnglePerParticle()
+            calculateAnglePerParticle(3.0)
 
             # Progress bar update
             pbar.update((max_angle-min_angle)/angle_resolution)
@@ -138,7 +138,5 @@ def main():
     # Plots results.txt and saves file to electron_detector/results directory
     fileName = plotResults(energy)
     
-    writeData_convert2pdf(fileName)
-
 if __name__=='__main__':
     main()

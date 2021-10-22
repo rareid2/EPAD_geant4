@@ -30,6 +30,9 @@
 
 #include "EventAction.hh"
 #include "RunAction.hh"
+#include "Hit.hh"
+#include "G4HCofThisEvent.hh"
+#include "G4SDManager.hh"
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
@@ -42,8 +45,12 @@
 EventAction::EventAction(RunAction* runAction)
 : G4UserEventAction(),
   fRunAction(runAction),
-  fEdep(0.)
-{}
+  fEdep(0.){
+
+  hitsCollID1 = -1;
+  hitsCollID2 = -1;
+
+  }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -75,51 +82,98 @@ void EventAction::BeginOfEventAction(const G4Event* event)
 
 
   }
+  G4SDManager * SDman = G4SDManager::GetSDMpointer();
+  if(hitsCollID1<0){
+
+    G4String colNam;
+
+    hitsCollID1 = SDman->GetCollectionID(colNam="SD1/hitsCollection");
+    hitsCollID2 = SDman->GetCollectionID(colNam="SD2/hitsCollection");
+    
+
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void EventAction::EndOfEventAction(const G4Event*)
+void EventAction::EndOfEventAction(const G4Event* event)
 {
+   
+   if(hitsCollID1<0) return;
+     G4HCofThisEvent * HCE = event->GetHCofThisEvent();
 
-  if(det1_hitFlag > 1)
+  MyHitCollection* HC1 = 0;
+  MyHitCollection* HC2 = 0;
+
+  if(HCE)
+
   {
-    /*
-    std::ofstream hitFile_detector1;
-    hitFile_detector1.open("../analysis/data/hits.csv", std::ios_base::app);
 
-    hitFile_detector1 << "\n1,0,0,0,0,DH";
+    HC1 = (MyHitCollection*)(HCE->GetHC(hitsCollID1));
+    HC2 = (MyHitCollection*)(HCE->GetHC(hitsCollID2));
 
-    hitFile_detector1.close();
-    */
   }
 
-  if(det2_hitFlag == 0)
-  {
-    /*
-    std::ofstream hitFile_detector2;
-    hitFile_detector2.open("../analysis/data/hits.csv", std::ios_base::app);
+ 
+  // going to need to change the looping method to be sure each particle goes with the next -- particle ID? 
+  if ( HC1 ) {
 
-    hitFile_detector2 << "\n2,0,0,0,0,NH";
+    int n_hit = HC1->entries();
 
-    hitFile_detector2.close();
-    */
+    for ( int i = 0 ; i < n_hit; i++){
+
+      G4ThreeVector position = (*HC1)[i]->GetPosition();
+
+      G4ThreeVector momentum = (*HC1)[i]->GetMomentum();
+
+      G4double      energy   = (*HC1)[i]->GetEnergy();
+
+      G4cout << "---- Hit # " << i << G4endl;
+
+      G4cout << " Position " <<  position/cm <<  " [cm] " <<G4endl;
+
+      G4cout << " Momentum " <<  momentum/keV << " [keV] " <<G4endl;
+
+      G4cout << " Energy   " <<  energy/keV   << " [keV] " <<G4endl;
+      
+      std::ofstream hitFile;
+      hitFile.open("../analysis/data/hits.csv", std::ios_base::app);
+      hitFile << "\n" << 1 << "," << position.x()/cm << "," << position.y()/cm << "," << position.z()/cm << ","
+      << energy/keV;
+      hitFile.close();
+    }
   }
 
-  else if(det2_hitFlag > 1)
-  {
-    /*
-    std::ofstream hitFile_detector2;
-    hitFile_detector2.open("../analysis/data/hits.csv", std::ios_base::app);
 
-    hitFile_detector2 << "\n2,0,0,0,0,DH";
+  if ( HC2 ) {
 
-    hitFile_detector2.close();
-    */
+    int n_hit = HC2->entries();
+
+    for ( int i = 0 ; i < n_hit; i++){
+
+      G4ThreeVector position = (*HC2)[i]->GetPosition();
+
+      G4ThreeVector momentum = (*HC2)[i]->GetMomentum();
+
+      G4double      energy   = (*HC2)[i]->GetEnergy();
+
+      G4cout << "---- Hit # " << i << G4endl;
+
+      G4cout << " Position " <<  position/cm <<  " [cm] " <<G4endl;
+
+      G4cout << " Momentum " <<  momentum/keV << " [keV] " <<G4endl;
+
+      G4cout << " Energy   " <<  energy/keV   << " [keV] " <<G4endl;
+      
+      std::ofstream hitFile;
+      hitFile.open("../analysis/data/hits.csv", std::ios_base::app);
+      hitFile << "\n" << 2 << "," << position.x()/cm << "," << position.y()/cm << "," << position.z()/cm << ","
+      << energy/keV;
+      hitFile.close();
+    }
+
   }
 
-    //resetDetector1Flag();
-    //resetDetector2Flag();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

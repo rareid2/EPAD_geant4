@@ -23,44 +23,31 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: EventAction.hh 93886 2015-11-03 08:28:26Z gcosmo $
+// $Id: HodoscopeHit.cc 76474 2013-11-11 10:36:34Z gcosmo $
 //
-/// \file EventAction.hh
-/// \brief Definition of the EventAction class
 
-#ifndef EventAction_h
-#define EventAction_h 1
+#include "Hit.hh"
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
-#include "G4AccumulableManager.hh"
-
-
-class RunAction;
-
-/// Event action class
-///
-
-class EventAction : public G4UserEventAction
-{
-  public:
-    EventAction(RunAction* runAction);
-    virtual ~EventAction();
-
-    virtual void BeginOfEventAction(const G4Event* event);
-    virtual void EndOfEventAction(const G4Event* event);
-
-    void AddEdep(G4double edep) { fEdep += edep; }
-
-
-private:
-  RunAction* fRunAction;
-  G4double   fEdep;
-  G4int hitsCollID1;
-  G4int hitsCollID2;
-
-};
+#include "G4VVisManager.hh"
+#include "G4VisAttributes.hh"
+#include "G4Circle.hh"
+#include "G4Colour.hh"
+#include "G4AttDefStore.hh"
+#include "G4AttDef.hh"
+#include "G4AttValue.hh"
+#include "G4UIcommand.hh"
+#include "G4UnitsTable.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4ios.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+G4ThreadLocal G4Allocator<MyHit>* MyHitAllocator;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void MyHit::Print()
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

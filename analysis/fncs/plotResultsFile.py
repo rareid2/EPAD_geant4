@@ -35,11 +35,12 @@ def plotResults(energy):
     plt.ylabel('Angle (degrees)')
     plt.grid()
     plt.legend()
+    plt.show()
 
-    path = '/home/grant/Documents/Research/Marshall_Research/electron_detector/results/'
-    fileName = 'angle_est_%i_kev_' % int(energy) + str(time.strftime("%m%d_%H%M%S"))
-    f = path + fileName + '.pdf'
+    #path = '/home/grant/Documents/Research/Marshall_Research/electron_detector/results/'
+    #fileName = 'angle_est_%i_kev_' % int(energy) + str(time.strftime("%m%d_%H%M%S"))
+    #f = path + fileName + '.pdf'
 
-    fig.savefig(f, dpi=fig.dpi)
+    #fig.savefig(f, dpi=fig.dpi)
 
-    return fileName
+    #return fileName

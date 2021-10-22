@@ -29,6 +29,10 @@
 /// \brief Implementation of the DetectorConstruction class
 
 #include "DetectorConstruction.hh"
+#include "SensitiveDetector.hh"
+#include "Hit.hh"
+
+#include "G4SDManager.hh"
 
 #include "G4RunManager.hh"
 #include "G4NistManager.hh"
@@ -59,30 +63,26 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
-  // Get nist material manager
+
+  // ------------ some initial settings -----------
+  // get nist material manager
   G4NistManager* nist = G4NistManager::Instance();
 
-  // Envelope parameters
-  //
-  G4double env_sizeXY = 20*cm, env_sizeZ = 30*cm;
+  // option to switch on/off checking of volumes overlaps
+  G4bool checkOverlaps = true;
 
-    // Material: Vacuum
-    //TODO: check pressures, environment for Van Allen belt altitudes
+  // ------------ envelope and world size ------------
+  G4double env_sizeXY = 20*cm, env_sizeZ = 30*cm;
+  G4double world_sizeXY = 1.2*env_sizeXY;
+  G4double world_sizeZ  = 1.2*env_sizeZ;
+
+  // material: vacuum - for world and envelope
   G4Material* vacuum_material = new G4Material("Vacuum",
               1.0 , 1.01*g/mole, 1.0E-25*g/cm3,
               kStateGas, 2.73*kelvin, 3.0E-18*pascal );
 
-  // Option to switch on/off checking of volumes overlaps
-  //
-  G4bool checkOverlaps = true;
-
-  //
-  // World
-  //
-  G4double world_sizeXY = 1.2*env_sizeXY;
-  G4double world_sizeZ  = 1.2*env_sizeZ;
-  // G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
-
+  // ---------------- place world and envelope --------------
+  // world
   G4Box* solidWorld =
     new G4Box("World",                       //its name
        0.5*world_sizeXY, 0.5*world_sizeXY, 0.5*world_sizeZ);     //its size
@@ -102,9 +102,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                       0,                     //copy number
                       checkOverlaps);        //overlaps checking
 
-  //
-  // Envelope
-  //
+  // envelope
   G4Box* solidEnv =
     new G4Box("Envelope",                    //its name
         0.5*env_sizeXY, 0.5*env_sizeXY, 0.5*env_sizeZ); //its size
@@ -123,8 +121,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
 
-
-
+  // ---------------- get detector config --------------
   std::fstream configFile;
   configFile.open("../src/detector_config.txt", std::ios_base::in);
 
@@ -138,8 +135,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   configFile.close();
 
   // Dimensions for detectors (detector 1 and 2 use the same planar dimensions)
-  G4double detector_dimX = 5.*cm;
-  G4double detector_dimZ = 5.*cm;
+  G4double detector_dimX = 6.3*cm;
+  G4double detector_dimZ = 6.3*cm;
   G4double detector1_thickness = det1_t_um*um;
   G4double detector2_thickness = det2_t_um*um;
 
@@ -147,34 +144,24 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   // Window dimensions
   G4double window_thickness = window_t_um*um;
-  G4double window_height    = 5.*cm;  // square window with this side dimension
+  G4double window_height    = 6.3*cm;  // square window with this side dimension
   G4double window_gap       = window_gap_mm*mm;
 
-  // ----------------------------------------------------------------
-  // Materials for the detectors
-  // ----------------------------------------------------------------
+  // ---------------- set materials for the detectors --------------
 
   // (Element name, symbol, atomic number, atomic mass) (as floats)
   G4Element* Si = new G4Element("Silicon","Si", 14., 28.0855*g/mole); // main wafer material for detector
-  //G4Element* S = new G4Element("Sulfer","S", 16., 32.065*g/mole);   // possible doping material
   G4Element* B = new G4Element("Boron","B", 5., 10.811*g/mole);   // possible doping material
-
-  //G4Element* Ga = new G4Element("Gallium","Ga", 31., 69.723*g/mole);
-  //G4Element* As = new G4Element("Arsenic","As", 33., 74.9216*g/mole);
-  //G4Element* Be = new G4Element("Beryllium","Be", 4., 9.0122*g/mole);   // material for window
 
   // Final doped silicon material to be used in the electron detector
   G4Material* DopedSilicon = new G4Material("DopedSilicon", 5.8*g/cm3, 2); // last argument is number of components in material
   DopedSilicon->AddElement(Si, 99.9*perCent);
   DopedSilicon->AddElement(B, 0.1*perCent);
 
-  //DopedSilicon->AddElement(Ga, 2*perCent);  // Gallium
-  //DopedSilicon->AddElement(As, 2*perCent);  // Arsenic (Gallium Arsenide)
-
-
+  // ---------------- set detector positions --------------
+  // this is just to initialize the vector
   G4ThreeVector detector1_pos  = G4ThreeVector(0, 0, 0);
   G4ThreeVector detector2_pos = G4ThreeVector(0, 0, 0);
-
 
   G4VSolid* detector1_solid = new G4Box("detector",
                    detector_dimX, detector1_thickness, detector_dimZ);
@@ -182,14 +169,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4VSolid* detector2_solid = new G4Box("detector",
                   detector_dimX, detector2_thickness, detector_dimZ);
 
-  // ----------------------------------------------------------------
-  // Detector 1 (closest to window)
-  // ----------------------------------------------------------------
+  // ---------------- create detector 1 --------------
 
-  // Detector 1 exists at the origin
-  detector1_pos  = G4ThreeVector(0, 0, 0);
-
-  G4LogicalVolume* detector1 =
+  detector1 =
   new G4LogicalVolume(detector1_solid,      //its solid
                       DopedSilicon,        //its material
                       "detector1");      //its name
@@ -203,13 +185,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                   0,                       //copy number
                   checkOverlaps);          //overlaps checking
 
-  // ----------------------------------------------------------------
-  // Detector 2 (furthest from window)
-  // ----------------------------------------------------------------
+  // ---------------- create detector 2 --------------
 
   detector2_pos  = G4ThreeVector(0, detector1_thickness/2 + detector2_thickness/2 + distance_between_detectors, 0);
 
-  G4LogicalVolume* detector2 =
+  detector2 =
   new G4LogicalVolume(detector2_solid,      //its solid
                       DopedSilicon,        //its material
                       "detector2");      //its name
@@ -223,21 +203,20 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                   0,                       //copy number
                   checkOverlaps);          //overlaps checking
 
-
-  // ----------------------------------------------------------------
-  // Window
-  // ----------------------------------------------------------------
-
+  // ---------------- set window material --------------
+  // comment out the window for scattering distributions
+  
   G4Material* window_material = nist->FindOrBuildMaterial("G4_Al");
   G4VSolid*   window_solid = new G4Box("window", detector_dimX, window_thickness,  window_height);
 
+  // ---------------- set window position --------------
+
   G4ThreeVector window_pos;
-
-
-  // Creation of beryllium window to repel protons and other particles
 
   window_pos = G4ThreeVector(0, -(detector1_thickness/2 + window_thickness/2 + window_gap),  0);
 
+  // ---------------- create window --------------
+  /*
   G4LogicalVolume* window =
   new G4LogicalVolume(window_solid,         // its solid
                       window_material,      // its material
@@ -252,9 +231,24 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
 
-
+  */
   // always return the physical World
   return physWorld;
+}
+
+void DetectorConstruction::ConstructSDandField(){
+  G4String SDname;
+  // register the SD 
+  G4SDManager* SDman = G4SDManager::GetSDMpointer();
+
+  MySensitiveDetector* sd1 = new MySensitiveDetector(SDname = "/SD1");
+  SDman->AddNewDetector(sd1);
+  detector1->SetSensitiveDetector(sd1);
+
+  MySensitiveDetector* sd2 = new MySensitiveDetector(SDname = "/SD2");
+  SDman->AddNewDetector(sd2);
+  detector2->SetSensitiveDetector(sd2);
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

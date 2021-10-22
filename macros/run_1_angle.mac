@@ -19,10 +19,9 @@
 
 # General Particle Source:
 /gps/particle e-
-/gps/position 0 -5 -3 cm
+/gps/position 0 -5 0 cm
 /gps/pos/type Point
-/gps/direction 0 1 -0.1
-/gps/energy 3000 keV
+/gps/direction 0 1 0
+/gps/energy 7000 keV
 
-
-/run/beamOn 10000
+/run/beamOn 1
