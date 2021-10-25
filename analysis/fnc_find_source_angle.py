@@ -1,8 +1,6 @@
 #!/usr/bin/python3.5
-
 import pandas as pd
 import numpy as np
-
 
 def findSourceAngle():
 

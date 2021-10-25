@@ -7,12 +7,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 import tqdm
-
 import sys
 
-from fncs.fnc_calc_angle_per_particle import calculateAnglePerParticle
-from fncs.plotResultsFile import plotResults
-from fncs.fnc_writeData_convert2pdf import writeData_convert2pdf
+from fnc_calc_angle_per_particle import calculateAnglePerParticle
 
 def generateAutoRunFile(theta_in_deg, phi_in_deg, n_particles, energy_in_keV):
 
@@ -134,9 +131,6 @@ def main():
 
             # Progress bar update
             pbar.update((max_angle-min_angle)/angle_resolution)
-
-    # Plots results.txt and saves file to electron_detector/results directory
-    fileName = plotResults(energy)
     
 if __name__=='__main__':
     main()

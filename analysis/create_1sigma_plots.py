@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt 
 import scipy.stats
 import os
-from fncs.fnc_calc_angle_per_particle import calculateAnglePerParticle
 from plot_settings import *
 
 # just a quick script to plot the 1 sigma uncertainty in theta
