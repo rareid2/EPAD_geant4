@@ -1,9 +1,0 @@
-/run/initialize
-
-/adjoint/DefineSphericalAdjSourceCenteredOnAVolume detector1 15 cm
-
-/adjoint/SetAdjSourceEmin 100 keV
-/adjoint/SetAdjSourceEmax 10 MeV
-/adjoint/SetNbOfPrimaryAdjElectronsPerEvent 100
-
-
