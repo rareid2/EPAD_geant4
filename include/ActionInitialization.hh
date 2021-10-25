@@ -31,16 +31,17 @@
 #ifndef ActionInitialization_h
 #define ActionInitialization_h 1
 
+// import geant4 class
 #include "G4VUserActionInitialization.hh"
 
 /// Action initialization class.
-
 class ActionInitialization : public G4VUserActionInitialization
 {
   public:
     ActionInitialization();
     virtual ~ActionInitialization();
 
+    // functions used in main call
     virtual void BuildForMaster() const;
     virtual void Build() const;
 };

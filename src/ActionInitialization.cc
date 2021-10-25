@@ -57,14 +57,18 @@ void ActionInitialization::BuildForMaster() const
 
 void ActionInitialization::Build() const
 {
+  // sets start action (generate a particle)
   SetUserAction(new PrimaryGeneratorAction);
 
+  // starts the run
   RunAction* runAction = new RunAction;
   SetUserAction(new RunAction);
   
+  // creates an event
   EventAction* eventAction = new EventAction(runAction);
   SetUserAction(eventAction);
   
+  // steps through the event 
   SetUserAction(new SteppingAction(eventAction));
 }  
 

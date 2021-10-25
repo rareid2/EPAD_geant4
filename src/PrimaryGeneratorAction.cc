@@ -47,6 +47,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(),
   fParticleGun(0)
 {
+  // particle beam
   fParticleGun  = new G4GeneralParticleSource();
 
 }
@@ -55,6 +56,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
+  // memory things i think
   delete fParticleGun;
 }
 

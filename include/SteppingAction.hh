@@ -55,7 +55,6 @@ public:
 
   private:
     EventAction*  fEventAction;
-    // G4LogicalVolume* fScoringVolume;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

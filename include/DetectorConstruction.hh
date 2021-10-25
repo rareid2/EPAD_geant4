@@ -45,13 +45,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     DetectorConstruction();
     virtual ~DetectorConstruction();
 
+    // functions used to construct and create sensitive detector volume
     virtual G4VPhysicalVolume* Construct();
     virtual void ConstructSDandField();
-    
-    G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
 
   protected:
-    G4LogicalVolume*  fScoringVolume;
+    // assigned to detector for sensitive detector volumes
     G4LogicalVolume*  detector1;
     G4LogicalVolume*  detector2;
 };

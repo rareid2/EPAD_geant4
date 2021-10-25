@@ -46,7 +46,7 @@ G4ThreadLocal G4Allocator<MyHit>* MyHitAllocator;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
+// this does nothing but i think its needed
 void MyHit::Print()
 {}
 

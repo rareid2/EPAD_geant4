@@ -47,6 +47,7 @@ EventAction::EventAction(RunAction* runAction)
   fRunAction(runAction),
   fEdep(0.){
 
+  // initialize ids to -1 to reconginze the start of the run
   hitsCollID1 = -1;
   hitsCollID2 = -1;
 
@@ -66,6 +67,7 @@ void EventAction::BeginOfEventAction(const G4Event* event)
   // Writes particle initial positions to file
   std::ofstream initialPositionsFile;
 
+  // gets momentum
   G4ThreeVector mom;
 
   initialPositionsFile.open("../analysis/data/init_pos.csv", std::ios_base::app);
@@ -82,6 +84,7 @@ void EventAction::BeginOfEventAction(const G4Event* event)
 
 
   }
+  // gran the hits collection names for each detector
   G4SDManager * SDman = G4SDManager::GetSDMpointer();
   if(hitsCollID1<0){
 
@@ -89,7 +92,6 @@ void EventAction::BeginOfEventAction(const G4Event* event)
 
     hitsCollID1 = SDman->GetCollectionID(colNam="SD1/hitsCollection");
     hitsCollID2 = SDman->GetCollectionID(colNam="SD2/hitsCollection");
-    
 
   }
 }
@@ -98,10 +100,11 @@ void EventAction::BeginOfEventAction(const G4Event* event)
 
 void EventAction::EndOfEventAction(const G4Event* event)
 {
-   
+    // if -1 need to iniiailze
    if(hitsCollID1<0) return;
      G4HCofThisEvent * HCE = event->GetHCofThisEvent();
 
+  // otherwise proceed with getting the hits and saving to the hits file
   MyHitCollection* HC1 = 0;
   MyHitCollection* HC2 = 0;
 
@@ -113,9 +116,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
     HC2 = (MyHitCollection*)(HCE->GetHC(hitsCollID2));
 
   }
-
  
-  // going to need to change the looping method to be sure each particle goes with the next -- particle ID? 
   if ( HC1 ) {
 
     int n_hit = HC1->entries();

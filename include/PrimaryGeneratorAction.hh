@@ -59,7 +59,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     const G4GeneralParticleSource* GetParticleGun() const { return fParticleGun; }
   
   private:
-    G4GeneralParticleSource*  fParticleGun; // pointer a to G4 gun class
+    // pointer a to G4 gun class
+    G4GeneralParticleSource*  fParticleGun; 
 
 };
 

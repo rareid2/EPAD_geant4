@@ -37,8 +37,10 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory*)
     if (preStep->GetStepStatus()==fGeomBoundary){
 
     MyHit *newHit = new MyHit();
+    // gets the particles info from pre point
     newHit->SetPosition( aStep->GetPreStepPoint()->GetPosition() );
     newHit->SetMomentum( aStep->GetPreStepPoint()->GetMomentum() );
+    // double check this is right
     newHit->SetEnergy( aStep->GetPreStepPoint()->GetKineticEnergy() ); 
     hitsCollection->insert(newHit);
     }

@@ -19,17 +19,20 @@ class MyHit : public G4VHit{
         virtual ~MyHit() {}
 
         //G4int operator==(const MyHit &right) const;
+        // for memory allocation
         inline void *operator new(size_t);
         inline void operator delete(void*aHit);
 
         void Print();
         
     private:
+        // attributes?
         G4ThreeVector position;
         G4ThreeVector momentum;
         G4double      energy;
         
     public:
+        // all kinds of fun stuff here
         inline void SetPosition(G4ThreeVector pos)
         { position=pos; }
 

@@ -19,6 +19,7 @@ class MySensitiveDetector : public G4VSensitiveDetector
         virtual G4bool ProcessHits(G4Step *aStep,G4TouchableHistory *ROhist);
         //virtual void EndOfEvent(G4HCofThisEvent *HCE);
     private:
+        // assign hits collection to it
         MyHitCollection *hitsCollection;
         G4int collectionID;
 };

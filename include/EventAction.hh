@@ -47,6 +47,7 @@ class EventAction : public G4UserEventAction
     EventAction(RunAction* runAction);
     virtual ~EventAction();
 
+    // begin and end of event functions and energy deposition func (total energy
     virtual void BeginOfEventAction(const G4Event* event);
     virtual void EndOfEventAction(const G4Event* event);
 
@@ -54,6 +55,7 @@ class EventAction : public G4UserEventAction
 
 
 private:
+  // things to call throughout ?
   RunAction* fRunAction;
   G4double   fEdep;
   G4int hitsCollID1;
