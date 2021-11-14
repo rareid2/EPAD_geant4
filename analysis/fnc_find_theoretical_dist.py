@@ -2,48 +2,40 @@ import numpy as np
 import scipy.stats
 import os
 from fnc_calc_angle_per_particle import calculateAnglePerParticle
+from fnc_get_det_hits import getDetHits
 
-def findTheoreticalDist(det1_thickness_um, gap_in_cm, charge_nmbr, rest_mass_kg):
+def findTheoreticalDist(det1_thickness, gap_in_cm, charge_nmbr, rest_mass_ME,data_path=None):
+
+    if data_path == None:
+        path_to_data = os.path.join(os.path.dirname(os.path.abspath("data")),'data/')
+        data_path = os.path.join(path_to_data, 'hits.csv')
+
     # particle angle from the simulation results
-    thetas, theta_act, avg_KE = calculateAnglePerParticle(gap_in_cm)
+    detector_hits, deltaX_rm, deltaZ_rm, energies = getDetHits(data_path)
+    avg_KE = np.average(energies)
+    thetas = np.rad2deg(np.arctan2(deltaX_rm, gap_in_cm))
 
-    # characteristic length for silicon     
-    X0 = .09370 # in meters
-    # nope this is wrong - use this 
-    # from https://pdg.lbl.gov/2009/AtomicNuclearProperties/HTML_PAGES/014.html
-
+    X0 = 37.648*10**3 # in um
     # charge number for ....
     z = charge_nmbr
     # thickness
-    x = det1_thickness_um * 10**(-6) # meters
+    x = det1_thickness
+
     print('characteristic length is:', x/X0)
 
-    # rest mass -- gotta change this!
-    m0 = rest_mass_kg
-    # velocity
-    c = 299792458 # m/s
-    # conversion to Joules
-    eV2J = 1.60218e-19 # joules
-    # energy -- this is technically relativistic KE
-    E = avg_KE*10**(6) * eV2J # joules
-    # gamma
-    gamma = 1 + (E / (m0*c**2))
-    # beta
-    beta = np.sqrt(1-(1/gamma)**2)
-    # betac
-    beta_c = beta * c
-    # relativistic momentum
-    p = gamma * m0 * beta_c
+    # updated beta_cp (from src code)
+    E = avg_KE * 0.001 # convert to ME
+    invbeta_cp = (E + rest_mass_ME)/(E**2 + 2*rest_mass_ME*E) 
 
-    # term 1 and 2 for the distribution
-    t1 = (13.6 * 10**6 * eV2J / (beta_c*p)) 
-    t2 = z*np.sqrt(x/X0)*(1+0.038*np.log(x * z**2 /(beta**2 * X0)))
+    # term 1 and 2 for the distribution -- urban 2006 eqn 28
+    Z_si = 14
+    fz = 1 - (0.24/(Z_si*(Z_si + 1)) )
+    t1 = 13.6 * invbeta_cp # in ME
+    t2 = z*np.sqrt(x/X0)*np.sqrt(1+0.105*np.log(x/X0) + 0.0035*(np.log(x/X0))**2)*fz
 
     # distribution settings
     standard_deviation = np.rad2deg(t1*t2)
     mean = 0
-
-    data_plt = thetas - np.ones(len(thetas))*theta_act
 
     # get x and y values for the theoretical distribution
     x_values = np.arange(min(thetas),max(thetas),0.1)

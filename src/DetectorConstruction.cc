@@ -44,8 +44,11 @@
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
-
+#include "G4UnionSolid.hh"
+#include "G4SubtractionSolid.hh"
+#include "G4AssemblyVolume.hh"
 #include <fstream>
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 DetectorConstruction::DetectorConstruction()
@@ -70,9 +73,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4bool checkOverlaps = true;
 
   // ------------ envelope and world size ------------
-  G4double env_sizeXY = 20*cm, env_sizeZ = 30*cm;
-  G4double world_sizeXY = 1.2*env_sizeXY;
-  G4double world_sizeZ  = 1.2*env_sizeZ;
+  G4double env_sizeXZ = 20*cm, env_sizeY = 30*cm;
+  G4double world_sizeXZ = 1.2*env_sizeXZ;
+  G4double world_sizeY  = 1.2*env_sizeY;
 
   // material: vacuum - for world and envelope
   G4Material* vacuum_material = new G4Material("Vacuum",
@@ -83,7 +86,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // world
   G4Box* solidWorld =
     new G4Box("World",                       //its name
-       0.5*world_sizeXY, 0.5*world_sizeXY, 0.5*world_sizeZ);     //its size
+       0.5*world_sizeXZ, 0.5*world_sizeY, 0.5*world_sizeXZ);     //its size
 
   G4LogicalVolume* logicWorld =
     new G4LogicalVolume(solidWorld,          //its solid
@@ -103,7 +106,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // envelope
   G4Box* solidEnv =
     new G4Box("Envelope",                    //its name
-        0.5*env_sizeXY, 0.5*env_sizeXY, 0.5*env_sizeZ); //its size
+        0.5*env_sizeXZ, 0.5*env_sizeY, 0.5*env_sizeXZ); //its size
 
   G4LogicalVolume* logicEnv =
     new G4LogicalVolume(solidEnv,            //its solid
@@ -120,30 +123,19 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     checkOverlaps);          //overlaps checking
 
   // ---------------- get detector config --------------
-  std::fstream configFile;
-  configFile.open("../src/detector_config.txt", std::ios_base::in);
-
-  // Initialize variables to store detector dimensions
-  G4double det1_t_um, det2_t_um, dist_bw_det_mm, window_t_um, window_gap_mm;
-
-  // Load detector dimensions into variables
-  configFile >> det1_t_um >> det2_t_um >>
-              dist_bw_det_mm >> window_t_um >> window_gap_mm;
-
-  configFile.close();
 
   // Dimensions for detectors (detector 1 and 2 use the same planar dimensions)
   G4double detector_dimX = 6.3*cm;
   G4double detector_dimZ = 6.3*cm;
-  G4double detector1_thickness = det1_t_um*um;
-  G4double detector2_thickness = det2_t_um*um;
+  G4double detector1_thickness = 20.0*um;
+  G4double detector2_thickness = 100.0*um;
 
-  G4double distance_between_detectors = dist_bw_det_mm*mm;
+  G4double distance_between_detectors = 30.0*mm;
 
   // Window dimensions
-  G4double window_thickness = window_t_um*um;
+  G4double window_thickness = 20.0*um;
   G4double window_height    = 6.3*cm;  // square window with this side dimension
-  G4double window_gap       = window_gap_mm*mm;
+  G4double window_gap       = 10.0*mm;
 
   // ---------------- set materials for the detectors --------------
 
@@ -162,10 +154,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4ThreeVector detector2_pos = G4ThreeVector(0, 0, 0);
 
   G4VSolid* detector1_solid = new G4Box("detector",
-                   detector_dimX, detector1_thickness, detector_dimZ);
+                   0.5*detector_dimX, 0.5*detector1_thickness, 0.5*detector_dimZ);
 
   G4VSolid* detector2_solid = new G4Box("detector",
-                  detector_dimX, detector2_thickness, detector_dimZ);
+                  0.5*detector_dimX, 0.5*detector2_thickness, 0.5*detector_dimZ);
 
   // ---------------- create detector 1 --------------
 
@@ -205,7 +197,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // comment out the window for scattering distributions
   
   G4Material* window_material = nist->FindOrBuildMaterial("G4_Al");
-  G4VSolid*   window_solid = new G4Box("window", detector_dimX, window_thickness,  window_height);
+  G4VSolid*   window_solid = new G4Box("window", 0.5*detector_dimX, 0.5*window_thickness, 0.5*window_height);
 
   // ---------------- set window position --------------
 
@@ -214,7 +206,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   window_pos = G4ThreeVector(0, -(detector1_thickness/2 + window_thickness/2 + window_gap),  0);
 
   // ---------------- create window --------------
-  /*
+  
   G4LogicalVolume* window =
   new G4LogicalVolume(window_solid,         // its solid
                       window_material,      // its material
@@ -229,7 +221,124 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
 
-  */
+  // ---------------- create coded aperture --------------
+  // set coded aperture parameters
+  G4double ca_thickness = 0.5*mm;
+  G4double ca_gap = 2.0*cm;
+  G4Material* ca_material = nist->FindOrBuildMaterial("G4_W");
+
+  G4ThreeVector ca_pos;
+  ca_pos = G4ThreeVector(0, -(detector1_thickness/2 + ca_thickness/2 + ca_gap),  0);
+
+  G4double ca_size = 6.3*cm;
+  G4double hole_size = 1.*mm;
+
+  // add a little bit to overlap the objects correctly...
+  G4double gap_issue = 10.*um;
+
+  // create the 'hole'
+  G4VSolid* ca_hole = new G4Box("hole",
+                  0.5*hole_size, 0.5*ca_thickness+1.0*mm, 0.5*hole_size);
+  // create the mask
+  G4VSolid* mask = new G4Box("mask",0.5*ca_size,0.5*ca_thickness,0.5*ca_size);
+
+
+  // name the variables
+  G4UnionSolid* swapSolid;
+  G4String placementXZ_str; 
+  G4double placementX, placementZ; 
+  G4String token;
+
+  G4String filename = "../src/coded_aperture_array.txt";
+  
+  std::ifstream placementFile(filename, std::ios_base::in);
+  
+  // Get number of lines in file
+  unsigned int numberOfBoxes = 0;
+  while(getline(placementFile, placementXZ_str, '\n'))
+    { numberOfBoxes++; }
+  
+  placementFile.close();
+
+  // Reopen file to start from first line
+  placementFile.open(filename, std::ios_base::in);
+  getline(placementFile, placementXZ_str, '\n');
+  
+  token = placementXZ_str.substr(
+		  0, 
+  		  placementXZ_str.find(',')); 
+  
+  placementZ = std::stod(token);
+  
+  token = placementXZ_str.substr(
+		  placementXZ_str.find(',')+1, 
+		  placementXZ_str.find('\n'));
+  
+  placementX = std::stod(token);
+
+  // save first hole to correctly offset for origin
+  G4double first_hole_x = 10*placementX*cm;
+  G4double first_hole_z = 10*placementZ*cm;
+
+  // define coded_boxes with first one (put the first box on top of itself)
+  G4VSolid* coded_boxes = new G4UnionSolid("codedboxes",ca_hole,ca_hole,0,G4ThreeVector(0,0,0));
+
+  // start looping through the file ----------
+  // starts at 1 since logicAp1 uses first line of file 
+  for(unsigned int i=1; i<numberOfBoxes; i++)
+  {
+    getline(placementFile, placementXZ_str, '\n');
+
+    token = placementXZ_str.substr(
+		  0, 
+  		  placementXZ_str.find(',')); 
+    
+    placementZ = std::stod(token); 
+ 
+    token = placementXZ_str.substr(
+		  placementXZ_str.find(',')+1, 
+		  placementXZ_str.find('\n'));
+    
+    placementX = std::stod(token); 
+
+    // place this new hole defined from origin of the first one
+    // add in an extra um for every um away from first box (i think)
+    swapSolid = new G4UnionSolid("swappp",
+	  			   coded_boxes,
+	  			   ca_hole,
+	  			   0,
+	  			   G4ThreeVector(
+               (placementX*10*cm)-first_hole_x,
+               0,
+               (placementZ*10*cm)-first_hole_z));
+    //std::cout<<(gap_issue*((placementX*10*cm)-first_hole_x)/10)<<std::endl;
+    coded_boxes = swapSolid;
+  }
+
+
+  placementFile.close();
+  
+  // subtract them all from the mask to make them actual holes
+  // offset by 1mm on each side (61 by 61 becomes 63 by 63)
+  G4double offset = 1.*mm;
+
+  G4VSolid* mholes = new G4SubtractionSolid("Box-Cylinder",mask,coded_boxes,  
+       0, G4ThreeVector(-(ca_size*0.5)+(hole_size*0.5)+offset+first_hole_x,0,-(ca_size*0.5)+(hole_size*0.5)+offset+first_hole_z)); 
+  
+  G4LogicalVolume* holes_logic =
+  new G4LogicalVolume(mholes,      //its solid
+                      ca_material,        //its material
+                      "ca");      //its name
+
+  new G4PVPlacement(0,                     //no rotation
+                  ca_pos,            //at position
+                  holes_logic,                //its logical volume
+                  "ca",           //its name
+                  logicEnv,                //its mother  volume
+                  false,                   //no boolean operation
+                  0,                       //copy number
+                  checkOverlaps);          //overlaps checking
+
   // always return the physical World
   return physWorld;
 }

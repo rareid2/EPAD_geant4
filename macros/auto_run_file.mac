@@ -1,11 +1,11 @@
 /run/initialize 
-/control/verbose 0 
-/run/verbose 0 
-/event/verbose 0 
-/tracking/verbose 0 
+/control/verbose 1 
+/run/verbose 1 
+/event/verbose 1 
+/tracking/verbose 1 
 /gps/particle e- 
-/gps/energy 1000 keV 
+/gps/energy 10000 keV 
 /gps/position 0.0 -5 -0.0 
 /gps/direction 0.0 1 0.0 
 /gps/pos/type Point 
-/run/beamOn 10 
+/run/beamOn 100000 

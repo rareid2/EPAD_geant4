@@ -1,17 +1,19 @@
 #!/usr/bin/python3.5
 import pandas as pd
 import numpy as np
-
 from scipy.stats import norm, skewnorm
-
+import os
 # Extracts and returns actual inital particle source angles
 from fnc_find_source_angle import findSourceAngle
-from fnc_get_det_hits import get_det_hits
+from fnc_get_det_hits import getDetHits
 
 # -----------------------------------------------------
 def calculateAnglePerParticle(gap_in_cm):
+    path_to_data = os.path.join(os.path.dirname(os.path.abspath("data")),'data/')
+    path_to_hits_file = os.path.join(path_to_data, 'hits.csv')
+
     # call read in function
-    detector_hits, deltaX_rm, deltaZ_rm, energies = getDetHits('./data/hits.csv')
+    detector_hits, deltaX_rm, deltaZ_rm, energies = getDetHits(path_to_hits_file)
 
     # Find angles in degrees
     theta = np.rad2deg(np.arctan2(deltaZ_rm, gap_in_cm))

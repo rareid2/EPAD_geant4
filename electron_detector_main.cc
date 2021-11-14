@@ -55,6 +55,7 @@
 #include "Randomize.hh"
 
 #include "G4UImanager.hh"
+#include "G4RayTracer.hh"
 #include "G4VisManager.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"

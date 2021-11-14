@@ -70,7 +70,7 @@ void EventAction::BeginOfEventAction(const G4Event* event)
   // gets momentum
   G4ThreeVector mom;
 
-  initialPositionsFile.open("../analysis/data/init_pos.csv", std::ios_base::app);
+  initialPositionsFile.open("./data/init_pos.csv", std::ios_base::app);
   if(initialPositionsFile.is_open())
   {
     initialPositionsFile << event->GetPrimaryVertex()->GetX0() / cm << ","
@@ -138,7 +138,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
       G4cout << " Energy   " <<  energy/keV   << " [keV] " <<G4endl;
       
       std::ofstream hitFile;
-      hitFile.open("../analysis/data/hits.csv", std::ios_base::app);
+      hitFile.open("./data/hits.csv", std::ios_base::app);
       hitFile << "\n" << 1 << "," << position.x()/cm << "," << position.y()/cm << "," << position.z()/cm << ","
       << energy/keV;
       hitFile.close();
@@ -167,7 +167,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
       G4cout << " Energy   " <<  energy/keV   << " [keV] " <<G4endl;
       
       std::ofstream hitFile;
-      hitFile.open("../analysis/data/hits.csv", std::ios_base::app);
+      hitFile.open("./data/hits.csv", std::ios_base::app);
       hitFile << "\n" << 2 << "," << position.x()/cm << "," << position.y()/cm << "," << position.z()/cm << ","
       << energy/keV;
       hitFile.close();
