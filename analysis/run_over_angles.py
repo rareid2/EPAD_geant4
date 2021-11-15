@@ -106,7 +106,7 @@ def main():
     #####################################
     ####### Edit these parameters #######
     #####################################
-    energy = 10000 #keV
+    energy = 3500 #keV
 
     angle_resolution = 0.5
     min_angle = 0.

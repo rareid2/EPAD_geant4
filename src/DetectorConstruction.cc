@@ -127,7 +127,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // Dimensions for detectors (detector 1 and 2 use the same planar dimensions)
   G4double detector_dimX = 6.3*cm;
   G4double detector_dimZ = 6.3*cm;
-  G4double detector1_thickness = 20.0*um;
+  G4double detector1_thickness = 170.0*um;
   G4double detector2_thickness = 100.0*um;
 
   G4double distance_between_detectors = 30.0*mm;
@@ -222,6 +222,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     checkOverlaps);          //overlaps checking
 
   // ---------------- create coded aperture --------------
+  // comment this out for the 2 detector configuration
+  /*
   // set coded aperture parameters
   G4double ca_thickness = 0.5*mm;
   G4double ca_gap = 2.0*cm;
@@ -234,7 +236,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double hole_size = 1.*mm;
 
   // add a little bit to overlap the objects correctly...
-  G4double gap_issue = 10.*um;
+  G4double gap_issue = 100.*um;
 
   // create the 'hole'
   G4VSolid* ca_hole = new G4Box("hole",
@@ -338,7 +340,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                   false,                   //no boolean operation
                   0,                       //copy number
                   checkOverlaps);          //overlaps checking
-
+  */
   // always return the physical World
   return physWorld;
 }
