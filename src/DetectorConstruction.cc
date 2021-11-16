@@ -251,7 +251,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double placementX, placementZ; 
   G4String token;
 
-  G4String filename = "../src/coded_aperture_array_13.txt";
+  G4String filename = "../src/coded_aperture_array_61.txt";
   
   std::ifstream placementFile(filename, std::ios_base::in);
   
@@ -287,7 +287,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   // start looping through the file ----------
   // starts at 1 since logicAp1 uses first line of file 
-  for(unsigned int i=1; i<10; i++)
+  for(unsigned int i=1; i<numberOfBoxes; i++)
   {
     getline(placementFile, placementXZ_str, '\n');
 
@@ -336,7 +336,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                   holes_logic,                //its logical volume
                   "ca",           //its name
                   logicEnv,                //its mother  volume
-                  false,                   //no boolean operation
+                  true,                   //no boolean operation
                   0,                       //copy number
                   checkOverlaps);          //overlaps checking
   
