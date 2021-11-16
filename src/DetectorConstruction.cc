@@ -127,7 +127,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // Dimensions for detectors (detector 1 and 2 use the same planar dimensions)
   G4double detector_dimX = 6.3*cm;
   G4double detector_dimZ = 6.3*cm;
-  G4double detector1_thickness = 170.0*um;
+  G4double detector1_thickness = 100.0*um;
   G4double detector2_thickness = 100.0*um;
 
   G4double distance_between_detectors = 30.0*mm;
@@ -223,7 +223,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   // ---------------- create coded aperture --------------
   // comment this out for the 2 detector configuration
-  /*
+  
   // set coded aperture parameters
   G4double ca_thickness = 0.5*mm;
   G4double ca_gap = 2.0*cm;
@@ -236,11 +236,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double hole_size = 1.*mm;
 
   // add a little bit to overlap the objects correctly...
-  G4double gap_issue = 100.*um;
+  G4double gap_issue = 10.*um;
 
   // create the 'hole'
   G4VSolid* ca_hole = new G4Box("hole",
-                  0.5*hole_size, 0.5*ca_thickness+1.0*mm, 0.5*hole_size);
+                  0.5*hole_size + gap_issue, 0.5*ca_thickness+0.5*mm, 0.5*hole_size + gap_issue);
   // create the mask
   G4VSolid* mask = new G4Box("mask",0.5*ca_size,0.5*ca_thickness,0.5*ca_size);
 
@@ -251,7 +251,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double placementX, placementZ; 
   G4String token;
 
-  G4String filename = "../src/coded_aperture_array.txt";
+  G4String filename = "../src/coded_aperture_array_13.txt";
   
   std::ifstream placementFile(filename, std::ios_base::in);
   
@@ -287,7 +287,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   // start looping through the file ----------
   // starts at 1 since logicAp1 uses first line of file 
-  for(unsigned int i=1; i<numberOfBoxes; i++)
+  for(unsigned int i=1; i<10; i++)
   {
     getline(placementFile, placementXZ_str, '\n');
 
@@ -313,7 +313,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                (placementX*10*cm)-first_hole_x,
                0,
                (placementZ*10*cm)-first_hole_z));
-    //std::cout<<(gap_issue*((placementX*10*cm)-first_hole_x)/10)<<std::endl;
     coded_boxes = swapSolid;
   }
 
@@ -340,8 +339,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                   false,                   //no boolean operation
                   0,                       //copy number
                   checkOverlaps);          //overlaps checking
-  */
+  
   // always return the physical World
+  
   return physWorld;
 }
 

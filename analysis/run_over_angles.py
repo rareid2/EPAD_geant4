@@ -16,7 +16,8 @@ def generateAutoRunFile(theta_in_deg, phi_in_deg, n_particles, energy_in_keV):
     theta = np.deg2rad(theta_in_deg)
     phi = np.deg2rad(phi_in_deg)
 
-    # Calculate the particle starting position such that hit is in center of window
+    # starting position is 5 cm back
+    # linearly sample the x and z dimensions
     y_offset = -5 # cm
     z_pos = y_offset * np.tan(theta)
     x_pos = abs(y_offset) * np.tan(phi)
