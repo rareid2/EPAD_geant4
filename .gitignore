@@ -8,10 +8,8 @@ __pycache/
 */*/__pycache__
 */*/*/__pycache__
 
-/analysis/data/*.txt
-/build
-/results/.idea
-.idea
-/analysis/data/*.csv
-/analysis/*.m~
-/analysis/fncs/__pychache__/*.pyc
+*.idea
+/build/
+/results/
+/data/
+/analysis/__pychache__/*.pyc

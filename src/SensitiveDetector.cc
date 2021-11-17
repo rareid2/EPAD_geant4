@@ -43,6 +43,8 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory*)
     // double check this is right
     newHit->SetEnergy( aStep->GetPreStepPoint()->GetKineticEnergy() ); 
     hitsCollection->insert(newHit);
+    G4Track *aTrack = aStep->GetTrack();
+    aTrack->SetTrackStatus(fStopAndKill);
     }
     
     return true;

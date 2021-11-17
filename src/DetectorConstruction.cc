@@ -127,15 +127,15 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // Dimensions for detectors (detector 1 and 2 use the same planar dimensions)
   G4double detector_dimX = 6.3*cm;
   G4double detector_dimZ = 6.3*cm;
-  G4double detector1_thickness = 100.0*um;
-  G4double detector2_thickness = 100.0*um;
+  G4double detector1_thickness = 140.0*um;
+  G4double detector2_thickness = 140.0*um;
 
   G4double distance_between_detectors = 30.0*mm;
 
   // Window dimensions
   G4double window_thickness = 20.0*um;
   G4double window_height    = 6.3*cm;  // square window with this side dimension
-  G4double window_gap       = 10.0*mm;
+  G4double window_gap       = 5.0*mm;
 
   // ---------------- set materials for the detectors --------------
 
@@ -226,7 +226,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   
   // set coded aperture parameters
   G4double ca_thickness = 0.5*mm;
-  G4double ca_gap = 2.0*cm;
+  G4double ca_gap = 3.0*cm;
   G4Material* ca_material = nist->FindOrBuildMaterial("G4_W");
 
   G4ThreeVector ca_pos;

@@ -3,18 +3,39 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse, Circle 
 import scipy.stats
 import os
-from fnc_get_det_hits import getDetHits
+from fnc_get_det1_hits import getDet1Hits
 from plot_settings import *
 
-
-# set energy from simulation 
+# get positions
 xxes = []
 yxes = []
 
-fname_path = os.path.join('/home/rileyannereid/workspace/geant4/Geant4_electron_detector/analysis/data', fname)
-print(fname_path)
+# energy limit
+energy_limit_kev = 400
+
+# define filename
+fname = 'data/hits.csv'
+fdirectory = os.getcwd()
+fname_path = os.path.join(fdirectory, fname)
+
 # first get the x and z displacement from SCATTERING
-detector_hits, deltaX_rm, deltaZ_rm, energies = getDetHits(fname_path)
-plt.scatter(deltaX_rm,deltaZ_rm)
-plt.show()
+posX, posZ, energies = getDet1Hits(fname_path)
+
+low_energy_electrons = 0
+for x,z,ene in zip(posX,posZ,energies):
+    if ene > energy_limit_kev:
+        xxes.append(x)
+        yxes.append(z)
+    else:
+        low_energy_electrons+=1
+
+print('# of low energy electrons= ',low_energy_electrons)
+
+# show the plot
+plt.scatter(xxes, yxes,s=3)
+
+fname = 'results/fall21_results/det1_hits_61array.png'
+fpath = os.getcwd()
+fig_name = os.path.join(fpath, fname)
+plt.savefig(fig_name)
 plt.close()

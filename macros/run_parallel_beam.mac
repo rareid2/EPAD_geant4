@@ -6,7 +6,7 @@
 #/control/execute ../macros/run_parallel_beam.mac
 # Change the default number of workers (in multi-threading mode) 
 # Initialize kernel
-/run/numberOfThreads 8
+/run/numberOfThreads 14
 /run/initialize
 
 /control/verbose 1 
@@ -16,6 +16,7 @@
 
 # Plane Square Wave:
 /gps/particle e-
+/gps/energy 500 keV
 /gps/pos/type Plane
 /gps/pos/shape Square
 /gps/pos/centre 0 -5 0 cm
