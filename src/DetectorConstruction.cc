@@ -211,7 +211,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   new G4LogicalVolume(window_solid,         // its solid
                       window_material,      // its material
                       "window");    // its name
-
+  /*
   new G4PVPlacement(0,                       //no rotation
                     window_pos,              //at position
                     window,                  //its logical volume
@@ -220,7 +220,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
-
+  */
   // ---------------- create coded aperture --------------
   // comment this out for the 2 detector configuration
   
