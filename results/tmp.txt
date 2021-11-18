@@ -1,0 +1,4 @@
+Pinhole radius: 0.500000 mm
+Gap between window and detector: 5.000000 mm
+Window thickness: 100.000000 um
+Shielding foil thickness: 10.000000 um

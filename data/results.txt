@@ -1,0 +1,2 @@
+Number_Particles,Theta_actual,Phi_actual,Theta_mean,Theta_std,Phi_mean,Phi_std,Theta_median,Phi_median,Theta_normfit,T_s_nf,Phi_normfit,P_s_nf,Theta_snormfit,T_s_snf,Phi_snormfit,P_s_snf
+100000,0.0,0.0,-0.0406,11.6203,-0.0215,11.6134,-0.0071,-0.0219,-0.0406,11.6203,-0.0215,11.6134,-0.04,11.62,-1.2118,12.0895
