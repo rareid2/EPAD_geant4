@@ -1,0 +1,29 @@
+# Macro file for running one particle beam at the center
+# 
+# Can be run in batch, without graphic
+# or interactively: Idle> /control/execute run1.mac
+#
+#/control/execute ../macros/run_parallel_beam.mac
+# Change the default number of workers (in multi-threading mode) 
+# Initialize kernel
+/run/numberOfThreads 14
+/run/initialize
+
+/control/verbose 1 
+/run/verbose 1 
+/event/verbose 1 
+/tracking/verbose 1 
+
+# Plane Square Wave:
+/gps/particle e-
+/gps/energy 500 keV
+/gps/pos/type Plane
+/gps/pos/shape Square
+/gps/pos/centre 0 -5 0 cm
+
+/gps/pos/halfx 3.1 cm
+/gps/pos/halfy 3.1 cm
+/gps/pos/rot2 0 0 1
+/gps/direction 0 1 0
+
+/run/beamOn 100000
