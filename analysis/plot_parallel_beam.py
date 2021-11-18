@@ -14,7 +14,7 @@ yxes = []
 energy_limit_kev = 400
 
 # define filename
-fname = 'data/hits.csv'
+fname = 'data/hits_500keV_100e3_windowbehind.csv'
 fdirectory = os.getcwd()
 fname_path = os.path.join(fdirectory, fname)
 
@@ -30,10 +30,12 @@ for x,z,ene in zip(posX,posZ,energies):
         low_energy_electrons+=1
 
 print('# of low energy electrons= ',low_energy_electrons)
+heatmap, xedges, yedges = np.histogram2d(xxes, yxes, bins=63)
 
-# show the plot
-plt.scatter(xxes, yxes,s=3)
+extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
 
+plt.clf()
+plt.imshow(heatmap.T, extent=extent, origin='lower',cmap='gist_gray')
 fname = 'results/fall21_results/det1_hits_61array.png'
 fpath = os.getcwd()
 fig_name = os.path.join(fpath, fname)
