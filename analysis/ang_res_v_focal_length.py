@@ -5,7 +5,7 @@ import os
 
 s = 0.01 # cm
 f = np.linspace(0.1,6,100)
-theta_min = 2*s / f
+theta_min = np.arctan(s/f)
 theta_min = theta_min * 180 / np.pi
 
 # plot

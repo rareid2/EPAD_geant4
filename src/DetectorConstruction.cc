@@ -134,8 +134,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   // Window dimensions
   G4double window_thickness = 20.0*um;
-  G4double window_height    = 6.3*cm;  // square window with this side dimension
-  G4double window_gap       = 5.0*mm;
+  G4double window_height    = 6.5*cm;  // square window with this side dimension
+  G4double window_gap       = 1.0*mm;
 
   // ---------------- set materials for the detectors --------------
 
@@ -211,7 +211,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   new G4LogicalVolume(window_solid,         // its solid
                       window_material,      // its material
                       "window");    // its name
-  /*
+  
   new G4PVPlacement(0,                       //no rotation
                     window_pos,              //at position
                     window,                  //its logical volume
@@ -220,23 +220,23 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
-  */
+  
   // ---------------- create coded aperture --------------
   // comment this out for the 2 detector configuration
   
   // set coded aperture parameters
   G4double ca_thickness = 0.5*mm;
-  G4double ca_gap = 3.0*cm;
+  G4double ca_gap = 1.1*cm; // add .2 for the 1mm outline on both sides
   G4Material* ca_material = nist->FindOrBuildMaterial("G4_W");
 
   G4ThreeVector ca_pos;
-  ca_pos = G4ThreeVector(0, -(detector1_thickness/2 + ca_thickness/2 + ca_gap),  0);
+  ca_pos = G4ThreeVector(0, -(detector1_thickness/2 - ca_thickness/2 + ca_gap),  0);
 
-  G4double ca_size = 6.3*cm;
+  G4double ca_size = 1.1*cm;
   G4double hole_size = 1.*mm;
 
   // add a little bit to overlap the objects correctly...
-  G4double gap_issue = 10.*um;
+  G4double gap_issue = 1.*um;
 
   // create the 'hole'
   G4VSolid* ca_hole = new G4Box("hole",
@@ -251,7 +251,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double placementX, placementZ; 
   G4String token;
 
-  G4String filename = "../src/coded_aperture_array_61.txt";
+  G4String filename = "../src/mosaic_coded_aperture_array_43.txt";
   
   std::ifstream placementFile(filename, std::ios_base::in);
   
@@ -270,13 +270,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		  0, 
   		  placementXZ_str.find(',')); 
   
-  placementZ = std::stod(token);
+  placementX = std::stod(token);
   
   token = placementXZ_str.substr(
 		  placementXZ_str.find(',')+1, 
 		  placementXZ_str.find('\n'));
   
-  placementX = std::stod(token);
+  placementZ = std::stod(token);
 
   // save first hole to correctly offset for origin
   G4double first_hole_x = 10*placementX*cm;
@@ -295,13 +295,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		  0, 
   		  placementXZ_str.find(',')); 
     
-    placementZ = std::stod(token); 
+    placementX = std::stod(token); 
  
     token = placementXZ_str.substr(
 		  placementXZ_str.find(',')+1, 
 		  placementXZ_str.find('\n'));
     
-    placementX = std::stod(token); 
+    placementZ = std::stod(token); 
 
     // place this new hole defined from origin of the first one
     // add in an extra um for every um away from first box (i think)
@@ -320,7 +320,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   placementFile.close();
   
   // subtract them all from the mask to make them actual holes
-  // offset by 1mm on each side (61 by 61 becomes 63 by 63)
+  // offset by 1mm on each side (just give an outline of the mask)
   G4double offset = 1.*mm;
 
   G4VSolid* mholes = new G4SubtractionSolid("Box-Cylinder",mask,coded_boxes,  
@@ -330,7 +330,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   new G4LogicalVolume(mholes,      //its solid
                       ca_material,        //its material
                       "ca");      //its name
-
+ 
   new G4PVPlacement(0,                     //no rotation
                   ca_pos,            //at position
                   holes_logic,                //its logical volume

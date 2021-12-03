@@ -1,4 +1,4 @@
-# matplotlib is ugly be deault
+# matplotlib is ugly by default
 import matplotlib.pyplot as plt 
 import seaborn as sns
 
