@@ -223,35 +223,35 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   
   // ---------------- create coded aperture --------------
   // comment this out for the 2 detector configuration
-  
+
+  // mask size  
+  G4double nelements = 11;
+  G4String filename = "../src/mosiac_coded_aperture_array_11.txt";
   // set coded aperture parameters
+
   G4double ca_thickness = 0.5*mm;
   G4double ca_gap = 1.1*cm; 
   G4Material* ca_material = nist->FindOrBuildMaterial("G4_W");
 
-  G4ThreeVector ca_pos;
-  ca_pos = G4ThreeVector(0, -(detector1_thickness/2 - ca_thickness/2 + ca_gap),  0);
+  G4double ca_pos = -(detector1_thickness/2 + ca_gap - ca_thickness/2); // defined so that the gap is from the front of the first detector to front of mask
+  G4double hole_size = 1.*mm; // same as element size
+  G4double ca_size = (nelements * hole_size * 2) - hole_size; // add .2 for the 1mm outline on both sides
+  G4double mask_offset = -(ca_size/2 - hole_size/2); // centering to correct for origin of mother volume
 
-  G4double ca_size = 2.7*cm; // add .2 for the 1mm outline on both sides
-  G4double hole_size = 1.*mm;
+  // create the mask element
+  G4VSolid* ca_element = new G4Box("hole",
+                  0.5*hole_size, 0.5*ca_thickness, 0.5*hole_size);
+  
+  G4LogicalVolume* logicMask =
+  new G4LogicalVolume(ca_element,         // its solid
+                      ca_material,      // its material
+                      "logicMask");    // its name
 
-  // add a little bit to overlap the objects correctly...
-  G4double gap_issue = 1.*um;
-
-  // create the 'hole'
-  G4VSolid* ca_hole = new G4Box("hole",
-                  0.5*hole_size + gap_issue, 0.5*ca_thickness+0.5*mm, 0.5*hole_size + gap_issue);
-  // create the mask
-  G4VSolid* mask = new G4Box("mask",0.5*ca_size,0.5*ca_thickness,0.5*ca_size);
-
-
+  // start adding the blocks of tungsten
   // name the variables
-  G4UnionSolid* swapSolid;
   G4String placementXZ_str; 
   G4double placementX, placementZ; 
   G4String token;
-
-  G4String filename = "../src/mosaic_coded_aperture_array_5.txt";
   
   std::ifstream placementFile(filename, std::ios_base::in);
   
@@ -278,12 +278,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   
   placementZ = std::stod(token);
 
-  // save first hole to correctly offset for origin
+  // save first element
   G4double first_hole_x = 10*placementX*cm;
   G4double first_hole_z = 10*placementZ*cm;
 
-  // define coded_boxes with first one (put the first box on top of itself)
-  G4VSolid* coded_boxes = new G4UnionSolid("codedboxes",ca_hole,ca_hole,0,G4ThreeVector(0,0,0));
+  // place first element
+  G4VPhysicalVolume *physMask = new G4PVPlacement(0,  
+      G4ThreeVector(mask_offset + first_hole_x, -(detector1_thickness/2 - 1.5*ca_thickness + ca_gap), mask_offset + first_hole_z), logicMask, "physMask", logicEnv, false, 0, checkOverlaps);
 
   // start looping through the file ----------
   // starts at 1 since logicAp1 uses first line of file 
@@ -303,43 +304,45 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     placementZ = std::stod(token); 
 
-    // place this new hole defined from origin of the first one
-    // add in an extra um for every um away from first box (i think)
-    swapSolid = new G4UnionSolid("swappp",
-	  			   coded_boxes,
-	  			   ca_hole,
-	  			   0,
-	  			   G4ThreeVector(
-               (placementX*10*cm)-first_hole_x,
-               0,
-               (placementZ*10*cm)-first_hole_z));
-    coded_boxes = swapSolid;
+    // place the elements
+    G4VPhysicalVolume *physMask = new G4PVPlacement(0,  
+         G4ThreeVector(mask_offset + (10*cm*placementX), ca_pos, mask_offset + (10*cm*placementZ)), 
+         logicMask, "physmask", logicEnv, false, 0, checkOverlaps);
   }
 
-
   placementFile.close();
-  
-  // subtract them all from the mask to make them actual holes
-  // offset by 1mm on each side (just give an outline of the mask)
-  G4double offset = 1.*mm;
 
-  G4VSolid* mholes = new G4SubtractionSolid("Box-Cylinder",mask,coded_boxes,  
-       0, G4ThreeVector(-(ca_size*0.5)+(hole_size*0.5)+offset+first_hole_x,0,-(ca_size*0.5)+(hole_size*0.5)+offset+first_hole_z)); 
+  // finally add an outline of 1mm around it
+  G4VSolid* xoutline = new G4Box("hole",
+                  0.5*(ca_size+2.0*mm), 0.5*ca_thickness, 0.5*hole_size);
+  G4VSolid* zoutline = new G4Box("hole",
+                   0.5*hole_size, 0.5*ca_thickness, 0.5*(ca_size+2.0*mm));
   
-  G4LogicalVolume* holes_logic =
-  new G4LogicalVolume(mholes,      //its solid
-                      ca_material,        //its material
-                      "ca");      //its name
-  /*
-  new G4PVPlacement(0,                     //no rotation
-                  ca_pos,            //at position
-                  holes_logic,                //its logical volume
-                  "ca",           //its name
-                  logicEnv,                //its mother  volume
-                  true,                   //no boolean operation
-                  0,                       //copy number
-                  checkOverlaps);          //overlaps checking
-  */
+  G4LogicalVolume* xlogicOutline =
+  new G4LogicalVolume(xoutline,         // its solid
+                      ca_material,      // its material
+                      "xlogicOutline");    // its name
+  G4LogicalVolume* zlogicOutline =
+  new G4LogicalVolume(zoutline,         // its solid
+                      ca_material,      // its material
+                      "zlogicOutline");    // its name
+
+  // place the outline
+  G4VPhysicalVolume *xphysOutline1 = new G4PVPlacement(0,  
+      G4ThreeVector(0, ca_pos, -0.5*(ca_size +2.0*mm - hole_size)), 
+      xlogicOutline, "xphysOutline", logicEnv, false, 0, checkOverlaps);
+  // place the outline
+  G4VPhysicalVolume *xphysOutline2 = new G4PVPlacement(0,  
+      G4ThreeVector(0, ca_pos, 0.5*(ca_size +2.0*mm - hole_size)), 
+      xlogicOutline, "xphysOutline", logicEnv, false, 0, checkOverlaps);
+  // place the outline
+  G4VPhysicalVolume *zphysOutline1 = new G4PVPlacement(0,  
+      G4ThreeVector(-0.5*(ca_size +2.0*mm - hole_size), ca_pos, 0), 
+      zlogicOutline, "zphysOutline", logicEnv, false, 0, checkOverlaps);
+  // place the outline
+  G4VPhysicalVolume *zphysOutline2 = new G4PVPlacement(0,  
+      G4ThreeVector(0.5*(ca_size +2.0*mm - hole_size), ca_pos, 0), 
+      zlogicOutline, "zphysOutline", logicEnv, false, 0, checkOverlaps);
   // always return the physical World
   
   return physWorld;
