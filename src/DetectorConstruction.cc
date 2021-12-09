@@ -226,13 +226,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   
   // set coded aperture parameters
   G4double ca_thickness = 0.5*mm;
-  G4double ca_gap = 1.1*cm; // add .2 for the 1mm outline on both sides
+  G4double ca_gap = 1.1*cm; 
   G4Material* ca_material = nist->FindOrBuildMaterial("G4_W");
 
   G4ThreeVector ca_pos;
   ca_pos = G4ThreeVector(0, -(detector1_thickness/2 - ca_thickness/2 + ca_gap),  0);
 
-  G4double ca_size = 1.1*cm;
+  G4double ca_size = 2.7*cm; // add .2 for the 1mm outline on both sides
   G4double hole_size = 1.*mm;
 
   // add a little bit to overlap the objects correctly...
@@ -251,7 +251,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double placementX, placementZ; 
   G4String token;
 
-  G4String filename = "../src/mosaic_coded_aperture_array_43.txt";
+  G4String filename = "../src/mosaic_coded_aperture_array_5.txt";
   
   std::ifstream placementFile(filename, std::ios_base::in);
   
@@ -330,7 +330,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   new G4LogicalVolume(mholes,      //its solid
                       ca_material,        //its material
                       "ca");      //its name
- 
+  /*
   new G4PVPlacement(0,                     //no rotation
                   ca_pos,            //at position
                   holes_logic,                //its logical volume
@@ -339,7 +339,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                   true,                   //no boolean operation
                   0,                       //copy number
                   checkOverlaps);          //overlaps checking
-  
+  */
   // always return the physical World
   
   return physWorld;
