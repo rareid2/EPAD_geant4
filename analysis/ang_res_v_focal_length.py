@@ -3,17 +3,34 @@ import matplotlib.pyplot as plt
 from plot_settings import * 
 import os
 
-s = 0.01 # cm
-f = np.linspace(0.1,6,100)
-theta_min = np.arctan(s/f)
-theta_min = theta_min * 180 / np.pi
+# distance from CA to detector in mm
+dist = np.linspace(0,100,100)
+pixel_half = 0.5
 
-# plot
-plt.plot(f,theta_min,'r--')
-plt.xlabel('distance between mask and detector [cm]')
-plt.ylabel('min angular resolution of the PSD [deg]')
+# angular resolution in deg
+theta = 2*np.arctan(pixel_half/dist)
+theta = np.rad2deg(theta)
 
-fname = 'results/fall21_results/ang_res_v_f.png'
+plt.plot(dist,theta,'--')
+plt.xlabel('mm between CA and detector')
+plt.ylabel('theoretical limit of detector resolution [deg]')
+
 fpath = os.getcwd()
+fname = 'results/fall21_results/ang_res.png'
 fig_name = os.path.join(fpath, fname)
 plt.savefig(fig_name)
+plt.close()
+
+# angular resolution in deg
+dist = np.linspace(10,50,100)
+theta = 2*np.arctan(pixel_half/dist)
+theta = np.rad2deg(theta)
+
+plt.plot(dist,theta,'--')
+plt.xlabel('mm between CA and detector')
+plt.ylabel('theoretical limit of detector resolution [deg]')
+
+fname = 'results/fall21_results/ang_res_zoom.png'
+fig_name = os.path.join(fpath, fname)
+plt.savefig(fig_name)
+plt.close()

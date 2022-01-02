@@ -133,7 +133,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double distance_between_detectors = 30.0*mm;
 
   // Window dimensions
-  G4double window_thickness = 20.0*um;
+  G4double window_thickness = 100.0*um;
   G4double window_height    = 6.5*cm;  // square window with this side dimension
   G4double window_gap       = 1.0*mm;
 
@@ -196,13 +196,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // ---------------- set window material --------------
   // comment out the window for scattering distributions
   
-  G4Material* window_material = nist->FindOrBuildMaterial("G4_Al");
+  G4Material* window_material = nist->FindOrBuildMaterial("G4_Be");
   G4VSolid*   window_solid = new G4Box("window", 0.5*detector_dimX, 0.5*window_thickness, 0.5*window_height);
 
   // ---------------- set window position --------------
 
   G4ThreeVector window_pos;
-
   window_pos = G4ThreeVector(0, -(detector1_thickness/2 + window_thickness/2 + window_gap),  0);
 
   // ---------------- create window --------------
@@ -225,12 +224,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // comment this out for the 2 detector configuration
 
   // mask size  
-  G4double nelements = 11;
-  G4String filename = "../src/mosiac_coded_aperture_array_11.txt";
+  G4double nelements = 47;
+  G4String filename = "../src/mosaic_coded_aperture_array_47.txt";
   // set coded aperture parameters
 
   G4double ca_thickness = 0.5*mm;
-  G4double ca_gap = 1.1*cm; 
+  G4double ca_gap = 1.5*cm; 
   G4Material* ca_material = nist->FindOrBuildMaterial("G4_W");
 
   G4double ca_pos = -(detector1_thickness/2 + ca_gap - ca_thickness/2); // defined so that the gap is from the front of the first detector to front of mask
