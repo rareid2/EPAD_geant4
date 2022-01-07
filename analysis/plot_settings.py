@@ -19,7 +19,7 @@ sns.set(rc={
  'axes.facecolor': 'None',
  'axes.grid': False,
  'axes.labelcolor': 'dimgrey',
- 'axes.spines.right': False,
+ 'axes.spines.right': True,
  'axes.spines.top': False,
  'figure.facecolor': 'white',
  'lines.solid_capstyle': 'round',

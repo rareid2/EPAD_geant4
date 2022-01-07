@@ -4,8 +4,8 @@
 /event/verbose 1 
 /tracking/verbose 1 
 /gps/particle e- 
-/gps/energy 3500 keV 
-/gps/position 0.0 -5 -0.0 
-/gps/direction 0.0 1 0.0 
+/gps/energy 500 keV 
+/gps/position 0.0 -5 4.1954981558863995 
+/gps/direction 0.0 1 -0.8390996311772799 
 /gps/pos/type Point 
-/run/beamOn 100000 
+/run/beamOn 10000 

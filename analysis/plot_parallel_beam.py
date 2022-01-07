@@ -3,11 +3,14 @@ import os
 import pandas as pd 
 import scipy.stats
 from scipy.signal import convolve2d as conv2
+from scipy.fft import fft2,ifft
+from skimage.transform import resize
+from scipy.ndimage import zoom 
 
 # function for reading hits
 from fnc_get_det1_hits import getDet1Hits
 
-# function for decoding
+# function for decoding matrix
 import sys
 # insert at 1, 0 is the script path (or '' in REPL)
 sys.path.insert(1, '/home/rileyannereid/workspace/geant4/CA_designs')
@@ -20,21 +23,61 @@ import matplotlib as mpl
 from matplotlib.patches import Ellipse, Circle 
 import matplotlib.colors as colors
 
+# ------------------------- ------------------------- ------------------------- -------------------------
+# some helper functions
+
+# Modified range to iterate over floats (i.e. 10.5 degrees, etc.)
+def frange(start, stop, step):
+     i = start
+     while i < stop:
+         yield i
+         i += step
+
+def shift(m, hs, vs):
+    '''
+    m: input image
+    hs: horizontal shift
+    vs: vertical shift
+    '''
+        
+    # Get original image size
+    rm,cm = np.shape(m);
+    
+    # Shift each quadrant by amount [hs, vs]
+    m = np.block([[m[rm-vs:rm, cm-hs:cm], m[rm-vs:rm, 0:cm-hs]], 
+                [m[0:rm-vs,cm-hs:cm], m[0:rm-vs,0:cm-hs]]])
+        
+    return m;
+
+def fft_conv(rawIm, Dec):
+    
+    # scipy.ndimage.zoom used here
+    resizedIm = zoom(rawIm, len(Dec)/len(rawIm));
+        
+    # Fourier space multiplication
+    Image = np.real(np.fft.ifft2( np.fft.fft2(resizedIm) * np.fft.fft2(np.rot90(Dec, 2)) ));
+    
+    # Set minimum value to 0
+    Image += np.abs(np.min(Image));
+                
+    # Shift to by half of image length after convolution
+    return shift(Image, 16, 16);
+
+# ------------------------- ------------------------- ------------------------- -------------------------
+# settings 
+abs_path = "/home/rileyannereid/workspace/geant4/EPAD_geant4"
+fname_save = 'results/fall21_results/circular_beam/'
+fname = 'data/hits.csv'
+
 # get positions
 xxes = []
 yxes = []
+fname_path = os.path.join(abs_path, fname)
 
-# energy limit
-energy_limit_kev = 1
-
-# define filename
-
-fname = 'data/hits_5mm_250um_13mosaic.csv'
-fdirectory = os.getcwd()
-fname_path = os.path.join(fdirectory, fname)
-
-# first get the x and z displacement from SCATTERING
+# first get the x and z displacement
 posX, posZ, energies = getDet1Hits(fname_path)
+
+energy_limit_kev = 1
 
 low_energy_electrons = 0
 for x,z,ene in zip(posX,posZ,energies):
@@ -44,58 +87,36 @@ for x,z,ene in zip(posX,posZ,energies):
     else:
         low_energy_electrons+=1
 
-#print('# of low energy electrons= ',low_energy_electrons)
+# plot the raw image
 heatmap, xedges, yedges = np.histogram2d(xxes, yxes, bins=63)
-
 extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+# remove outer 1mm on each side to match mask size for now
+heatmap = heatmap[1:-1,1:-1]
+plt.imshow(heatmap.T, extent=extent, origin='lower',cmap='turbo')
+plt.colorbar(label='number of particles')
+fname = fname_save + 'hits_raw.png'
+fig_name = os.path.join(abs_path, fname)
+plt.savefig(fig_name)
+plt.close()
 
-# deconvolve the image (?)
-gridSizeX = 13
-boxdim = 0.01  
-mask, decode = make_mosaic_MURA(gridSizeX, boxdim)
+# ------------------------- ------------------------- ------------------------- -------------------------
+# deconvolve the image
+boxdim = 0.01 # cm -- just divide by 10 as well
+nElements = 61 
+holes_inv = True 
+generate_files = False
 
-# to plot the deconvolved image
-mode='same'
-corr = conv2(heatmap.T, decode, mode)
-c1 = plt.imshow(conv2(heatmap.T, decode, mode),cmap='turbo',vmin=-4000,vmax=20000)
+mask, decode = makeMURA(nElements,boxdim,holes_inv,generate_files)
+
+#mode='same'
+#result_image = conv2(decode, heatmap.T, mode)
+result_image = fft_conv(heatmap,decode)
+
+c1 = plt.imshow(np.abs(result_image),cmap='turbo')
 plt.colorbar(c1)
-fname = 'results/fall21_results/deconvolved_5mm_250um_13mosaic.png'
-fpath = os.getcwd()
-fig_name = os.path.join(fpath, fname)
+fname = fname_save + 'deconvolved.png'
+fig_name = os.path.join(abs_path, fname)
 plt.savefig(fig_name)
 plt.close()
 plt.clf()
-
-# plot the raw image
-plt.imshow(heatmap.T, extent=extent, origin='lower',cmap='turbo',vmin=0,vmax=200)
-plt.colorbar(label='number of particles')
-
-
-fname = 'results/fall21_results/det_hits_13mosaic_5mm_250um.png'
-fpath = os.getcwd()
-fig_name = os.path.join(fpath, fname)
-plt.savefig(fig_name)
-plt.close()
-
-#print(np.amax(corr))
-
-# finished - plot the results of the window variation simulation - need to try with Be as well..... (tomorrow?)
-#thick = np.array([50,150,250])
-thick = np.array([20,60,100])
-
-distance = np.array([1,3,5])
-thickthick, dd = np.meshgrid(thick, distance, sparse=True)
-correlation = np.array([[19391,16479,14341],[19404,4286,2382],[5410,1763,1431]])
-#correlation = np.array([[29143,19827,14720],[15964,5736,4069],[10557,3017,1504]])
-
-h = plt.contourf(thick,distance,correlation,vmin=0,vmax=32000)
-plt.colorbar(h,label='correlation factor')
-h.set_clim(0,32000)
-plt.xlabel('thickness of Al window in um')
-plt.ylabel('distance from window to detector in mm')
-#plt.axis('scaled')
-fname = 'results/fall21_results/window_sim_results_Al.png'
-fpath = os.getcwd()
-fig_name = os.path.join(fpath, fname)
-plt.savefig(fig_name)
-plt.close()
+# ------------------------- ------------------------- ------------------------- -------------------------

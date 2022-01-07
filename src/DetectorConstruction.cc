@@ -224,8 +224,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // comment this out for the 2 detector configuration
 
   // mask size  
-  G4double nelements = 47;
-  G4String filename = "../src/mosaic_coded_aperture_array_47.txt";
+  G4double nelements = 61;
+  G4String filename = "../src/coded_aperture_array_61.txt";
   // set coded aperture parameters
 
   G4double ca_thickness = 0.5*mm;
@@ -233,8 +233,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Material* ca_material = nist->FindOrBuildMaterial("G4_W");
 
   G4double ca_pos = -(detector1_thickness/2 + ca_gap - ca_thickness/2); // defined so that the gap is from the front of the first detector to front of mask
-  G4double hole_size = 1.*mm; // same as element size
-  G4double ca_size = (nelements * hole_size * 2) - hole_size; // add .2 for the 1mm outline on both sides
+  G4double hole_size = 1.0*mm; // same as element size
+  G4double ca_size = (nelements * hole_size); // mosiac -- add .2 for the 1mm outline on both sides (?)
+  
+  // for mosiac
+  //G4double ca_size = (nelements * hole_size * 2) - hole_size; // add .2 for the 1mm outline on both sides
+  
   G4double mask_offset = -(ca_size/2 - hole_size/2); // centering to correct for origin of mother volume
 
   // create the mask element
