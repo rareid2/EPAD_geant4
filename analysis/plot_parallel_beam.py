@@ -6,6 +6,7 @@ from scipy.signal import convolve2d as conv2
 from scipy.fft import fft2,ifft
 from skimage.transform import resize
 from scipy.ndimage import zoom 
+import scipy.signal
 
 # function for reading hits
 from fnc_get_det1_hits import getDet1Hits
@@ -55,13 +56,13 @@ def fft_conv(rawIm, Dec):
     resizedIm = zoom(rawIm, len(Dec)/len(rawIm));
         
     # Fourier space multiplication
-    Image = np.real(np.fft.ifft2( np.fft.fft2(resizedIm) * np.fft.fft2(np.rot90(Dec, 2)) ));
+    Image = np.real(np.fft.ifft2(np.fft.fft2(resizedIm) * np.fft.fft2(np.rot90(Dec, 2)) ));
     
     # Set minimum value to 0
     Image += np.abs(np.min(Image));
                 
     # Shift to by half of image length after convolution
-    return shift(Image, 16, 16);
+    return shift(Image, len(Dec)//2, len(Dec)//2)
 
 # ------------------------- ------------------------- ------------------------- -------------------------
 # settings 
@@ -107,12 +108,11 @@ holes_inv = True
 generate_files = False
 
 mask, decode = makeMURA(nElements,boxdim,holes_inv,generate_files)
-
-#mode='same'
-#result_image = conv2(decode, heatmap.T, mode)
+# flip the heatmap
+rawIm = np.flip(heatmap,0)
 result_image = fft_conv(heatmap,decode)
 
-c1 = plt.imshow(np.abs(result_image),cmap='turbo')
+c1 = plt.imshow(result_image,cmap='turbo')
 plt.colorbar(c1)
 fname = fname_save + 'deconvolved.png'
 fig_name = os.path.join(abs_path, fname)
@@ -120,3 +120,5 @@ plt.savefig(fig_name)
 plt.close()
 plt.clf()
 # ------------------------- ------------------------- ------------------------- -------------------------
+#mode='same'
+#result_image = conv2(decode, heatmap.T, mode)

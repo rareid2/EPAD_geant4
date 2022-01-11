@@ -26,7 +26,7 @@
 
 
 # Specify style (surface, wireframe, auxiliary edges,...)
-/vis/viewer/set/style surface
+/vis/viewer/set/style wireframe
 
 /vis/viewer/set/auxiliaryEdge true
 /vis/viewer/set/lineSegmentsPerCircle 100
@@ -64,9 +64,9 @@
 
 # To get nice view
 # Make the "World" box invisible
-/vis/geometry/set/visibility World 0 false
+/vis/geometry/set/visibility World 1 false
 # "Envelope" is transparent blue to represent water
-/vis/geometry/set/visibility Envelope 0 false
+/vis/geometry/set/visibility Envelope 1 true
 
 /vis/geometry/set/colour detector1 1 0 0 1 .5
 /vis/geometry/set/colour detector2  1 0 0 1 .5

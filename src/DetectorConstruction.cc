@@ -73,7 +73,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4bool checkOverlaps = true;
 
   // ------------ envelope and world size ------------
-  G4double env_sizeXZ = 20*cm, env_sizeY = 30*cm;
+  G4double env_sizeXZ = 40*cm, env_sizeY = 75*cm;
   G4double world_sizeXZ = 1.2*env_sizeXZ;
   G4double world_sizeY  = 1.2*env_sizeY;
 
@@ -124,6 +124,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   // ---------------- get detector config --------------
 
+  // world offset
+  G4double world_offset = env_sizeY*0.4;
+
   // Dimensions for detectors (detector 1 and 2 use the same planar dimensions)
   G4double detector_dimX = 6.3*cm;
   G4double detector_dimZ = 6.3*cm;
@@ -149,9 +152,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   DopedSilicon->AddElement(B, 0.1*perCent);
 
   // ---------------- set detector positions --------------
-  // this is just to initialize the vector
-  G4ThreeVector detector1_pos  = G4ThreeVector(0, 0, 0);
-  G4ThreeVector detector2_pos = G4ThreeVector(0, 0, 0);
+  G4ThreeVector detector1_pos  = G4ThreeVector(0, world_offset, 0);
 
   G4VSolid* detector1_solid = new G4Box("detector",
                    0.5*detector_dimX, 0.5*detector1_thickness, 0.5*detector_dimZ);
@@ -177,7 +178,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   // ---------------- create detector 2 --------------
 
-  detector2_pos  = G4ThreeVector(0, detector1_thickness/2 + detector2_thickness/2 + distance_between_detectors, 0);
+  G4ThreeVector detector2_pos  = G4ThreeVector(0, detector1_thickness/2 + detector2_thickness/2 + distance_between_detectors + world_offset, 0);
 
   detector2 =
   new G4LogicalVolume(detector2_solid,      //its solid
@@ -202,7 +203,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // ---------------- set window position --------------
 
   G4ThreeVector window_pos;
-  window_pos = G4ThreeVector(0, -(detector1_thickness/2 + window_thickness/2 + window_gap),  0);
+  window_pos = G4ThreeVector(0, -(detector1_thickness/2 + window_thickness/2 + window_gap)+world_offset,  0);
 
   // ---------------- create window --------------
   
@@ -232,7 +233,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double ca_gap = 1.5*cm; 
   G4Material* ca_material = nist->FindOrBuildMaterial("G4_W");
 
-  G4double ca_pos = -(detector1_thickness/2 + ca_gap - ca_thickness/2); // defined so that the gap is from the front of the first detector to front of mask
+  G4double ca_pos = -(detector1_thickness/2 + ca_gap - ca_thickness/2)+world_offset; // defined so that the gap is from the front of the first detector to front of mask
   G4double hole_size = 1.0*mm; // same as element size
   G4double ca_size = (nelements * hole_size); // mosiac -- add .2 for the 1mm outline on both sides (?)
   
@@ -287,7 +288,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   // place first element
   G4VPhysicalVolume *physMask = new G4PVPlacement(0,  
-      G4ThreeVector(mask_offset + first_hole_x, -(detector1_thickness/2 - 1.5*ca_thickness + ca_gap), mask_offset + first_hole_z), logicMask, "physMask", logicEnv, false, 0, checkOverlaps);
+      G4ThreeVector(mask_offset + first_hole_x, -(detector1_thickness/2 - 1.5*ca_thickness + ca_gap)+world_offset, mask_offset + first_hole_z), logicMask, "physMask", logicEnv, false, 0, checkOverlaps);
 
   // start looping through the file ----------
   // starts at 1 since logicAp1 uses first line of file 
