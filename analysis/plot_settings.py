@@ -37,4 +37,4 @@ sns.set(rc={
  
 sns.set_context("notebook", rc={"font.size":16,
                                 "axes.titlesize":18,
-                                "axes.labelsize":16})
+                                "axes.labelsize":12})

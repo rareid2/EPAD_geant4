@@ -1,0 +1,44 @@
+# Macro file for running one particle beam at the center
+# 
+# Can be run in batch, without graphic
+# or interactively: Idle> /control/execute run1.mac
+#
+#/control/execute ../macros/run_parallel_beam.mac
+# Change the default number of workers (in multi-threading mode) 
+# Initialize kernel
+#/run/numberOfThreads 14
+/run/initialize
+
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+# General Particle Source:
+/gps/particle e-
+/gps/pos/type Plane
+/gps/pos/shape Circle
+/gps/pos/centre 0 0 -50 cm
+/gps/ang/type iso
+# definitely keeep this at 0
+/gps/ang/mintheta 0 deg
+/gps/ang/maxtheta 1.9 deg
+/gps/ang/minphi 0 deg
+/gps/ang/maxphi 360 deg
+/gps/energy 500. keV
+/run/beamOn 100
+
+/gps/particle e-
+/gps/pos/type Plane
+/gps/pos/shape Circle
+/gps/pos/centre -18 -18 -50 cm
+/gps/pos/rot1 1 0.921 -0.391
+/gps/pos/rot2 0.921 1 -0.391
+/gps/ang/type iso
+# definitely keeep this at 0
+/gps/ang/mintheta 0 deg
+/gps/ang/maxtheta 3 deg
+/gps/ang/minphi 0 deg
+/gps/ang/maxphi 360 deg
+/gps/energy 500. keV
+/run/beamOn 100

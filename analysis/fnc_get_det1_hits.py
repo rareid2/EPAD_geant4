@@ -18,18 +18,18 @@ def getDet1Hits(fname):
         raise ValueError('No particles hits on either detector!')
 
     posX = []
-    posZ = []
+    posY = []
     energies = []
     for count, el in enumerate(detector_hits['det']):
         # only get hits on the first detector
         if el == 1:
             xpos = detector_hits['x'][count]
-            zpos = detector_hits['z'][count]
+            zpos = detector_hits['y'][count]
             energy_kev = detector_hits['energy'][count]
 
             # save
             posX.append(xpos)
-            posZ.append(zpos)
+            posY.append(zpos)
             energies.append(energy_kev)
 
-    return posX, posZ, energies
+    return posX, posY, energies

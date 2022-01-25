@@ -1,0 +1,5 @@
+181
+1850
+1.875
+0.3481
+../src/mask_designs/181MURA_matrix.txt
