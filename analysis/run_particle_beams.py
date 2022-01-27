@@ -10,6 +10,7 @@ def create_macro(path, n_particles, positions, rotations, energies):
     path_to_macrofile = os.path.join(path, 'auto_run_beams.mac')
 
     with open(path_to_macrofile, 'w') as f:
+        f.write('/run/numberOfThreads 40 \n')
         f.write('/run/initialize \n')
         f.write('/control/verbose 0 \n')
         f.write('/run/verbose 0 \n')

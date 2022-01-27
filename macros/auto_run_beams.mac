@@ -1,3 +1,4 @@
+/run/numberOfThreads 40 
 /run/initialize 
 /control/verbose 0 
 /run/verbose 0 
@@ -7,19 +8,6 @@
 /gps/pos/type Plane 
 /gps/pos/shape Circle 
 /gps/pos/centre 0 0 -113 cm 
-/gps/ang/type iso 
-/gps/ang/mintheta 0 deg 
-/gps/ang/maxtheta 4 deg 
-/gps/ang/minphi 0 deg 
-/gps/ang/maxphi 360 deg 
-/gps/energy 500 keV 
-/run/beamOn 1000000 
-/gps/particle e- 
-/gps/pos/type Plane 
-/gps/pos/shape Circle 
-/gps/pos/centre 8.36 8.36 -113 cm 
-/gps/pos/rot1 1 0.997 0.078 
-/gps/pos/rot2 0.997 1 0.078 
 /gps/ang/type iso 
 /gps/ang/mintheta 0 deg 
 /gps/ang/maxtheta 4 deg 
