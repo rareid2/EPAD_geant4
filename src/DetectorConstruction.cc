@@ -73,7 +73,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4bool checkOverlaps = true;
 
   // ------------ envelope and world size ------------
-  G4double env_sizeXY = 50*cm, env_sizeZ = 175*cm;
+  G4double env_sizeXY = 50*cm, env_sizeZ = 250*cm;
   G4double world_sizeXY = 1.1*env_sizeXY;
   G4double world_sizeZ  = 1.1*env_sizeZ;
 
@@ -250,11 +250,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double ca_size = (nelements * hole_size);
   
   // for mosiac
-  //G4double ca_size = (nelements * hole_size * 2) - hole_size; // add .2 for the 1mm outline on both sides
+  //G4double ca_size = (nelements * hole_size * 2) - hole_size; 
   
   G4double mask_offset = -(ca_size/2 - hole_size/2); // centering to correct for origin
 
-  // create the mask element
+  // create the mask element -- pad with 0.5um to ensure overlap
   G4VSolid* ca_element = new G4Box("hole",
                   0.5*hole_size + 0.5*um, 0.5*hole_size + 0.5*um, 0.5*ca_thickness);
   
@@ -294,9 +294,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   
   placementY = std::stod(token);
 
-  // save first element
-  G4double first_hole_x = 10*placementX*cm;
-  G4double first_hole_y = 10*placementY*cm;
+  // save first element -- convert from mm to cm
+  G4double first_hole_x = 0.1*placementX*cm;
+  G4double first_hole_y = 0.1*placementY*cm;
 
   // place first element
   G4VPhysicalVolume *physMask = new G4PVPlacement(0,  
@@ -323,7 +323,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     // place the elements
     // for some dumb reason i flipped the y axis...
     G4VPhysicalVolume *physMask = new G4PVPlacement(0,  
-         G4ThreeVector(mask_offset + (10*cm*placementX), -(mask_offset + (10*cm*placementY)), ca_pos), 
+         G4ThreeVector(mask_offset + (0.1*placementX*cm), -(mask_offset + (0.1*placementY*cm)), ca_pos), 
          logicMask, "physmask", logicEnv, false, 0, checkOverlaps);
   }
 

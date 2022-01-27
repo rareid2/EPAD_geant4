@@ -6,9 +6,8 @@ import math
 
 
 # provide n particles, list of positions in cm, rotation angles (theta and phi in deg) and energies in keV
-def create_macro(abs_path,n_particles, positions, rotations, energies):
-    path_to_macros = os.path.join(abs_path,'macros/')
-    path_to_macrofile = os.path.join(path_to_macros, 'auto_run_beams.mac')
+def create_macro(path, n_particles, positions, rotations, energies):
+    path_to_macrofile = os.path.join(path, 'auto_run_beams.mac')
 
     with open(path_to_macrofile, 'w') as f:
         f.write('/run/initialize \n')
@@ -43,7 +42,7 @@ def create_macro(abs_path,n_particles, positions, rotations, energies):
         #f.write('/vis/scene/endOfEventAction accumulate <0> \n')
         f.close()
 
-def find_disp_pos(theta,z_disp):
+def find_disp_pos(theta, z_disp):
 
     # find displaced postion needed to get an angular displacement
     xy_disp = z_disp * np.tan(np.deg2rad(theta))
@@ -51,7 +50,7 @@ def find_disp_pos(theta,z_disp):
 
     return x_disp
 
-
+"""
 # first, how far away is the 'infinite' plane? -- to the aperture or the detector?
 # let's just assume aperture
 
@@ -88,3 +87,4 @@ rotations = [[0,0]]
 energies = [500]
 
 create_macro(abs_path, n_particles, positions, rotations, energies)
+"""

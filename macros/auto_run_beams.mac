@@ -6,7 +6,7 @@
 /gps/particle e- 
 /gps/pos/type Plane 
 /gps/pos/shape Circle 
-/gps/pos/centre 0 0 -78 cm 
+/gps/pos/centre 0 0 -113 cm 
 /gps/ang/type iso 
 /gps/ang/mintheta 0 deg 
 /gps/ang/maxtheta 4 deg 
@@ -17,9 +17,9 @@
 /gps/particle e- 
 /gps/pos/type Plane 
 /gps/pos/shape Circle 
-/gps/pos/centre 9.6 9.6 -78 cm 
-/gps/pos/rot1 1 0.991 0.131 
-/gps/pos/rot2 0.991 1 0.131 
+/gps/pos/centre 8.36 8.36 -113 cm 
+/gps/pos/rot1 1 0.997 0.078 
+/gps/pos/rot2 0.997 1 0.078 
 /gps/ang/type iso 
 /gps/ang/mintheta 0 deg 
 /gps/ang/maxtheta 4 deg 
