@@ -7,7 +7,7 @@ from scipy.fft import fft2,ifft
 from skimage.transform import resize
 from scipy.ndimage import zoom 
 import scipy.signal
-
+import matplotlib.pyplot as plt
 import random 
 
 # function for reading hits
@@ -35,21 +35,19 @@ def plot_step(signal, vmax, fname, label):
     #plt.xlim([40,55])
     #plt.ylim([40,55])
 
-    fig_name = os.path.join(abs_path, fname)
-    plt.savefig(fig_name,bbox_inches='tight')
+    plt.savefig(fname,bbox_inches='tight')
     plt.close()
 
 def plot_peak(signal, fname):
-    # convert the x axis???
-
     plt.plot(signal)
 
     # peak value
     half_val = (np.max(signal) - np.mean(signal[0:len(signal)//4]))//2
     plt.hlines(half_val + np.mean(signal[0:len(signal)//4]),xmin=0,xmax=len(signal),linestyles='--',colors='lightsalmon')
 
-    fig_name = os.path.join(abs_path, fname)
-    plt.savefig(fig_name,bbox_inches='tight')
+    fname = fname + '.png'
+
+    plt.savefig(fname,bbox_inches='tight')
     plt.close()
 
 # Modified range to iterate over floats (i.e. 10.5 degrees, etc.)
@@ -78,28 +76,15 @@ def shift(m, hs, vs):
     return m;
 
 def fft_conv(rawIm, Dec):
-    
+
     # scipy.ndimage.zoom used here
     resizedIm = zoom(rawIm, len(Dec)/len(rawIm));
-    #resizedIm = rawIm
-    #Dec = zoom(Dec, len(rawIm)/len(Dec));
-
-    #fname = 'results/fall21_results/deconvolution_steps/resizedIm.png'
-    #plot_step(resizedIm, vmax=150, fname=fname, label='# particles')
-
-    Dec = np.fliplr(np.flipud(Dec))
 
     # Fourier space multiplication
     Image = np.real(np.fft.ifft2(np.fft.fft2(resizedIm) * np.fft.fft2(Dec) ));
     
-    #fname = 'results/fall21_results/deconvolution_steps/postifft.png'
-    #plot_step(Image, vmax=np.amax(Image), fname=fname, label='')
-
     # Set minimum value to 0
     Image += np.abs(np.min(Image));
-
-    #fname = 'results/fall21_results/deconvolution_steps/minvalshift.png'
-    #plot_step(Image, vmax=np.amax(Image), fname=fname, label='')
                 
     # Shift to by half of image length after convolution
     return shift(Image, len(Dec)//2,len(Dec)//2)
@@ -107,215 +92,91 @@ def fft_conv(rawIm, Dec):
 # ------------------------- ------------------------- ------------------------- ------------------------- -------------------------------
 # settings
 
-def dec_plt(fname,uncertainty,nElements,boxdim,ff):
+# fname = where is the data
+# uncertainty = add uncertainty? 
 
+def dec_plt(fname,uncertainty,nElements,boxdim,ff):
+    
     abs_path = "/home/rileyannereid/workspace/geant4/EPAD_geant4"
 
     fname_save = 'results/fall21_results/ptsrcdiff/'+ ff
-    #fname = 'data/hits.csv'
-
-    #uncertainty = False
-    #nElements = 11
-    #boxdim = 3.0
-
-    holes_inv = True
-    generate_files = False
 
     # get positions
     xxes = []
     yxes = []
     fname_path = os.path.join(abs_path, fname)
 
-    # first get the x and z displacement
-    posX, posZ, energies = getDet1Hits(fname_path)
+    # first get the x and y displacement in cm
+    posX, posY, energies = getDet1Hits(fname_path)
 
     energy_limit_kev = 1
-
     low_energy_electrons = 0
-    for x,z,ene in zip(posX,posZ,energies):
+
+    # filter so that each pixel is a bin (remove outer edges)
+    bins = 63 / boxdim
+    bins_extra = bins - np.floor(bins)
+    
+    # remove the outer 
+    extra = 2 # convert from mm to cm
+    shift = 8.4/2
+    x_out = []
+    y_out = []
+
+    for x,y,ene in zip(posX,posY,energies):
+        # shift origin to lower left
+        x += shift
+        y += shift
         if ene > energy_limit_kev:
-            if uncertainty:
-                xxes.append(x + random.uniform(-1, 1)/10)
-                yxes.append(z + random.uniform(-1, 1)/10)
+            if x < extra or y < extra or x > (8.4 - extra) or y > (8.4 - extra): 
+                #print('oops')
+                x_out.append(x)
+                y_out.append(y)
             else:
-                xxes.append(x)
-                yxes.append(z)
+                if uncertainty:
+                    xxes.append(x + random.uniform(-1, 1)/10)
+                    yxes.append(y + random.uniform(-1, 1)/10)
+                else:
+                    xxes.append(x)
+                    yxes.append(y)
 
         else:
             low_energy_electrons+=1
 
     # ------------------------------- ------------------------------- ------------------------------- -------------------------------
-    heatmap, xedges, yedges = np.histogram2d(xxes, yxes, bins=nElements)
-    # remove outer 1mm on each side to match mask size for now
-    #heatmap = heatmap[1:-1,1:-1]
+    heatmap, xedges, yedges = np.histogram2d(xxes, yxes, bins=11*4)
 
-    # plot the raw image
-    #fname = fname_save + 'hits_raw.png'
-    #plot_step(heatmap, vmax=np.amax(heatmap), fname=fname,label='# particles')
+    fname_step = fname_save + '_raw.png'
+    plot_step(heatmap,np.amax(heatmap),fname_step,label='# particles')
 
-    # get decode array
-    #mask, decode = makeMURA(nElements,boxdim,holes_inv,generate_files)
-    mask, decode = make_mosaic_MURA(nElements,boxdim,holes=True,generate_files=False)
+    # first get the mask to use in 
+    mask, decode = make_mosaic_MURA(nElements,boxdim,holes=False,generate_files=False)
+
+    fname_step = fname_save + '_mask1.png'
+    
+    plot_step(mask,np.amax(mask),fname_step,label='# particles')
+
     decode = get_decoder_MURA(mask,nElements,holes_inv=False)
+
+    fname_step = fname_save + '_mask.png'
+    
+    plot_step(decode,np.amax(decode),fname_step,label='# particles')
 
     # flip the heatmap over both axes bc point hole
     rawIm = np.fliplr(np.flipud(heatmap))
 
-    # plot the flipped image
-    #fname = fname_save + 'hits_flipped.png'
-    #plot_step(rawIm, vmax=150, fname=fname,label='# particles')
-
     # reflect bc correlation needs to equal convolution
     rawIm = np.fliplr(rawIm)
 
-    # plot the flipped image
-    #fname = fname_save + 'hits_flipped_conv.png'
-    #plot_step(rawIm, vmax=150, fname=fname,label='# particles')
-
-    # add in poisson noise
-    #noise_mask = np.random.poisson(rawIm)
-    noise_mask = rawIm
-
     # deconvolve
-    result_image = fft_conv(noise_mask,decode)
+    result_image = fft_conv(rawIm,decode)
+    fname_step = fname_save + '_dc.png'
+    plot_step(result_image,np.amax(result_image),fname_step,label='# particles')
+
     snr = np.amax(result_image)/np.std(result_image)
 
-    #print('SNR is: ', np.amax(result_image)/np.std(result_image))
-
-    # plot final result
-    #fname = fname_save + 'hits_deconvolve.png'
-    #plot_step(result_image, vmax=np.amax(result_image), fname=fname,label='')
-
     # line plot of the diagonal -- must be flipped left and right but i have no clue why
-    fname = fname_save + 'hits_deconvolve_peaks.png'
-    plot_peak(np.diagonal(np.fliplr(result_image)),fname)
+    plot_peak(np.diagonal(np.fliplr(result_image)),fname_save)
 
     return snr
 
-
-
-"""
-mask_thickness = np.linspace(400,3300,3) #um
-mask_distance = np.linspace(0.5,6,5) #cm
-mask_rank = [61,101,139,181]
-
-mask_distance = ['0.5','1.875','3.25','4.625','6.0']
-
-mr = str(181)
-for mt in mask_thickness:
-    resolutions = []
-    mtt = str(round(mt))
-    for md in mask_distance:
-        fname = 'data/hits'+mr+'_'+mtt+'_'+md+'_0.csv'
-
-        uncertainty = True
-        nElements = int(mr)
-        boxdim = round(63/nElements,4) #0.00649 # cm -- just divide by 10 as well
-        boxdim = round(boxdim/100,6)
-        holes_inv = True # keep false for mosaic
-        generate_files = False
-
-        # get positions
-        xxes = []
-        yxes = []
-        fname_path = os.path.join(abs_path, fname)
-
-        # first get the x and z displacement
-        posX, posZ, energies = getDet1Hits(fname_path)
-
-        energy_limit_kev = 1
-
-        low_energy_electrons = 0
-        for x,z,ene in zip(posX,posZ,energies):
-            if ene > energy_limit_kev:
-                if uncertainty:
-                    xxes.append(x + random.uniform(-1, 1)/10)
-                    yxes.append(z + random.uniform(-1, 1)/10)
-                else:
-                    xxes.append(x)# + random.uniform(-1, 1)/10)
-                    yxes.append(z)# + random.uniform(-1, 1)/10)
-
-            else:
-                low_energy_electrons+=1
-
-        # ------------------------------- ------------------------------- ------------------------------- -------------------------------
-        heatmap, xedges, yedges = np.histogram2d(xxes, yxes, bins=nElements)
-        # remove outer 1mm on each side to match mask size for now
-        #heatmap = heatmap[1:-1,1:-1]
-
-        # plot the raw image
-        fname = fname_save + 'hits_raw.png'
-        plot_step(heatmap, vmax=np.amax(heatmap), fname=fname,label='# particles')
-
-        # get decode array
-        mask, decode = makeMURA(nElements,boxdim,holes_inv,generate_files)
-        #mask, decode = make_mosaic_MURA(nElements,boxdim,holes=True,generate_files=False)
-        #decode = get_decoder_MURA(mask,nElements,holes_inv)
-        #print(decode)
-
-        # flip the heatmap over both axes bc point hole
-        rawIm = np.fliplr(np.flipud(heatmap))
-
-        # plot the flipped image
-        #fname = fname_save + 'hits_flipped.png'
-        #plot_step(rawIm, vmax=150, fname=fname,label='# particles')
-
-        # reflect bc correlation needs to equal convolution
-        rawIm = np.fliplr(rawIm)
-
-        # plot the flipped image
-        #fname = fname_save + 'hits_flipped_conv.png'
-        #plot_step(rawIm, vmax=150, fname=fname,label='# particles')
-
-        # add in poisson noise
-        #noise_mask = np.random.poisson(rawIm)
-        noise_mask = rawIm
-
-        # deconvolve
-        result_image = fft_conv(noise_mask,decode)
-        #print('SNR is: ', np.amax(result_image)/np.std(result_image))
-
-        resolutions.append(np.amax(result_image)/np.std(result_image))
-
-        # plot final result
-        fname = fname_save + 'hits_deconvolve.png'
-        plot_step(result_image, vmax=np.amax(result_image), fname=fname,label='')
-
-        # line plot of the diagonal -- must be flipped left and right but i have no clue why
-        fname = fname_save + 'hits_deconvolve_peaks.png'
-        plot_peak(np.diagonal(np.fliplr(result_image)),fname)
-
-    print(resolutions)
-
-        # ------------------------- ------------------------- ------------------------- -------------------------
-"""
-# SNR first estimate:
-"""
-n_p = [100,193,373,720,1389,2683,5179,10000,19307,37276,71969,138950,268270,517947,1000000,1580000]
-snr_n = [5.66,6.43,7.45,7.02,9.01,8.97,9.03,12.15,14.85,27.53,33.19,44.28,48.25,51.05,52.27,53.05]
-
-fig, ax = plt.subplots()
-plt.semilogx(n_p,snr_n,'.')
-plt.xlabel('# particles')
-plt.ylabel(' est. SNR')
-fig.tight_layout(pad=0.5)
-plt.savefig(fname_save + 'snr.png')
-plt.close()
-
-#100 - 5.66
-#193 - 6.43
-#373 - 7.45
-#720 - 7.02
-#1389 - 9.01
-#2683 - 8.97
-#5179 - 9.03
-#10000 - 12.15
-#19307 - 14.85
-#37276 - 27.53
-#71969 - 33.19
-#138950 - 44.28
-#268270 - 48.25
-#517947 - 51.05
-#1000000 - 52.27
-#1580000 - 53.05
-"""
+#dec_plt('data/hits.csv',False, 11, 3.0, 'test11')

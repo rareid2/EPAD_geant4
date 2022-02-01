@@ -1,6 +1,5 @@
 import numpy as np 
 import matplotlib.pyplot as plt 
-from plot_settings import * 
 import os
 import math 
 from run_particle_beams import create_macro, find_disp_pos
@@ -23,7 +22,7 @@ src_z = -1*(math.ceil(detector_placement))
 # ranges of parameters!!
 
 # from nearly the size of the detector to max size!
-mask_size = [73,82,90] # mm
+mask_size = [30,60,90] # mm
 
 # from 400 to 3300 um --- thicknesses to check
 mask_thickness = [400,1850,3300] # um
@@ -32,7 +31,7 @@ mask_thickness = [400,1850,3300] # um
 mask_distance = np.linspace(0.5,9,10) # cm
 
 # running mosaicked masks
-mask_rank = [37, 67, 97, 127]
+mask_rank = [37, 67, 97]
 
 # run the following point src differentiation
 thetas = np.linspace(6,0.5,10)
@@ -47,7 +46,6 @@ for ms in mask_size:
                 rank = rr*2-1
                 thickness = int(mt) # make sure integer value
                 distance = md
-                size = ms
 
                 # find the pixel size
                 mask_element_size = round(ms/rank,4) # in mm
@@ -79,7 +77,7 @@ for ms in mask_size:
                 positions = [[0,0,src_z]]
                 rotations = [[0,0]]
                 energies = [500]
-
+                
                 # create the macro file
                 create_macro(macro_path, n_particles, positions, rotations, energies) 
 
@@ -115,3 +113,4 @@ for ms in mask_size:
                     os.rename('../data/hits.csv', '../data/hits_'+str(rr)+'_'+str(thickness)+'_'+  str(distance)+'_'+ str(ms) + '_' + str(ti)+'.csv')
 
                     os.chdir(cwd)
+                
