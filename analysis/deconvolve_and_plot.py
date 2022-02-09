@@ -37,6 +37,7 @@ def plot_step(signal, vmax, fname, label):
 
     plt.savefig(fname,bbox_inches='tight')
     plt.close()
+    plt.clf()
 
 def plot_peak(signal, fname):
     plt.plot(signal)
@@ -95,7 +96,11 @@ def fft_conv(rawIm, Dec):
 # fname = where is the data
 # uncertainty = add uncertainty? 
 
-def dec_plt(fname,uncertainty,nElements,boxdim,ff):
+# TO DO 
+# change how uncertainty is added in
+# change the binning to that it is the middle 45.34534 etc.
+
+def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     
     abs_path = "/home/rileyannereid/workspace/geant4/EPAD_geant4"
 
@@ -111,14 +116,12 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff):
 
     energy_limit_kev = 1
     low_energy_electrons = 0
-
-    # filter so that each pixel is a bin (remove outer edges)
-    bins = 63 / boxdim
-    bins_extra = bins - np.floor(bins)
     
     # remove the outer 
-    extra = 2 # convert from mm to cm
-    shift = 8.4/2
+    detector_sz = 6.3
+    out_size = (detector_sz-((ms/10)/2))/2 # convert from mm to cm
+    shift = detector_sz/2
+    #out_size = 0
     x_out = []
     y_out = []
 
@@ -127,14 +130,18 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff):
         x += shift
         y += shift
         if ene > energy_limit_kev:
-            if x < extra or y < extra or x > (8.4 - extra) or y > (8.4 - extra): 
-                #print('oops')
+            if x < out_size or y < out_size or x > (detector_sz - out_size) or y > (detector_sz - out_size): 
                 x_out.append(x)
                 y_out.append(y)
             else:
-                if uncertainty:
-                    xxes.append(x + random.uniform(-1, 1)/10)
-                    yxes.append(y + random.uniform(-1, 1)/10)
+                if uncertainty=='1unc':
+                    #print('half unc')
+                    xxes.append(x + random.uniform(-0.5,0.5)/10)
+                    yxes.append(y + random.uniform(-0.5,0.5)/10)
+                elif uncertainty=='2unc':
+                    #print('full unc')
+                    xxes.append(x + random.uniform(-1,1)/10)
+                    yxes.append(y + random.uniform(-1,1)/10)
                 else:
                     xxes.append(x)
                     yxes.append(y)
@@ -143,23 +150,23 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff):
             low_energy_electrons+=1
 
     # ------------------------------- ------------------------------- ------------------------------- -------------------------------
-    heatmap, xedges, yedges = np.histogram2d(xxes, yxes, bins=11*4)
+    multiplier = 30
+    heatmap, xedges, yedges = np.histogram2d(xxes, yxes, bins=multiplier*nElements)
 
-    fname_step = fname_save + '_raw.png'
-    plot_step(heatmap,np.amax(heatmap),fname_step,label='# particles')
+    #fname_step = fname_save + '_raw.png'
+    #plot_step(heatmap,np.amax(heatmap),fname_step,label='# particles')
 
     # first get the mask to use in 
     mask, decode = make_mosaic_MURA(nElements,boxdim,holes=False,generate_files=False)
 
-    fname_step = fname_save + '_mask1.png'
-    
-    plot_step(mask,np.amax(mask),fname_step,label='# particles')
+    #fname_step = fname_save + '_mask1.png'
+    #plot_step(mask,np.amax(mask),fname_step,label='# particles')
 
     decode = get_decoder_MURA(mask,nElements,holes_inv=False)
+    decode = np.repeat(decode, multiplier, axis=1).repeat(multiplier, axis=0)
 
-    fname_step = fname_save + '_mask.png'
-    
-    plot_step(decode,np.amax(decode),fname_step,label='# particles')
+    #fname_step = fname_save + '_mask.png'
+    #plot_step(decode,np.amax(decode),fname_step,label='# particles')
 
     # flip the heatmap over both axes bc point hole
     rawIm = np.fliplr(np.flipud(heatmap))
@@ -172,11 +179,32 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff):
     fname_step = fname_save + '_dc.png'
     plot_step(result_image,np.amax(result_image),fname_step,label='# particles')
 
-    snr = np.amax(result_image)/np.std(result_image)
+    # take snr of only the noise floor
+    if 'snr' in ff:
+        nbins = multiplier*nElements
+        std_result = []
+        for nb in range(nbins):
+            for nbi in range(nbins):
+                # cut out middle section
+                if nb / nbins > 0.4 and nb / nbins < 0.6:
+                    if nbi / nbins > 0.4 and nbi / nbins < 0.6:
+                        pass
+                else:
+                    std_result.append(result_image[nb,nbi])
+      
+        snr = np.amax(np.abs(result_image))/np.std(np.abs(np.array(std_result)))
+    else:
+        snr = 0
 
     # line plot of the diagonal -- must be flipped left and right but i have no clue why
-    plot_peak(np.diagonal(np.fliplr(result_image)),fname_save)
+    #plot_peak(np.diagonal(np.fliplr(result_image)),fname_save)
+    max_ind = np.where(result_image == np.amax(result_image))
+    max_col = max_ind[0]
+    if np.shape(max_col)[0] > 1:
+        max_col = max_col[0]
 
+    plot_peak(np.fliplr(result_image)[int(max_col),:],fname_save)
+    
     return snr
 
 #dec_plt('data/hits.csv',False, 11, 3.0, 'test11')

@@ -12,3 +12,4 @@ __pycache/
 /build/
 /analysis/__pychache__/*.pyc
 /data/*
+results/*

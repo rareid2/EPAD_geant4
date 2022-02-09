@@ -73,7 +73,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4bool checkOverlaps = true;
 
   // ------------ envelope and world size ------------
-  G4double env_sizeXY = 50*cm, env_sizeZ = 250*cm;
+  G4double env_sizeXY = 700*cm, env_sizeZ = 1111*cm;
   G4double world_sizeXY = 1.1*env_sizeXY;
   G4double world_sizeZ  = 1.1*env_sizeZ;
 

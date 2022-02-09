@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 from plot_settings import * 
 import os
 
-"""
-# distance from CA to detector in mm
-dist = np.linspace(0,80,100)
-pixel_half = 1.0
 
-mask_size = 70
-detector_size = 63
+# distance from CA to detector in mm
+dist = np.linspace(0,90,100)
+pixel_half = 0.055
+
+mask_size = 28
+detector_size = 14
 
 # angular resolution in deg
 theta = 2*np.arctan(pixel_half/dist)
@@ -32,7 +32,7 @@ ax2.plot(dist,fov,'r-')
 plt.ylabel('fov [deg]', color='r')
 
 fpath = os.getcwd()
-fname = 'results/fall21_results/ang_res_microndetector_big_tp.png'
+fname = 'results/fall21_results/ang_res_fov_medipix_new.png'
 
 fig_name = os.path.join(fpath, fname)
 plt.savefig(fig_name)
@@ -52,3 +52,4 @@ fname = 'results/fall21_results/ang_res_v_fov/mask_size_v_res.png'
 fig_name = os.path.join(fpath, fname)
 plt.savefig(fig_name)
 plt.close()
+"""
