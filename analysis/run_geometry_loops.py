@@ -23,7 +23,7 @@ detector_placement = world_size*.45 # cm
 
 # from nearly the size of the detector to max size!
 mask_size = [90] # mm
-ms = 90
+ms = mask_size[0]
 
 # from 400 to 3300 um --- thicknesses to check
 mask_thickness = np.linspace(400,3300,3)
@@ -92,7 +92,7 @@ for mt in mask_thickness:
             # run the simulation
             os.system(cmd)
             # load the results and re-name them
-            os.rename('../data/mosaic_sim3/hits.csv', '../data/hits_'+str(rr)+'_'+str(thickness)+'_'+  str(round(distance,2))+'_'+ str(ms) + '_zero.csv')
+            os.rename('../data/hits.csv', '../data/hits_'+str(rr)+'_'+str(thickness)+'_'+  str(round(distance,2))+'_'+ str(ms) + '_zero.csv')
             os.chdir(cwd)
 
             #for pi,po in enumerate(positions_list):
@@ -117,6 +117,6 @@ for mt in mask_thickness:
                 os.system(cmd)
                 # load the results and re-name them
                 #os.rename('../data/hits.csv', '../data/hits_'+str(rr)+'_'+str(thickness)+'_'+ str(round(distance,2))+'_'+ str(ms) + '_' + str(ti)+ '_' + str(pi)+'.csv')
-                os.rename('../data/mosaic_sim3/hits.csv', '../data/hits_'+str(rr)+'_'+str(thickness)+'_'+ str(round(distance,2))+'_'+ str(ms) + '_' + str(ti)+'.csv')
+                os.rename('../data/hits.csv', '../data/hits_'+str(rr)+'_'+str(thickness)+'_'+ str(round(distance,2))+'_'+ str(ms) + '_' + str(ti)+'.csv')
 
                 os.chdir(cwd)

@@ -1,5 +1,5 @@
-73
-400
-1.0
-1.2329
-../src/mask_designs/37mosaicMURA_matrix_90.txt
+193
+3300
+9.0
+0.4663
+../src/mask_designs/97mosaicMURA_matrix_90.txt

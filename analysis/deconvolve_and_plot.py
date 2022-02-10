@@ -98,13 +98,18 @@ def fft_conv(rawIm, Dec):
 
 # TO DO 
 # change how uncertainty is added in
-# change the binning to that it is the middle 45.34534 etc.
 
 def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     
     abs_path = "/home/rileyannereid/workspace/geant4/EPAD_geant4"
 
-    fname_save = 'results/fall21_results/ptsrcdiff/'+ ff
+    fname_save = 'results/parameter_sweeps/mosaic_sim3/'+ ff
+
+    # needs to be set for decoding
+    if nElements == 67:
+        check =0
+    else:
+        check=1
 
     # get positions
     xxes = []
@@ -119,7 +124,8 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     
     # remove the outer 
     detector_sz = 6.3
-    out_size = (detector_sz-((ms/10)/2))/2 # convert from mm to cm
+    out_size = (detector_sz-(nElements*boxdim/10))/2 # convert from mm to cm
+
     shift = detector_sz/2
     #out_size = 0
     x_out = []
@@ -162,7 +168,7 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     #fname_step = fname_save + '_mask1.png'
     #plot_step(mask,np.amax(mask),fname_step,label='# particles')
 
-    decode = get_decoder_MURA(mask,nElements,holes_inv=False)
+    decode = get_decoder_MURA(mask,nElements,holes_inv=False,check=check)
     decode = np.repeat(decode, multiplier, axis=1).repeat(multiplier, axis=0)
 
     #fname_step = fname_save + '_mask.png'
