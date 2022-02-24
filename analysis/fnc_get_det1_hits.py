@@ -32,4 +32,7 @@ def getDet1Hits(fname):
             posY.append(zpos)
             energies.append(energy_kev)
 
+    # remove(?) helps w memory(?)
+    del detector_hits
+    
     return posX, posY, energies

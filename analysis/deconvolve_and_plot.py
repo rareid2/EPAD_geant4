@@ -9,6 +9,7 @@ from scipy.ndimage import zoom
 import scipy.signal
 import matplotlib.pyplot as plt
 import random 
+import gc 
 
 # function for reading hits
 from fnc_get_det1_hits import getDet1Hits
@@ -40,45 +41,57 @@ def plot_step(signal, vmax, fname, label):
     plt.clf()
 
 def plot_peak(signal, fname, condition):
+    # create an x axis
     x_ax = np.arange(0,len(signal))
+
+    # plot the signal
     plt.plot(signal)
+
+    # plot local mins and maxes
     b = (np.diff(np.sign(np.diff(signal))) > 0).nonzero()[0] + 1 
     c = (np.diff(np.sign(np.diff(signal))) < 0).nonzero()[0] + 1
 
     plt.scatter(x_ax[b],signal[b],color='b')
     plt.scatter(x_ax[c],signal[c],color='r')
 
-    # peak value
+    # define conditions for half and quarter separated
     half_val = (np.max(signal) - np.mean(signal[0:len(signal)//4]))//2
+    half_val = half_val + np.mean(signal[0:len(signal)//4])
     quarter_val = (np.max(signal) - np.mean(signal[0:len(signal)//4]))//4
-    plt.hlines(half_val + np.mean(signal[0:len(signal)//4]),xmin=0,xmax=len(signal),linestyles='--',colors='lightsalmon')
-    plt.hlines(3*quarter_val + np.mean(signal[0:len(signal)//4]),xmin=0,xmax=len(signal),linestyles='--',colors='lightsalmon')
+    quarter_val = 3*quarter_val + np.mean(signal[0:len(signal)//4])
 
-    # maybe change to just seeing if the largest local minima is below the half val but ABOVE the quarter val? then be sure to see that ones with
-    # high separation are interpretted corrrectly
-    # like the overall total min will still be in the noise floor but that is okay? 
+    # plot them
+    plt.hlines(half_val,xmin=0,xmax=len(signal),linestyles='--',colors='lightsalmon')
+    plt.hlines(quarter_val,xmin=0,xmax=len(signal),linestyles='--',colors='lightsalmon')
 
     # find the height of the two peaks (if there are two peaks)
     local_maxes = signal[c]
     local_maxes.sort()  
-    largest = local_maxes[-1]
-    second_largest = local_maxes[-2]
+    largest_peak = local_maxes[-1]
+    second_largest_peak = local_maxes[-2]
+    largest_local_min = np.max(signal[b])
 
     if condition=='half_val':
-        # if below condition for 50% separated and local min above noise floor
-        if quarter_val < np.max(signal[b]) < half_val:
-            resolution = True
-        elif largest*0.8 < second_largest and np.max(signal[b]) < half_val:
-            resolution = True
+        # first, are there two peaks? 
+        # peak here is defined as larger than half value
+        if largest_peak > half_val and second_largest_peak > half_val:
+            # is the largest local min below the condition
+            if largest_local_min < half_val:
+                resolution = True
+            else:
+                resolution = False
+                #print('peaks are separated but not enough')
         else:
             resolution = False
+            #print('peaks are not separated')
+
     elif condition=='quarter_val':
-        # if below condition for 25% separated and above noise floor
-        if quarter_val < np.max(signal[b]) < 3*quarter_val:
-            resolution = True
-        # or if there are two distinct peaks AND the local min is in the noise floor
-        elif largest*0.8 < second_largest and np.max(signal[b]) < 3* quarter_val:
-            resolution = True
+        if largest_peak > quarter_val and second_largest_peak > quarter_val:
+            # is the largest local min below the condition
+            if largest_local_min < quarter_val:
+                resolution = True
+            else:
+                resolution = False
         else:
             resolution = False
 
@@ -86,6 +99,7 @@ def plot_peak(signal, fname, condition):
 
     plt.savefig(fname,bbox_inches='tight')
     plt.close()
+    plt.clf()
 
     return resolution
 
@@ -141,7 +155,7 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     
     abs_path = "/home/rileyannereid/workspace/geant4/EPAD_geant4"
 
-    fname_save = 'results/parameter_sweeps/mosaic_sim3/'+ ff
+    fname_save = 'results/parameter_sweeps/'+ ff
 
     # needs to be set for decoding
     if nElements == 67:
@@ -165,36 +179,48 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     out_size = (detector_sz-(nElements*boxdim/10))/2 # convert from mm to cm
 
     shift = detector_sz/2
-    #out_size = 0
-    x_out = []
-    y_out = []
+    rr = []
 
     for x,y,ene in zip(posX,posY,energies):
         # shift origin to lower left
         x += shift
         y += shift
         if ene > energy_limit_kev:
+            # confirm not out of bounds
             if x < out_size or y < out_size or x > (detector_sz - out_size) or y > (detector_sz - out_size): 
-                x_out.append(x)
-                y_out.append(y)
+                pass
+            # in bounds
             else:
-                if uncertainty>0:
+                if uncertainty > 0:
                     mu, sigma = 0, uncertainty # mean and standard deviation
+
                     # generate random radius r with standard deviation sigma in mm
-                    r = np.random.normal(mu, uncertainty)
+                    r = np.random.normal(mu, uncertainty/np.sqrt(2))
+                    #r = np.random.poisson(uncertainty/np.sqrt(2))
+                    #r = np.random.uniform(-1*uncertainty/np.sqrt(2),uncertainty/np.sqrt(2))
                     azimuth = np.random.uniform(0,2*np.pi)
+
                     newx = (r/10) * np.cos(azimuth) 
                     newy = (r/10) * np.sin(azimuth)
 
-                    xxes.append(x + newx)
-                    yxes.append(y + newy)
+                    # make sure still in bounds
+                    x = x + newx
+                    y = y + newy
+                    
+                    if x < out_size or y < out_size or x > (detector_sz - out_size) or y > (detector_sz - out_size):
+                        pass 
+                    else:
+                        xxes.append(x)
+                        yxes.append(y)
                 else:
                     xxes.append(x)
                     yxes.append(y)
 
         else:
             low_energy_electrons+=1
-
+    #plt.hist(rr,bins=50)
+    #plt.show()
+    #plt.close()
     # ------------------------------- ------------------------------- ------------------------------- -------------------------------
     multiplier = 30
     heatmap, xedges, yedges = np.histogram2d(xxes, yxes, bins=multiplier*nElements)
@@ -225,32 +251,37 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     fname_step = fname_save + '_dc.png'
     plot_step(result_image,np.amax(result_image),fname_step,label='# particles')
 
-    # take snr of only the noise floor
-    if 'snr' in ff:
-        nbins = multiplier*nElements
-        std_result = []
-        for nb in range(nbins):
-            for nbi in range(nbins):
-                # cut out middle section
-                if nb / nbins > 0.4 and nb / nbins < 0.6:
-                    if nbi / nbins > 0.4 and nbi / nbins < 0.6:
-                        pass
-                else:
-                    std_result.append(result_image[nb,nbi])
-      
-        snr = np.amax(np.abs(result_image))/np.std(np.abs(np.array(std_result)))
-    else:
-        snr = 0
+    # take snr of only the noise floor - nope
+    #if 'snr' in ff:
+    #    nbins = multiplier*nElements
+    #    std_result = []
+    #    for nb in range(nbins):
+    #        for nbi in range(nbins):
+    #            # cut out middle section
+    #            if nb / nbins > 0.4 and nb / nbins < 0.6:
+    #                if nbi / nbins > 0.4 and nbi / nbins < 0.6:
+    #                    pass
+    #            else:
+    #                std_result.append(result_image[nb,nbi])
+    #  
+    #    snr = np.amax(np.abs(result_image))/np.std(np.abs(np.array(std_result)))
+    #else:
+    #    snr = 0
+    snr = np.amax(np.abs(result_image))/np.std(np.abs(result_image))
 
     # line plot of the diagonal -- must be flipped left and right but i have no clue why
     max_ind = np.where(result_image == np.amax(result_image))
-    max_col = max_ind[0]
+    max_col = max_ind[1]
     if np.shape(max_col)[0] > 1:
         max_col = max_col[0]
 
-    #plot_peak(np.fliplr(result_image)[int(max_col),:],fname_save)
+    resolution = plot_peak(np.fliplr(result_image)[:,int(max_col)],fname_save,condition='half_val')
     # for diagonal
-    resolution = plot_peak(np.diagonal(np.fliplr(result_image)),fname_save,condition='half_val')
+    #resolution = plot_peak(np.diagonal(np.fliplr(result_image)),fname_save,condition='half_val')
+
+    del xxes, yxes
+    del result_image, heatmap, xedges,yedges, mask,decode,rawIm
+    gc.collect()
     
     return snr, resolution
 

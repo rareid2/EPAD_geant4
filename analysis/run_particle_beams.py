@@ -75,7 +75,7 @@ def create_macro(path, n_particles, positions, rotations, energies, world_size):
             f.write('/run/beamOn ' + str(n_particles) + ' \n')
 
         #f.write('/vis/scene/endOfEventAction accumulate <0> \n')
-        f.close()
+    f.close()
 
 def find_disp_pos(theta, z_disp):
 
@@ -103,28 +103,28 @@ src_z = -1*(math.ceil(detector_placement))
 
 if np.abs(src_z) > world_size/2:
     print('error world needs to be re-built to be atleast '+ str(src_z*2) + ' long')
-
+# TESTING
 # now some settings for the macro file
 abs_path = "/home/rileyannereid/workspace/geant4/EPAD_geant4"
-n_particles = 1000000
-
 
 # displacement
 abs_path = os.getcwd()
 macro_path = os.path.join(abs_path, 'macros')
 n_particles = 1000
-theta = 10 # deg
-src_z = -113
+theta = 7 # deg
+src_z = -503.95
+world_size = 1111
+detector_placement = world_size*.45 # cm
 
-disp = find_disp_pos(theta, np.abs(src_z))# + detector_placement)
+disp = find_disp_pos(theta, np.abs(src_z) + detector_placement)
 disp = round(disp,2)
 positions = [[0,0,src_z],[disp,disp,src_z]]
-rotations = [[0],[1]]
+rotations = [0,1]
 energies = [500,500]
 
 #positions = [[0,0,src_z]]
 #rotations = [[0,0]]
 #energies = [500]
 
-create_macro(macro_path, n_particles, positions, rotations, energies)
+create_macro(macro_path, n_particles, positions, rotations, energies, world_size)
 """
