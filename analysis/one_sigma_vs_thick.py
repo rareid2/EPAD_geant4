@@ -8,66 +8,71 @@ from plot_settings import *
 from fnc_find_theoretical_dist import findTheoreticalDist
 import random
 import decimal
-import brewer2mpl
+import seaborn as sns 
 
-gap_in_cm = 3.0 # cm gap 
+def get_data(fname):
 
-ax = plt.subplot(111)
-colormap = plt.cm.YlGnBu
-Ncolors=8
-Ncolors = min(colormap.N,Ncolors)
-mapcolors = [colormap(int(x*colormap.N/Ncolors)) for x in range(Ncolors)]
-mapcolors = mapcolors[1:]
-mapcolors.reverse()
+    file1 = open(fname, 'r')
+    
+    # Using readlines()
+    Lines = file1.readlines()
+    
+    count = 0
+    # Strips the newline character
+    all_data = []
+    for line in Lines:
+        count += 1
+        data = line.strip()
+        data = data.split(',')
+        clean_data = [float(d) for d in data]
+        all_data.append(clean_data)
 
-# set energy from simulation 
-all_energies = ['10','6','3p5','2','1','0p750','0p450']
-ene_txt = ['10','6','3.5','2','1','0.75','0.45']
-colors = ['palevioletred','mediumslateblue','lavender','indianred','lightskyblue','palegreen','cornflowerblue']
-thicknesses = ['10','20','60','170']
-txt_pos = [4.5,6.7,10.15,15.25,21.07,22.65,23.82]
-rots = [3,6,11,17,11,8,2]
-thicknesses_num = [10,20,60,170]
+    file1.close()
+    return all_data
 
-for enp,c,ent,ypos,ro in zip(all_energies,mapcolors,ene_txt,txt_pos,rots):
-    save_std = []
-    #rgba_color = cm.ylgnbl(norm(float(ene_txt)),bytes=True)
+fname = 'results/parameter_sweeps/two_det_3.0.txt'
+my_data = get_data(fname)
+fname = 'results/parameter_sweeps/two_det_0.5.txt'
+my_data2 = get_data(fname)
 
-    for th in thicknesses:        
-        fname = 'hits_'+enp+'_'+th+'.csv'
-        fname_path = os.path.join('/home/rileyannereid/workspace/geant4/EPAD_geant4/data', fname)
-        print(fname_path)
-        # first get the x and z displacement from SCATTERING
-        detector_hits, deltaX_rm, deltaZ_rm, energies = getDetHits(fname_path)
-        
-        x = deltaZ_rm
-        
-        # add in uncertainty from the position
-
-        newx = []
-        for dx in x:
-            dp = random.uniform(-np.sqrt(2), np.sqrt(2))
-            dx = (dp/10)+dx
-            newx.append(dx)
-
-        x = np.array(newx)
-
-        # Find angles in degrees
-        theta = np.rad2deg(np.arctan2(x, gap_in_cm))
-        theta_std = np.std(theta)
-
-        save_std.append(theta_std)
+all_data = []
+for di,dd in zip(my_data,my_data2):
+    data = []
+    data.append(di)
+    data.append(dd)
+    all_data.append(data)
 
 
-    plt.plot(np.array(thicknesses_num), np.array(save_std),'--o',color=c)
-    ax.text(125,ypos,ent+ ' MeV',fontsize='x-small',color=c,rotation=ro)
+thicknesses = np.linspace(20,200,10)
+energies = np.logspace(2,4,10)
+energies = reversed(energies[5:])
+
+coolors = ['#012a4a','#013a63','#01497c','#014f86','#2a6f97','#2c7da0','#468faf','#61a5c2','#89c2d9','#a9d6e5']
+coolors = reversed(coolors)
+fig, ax = plt.subplots()
+sns.set_palette("Paired")
+for resolutions,color in zip(all_data,coolors):
+    ax.plot(thicknesses,resolutions[0],linestyle='--', marker='.',zorder=1,color=color)
+    ax.plot(thicknesses,resolutions[1],linestyle='--', marker='.',zorder=1,color=color)
+    ax.fill_between(thicknesses, resolutions[0], resolutions[1], alpha=0.5,color=color)
+
+ene_text = '#700353'
+
+ax.set_ylabel('uncertainty in incident polar angle [deg]')
+ax.set_xlabel('thickness of front detector [um]')
+ax.grid(which='major', color='#DDDDDD', linewidth=0.5)
+ax.minorticks_on()
+ax.set_axisbelow(True)
 
 
-#plt.xlim([0, 200])
-plt.ylabel('1-$\sigma$ [$^\circ$]')
-plt.xlabel('detector thickness [$\mu$m]')
-#plt.legend(loc='upper right')
-plt.title('1-$\sigma$ uncertainty from mcs')
-folder_save = '/home/rileyannereid/workspace/geant4/EPAD_geant4/results/fall21_results/reproducing_distribution'
-fname = os.path.join(folder_save, 'one_sigma_v_thick.png')
-plt.savefig(fname,dpi=300)
+custom_loc = [4.3,7,11,16,20.75]
+custom_rot = [5,10,13,15,10]
+ii = 0
+for ene in energies:
+    ene_st = str(int(ene))
+    plt.text(180, custom_loc[ii], ene_st + ' keV',rotation=custom_rot[ii],fontsize=10,color=ene_text)
+    ii+=1
+plt.text(170, 23.3, '100-775 keV',rotation=0,fontsize=10,color=ene_text)
+
+plt.savefig('results/parameter_sweeps/two_det_results.png',dpi=800)
+plt.close()

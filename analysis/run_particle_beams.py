@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import os
 import math 
 
+# HEADS UP TO CHANGE THE BEAM WIDTH!!!!!!!!!!!!!!
+
+
 def align_vectors(a, b):
     #b = b / np.linalg.norm(b) # normalize a
     #a = a / np.linalg.norm(a) # normalize b
@@ -69,6 +72,7 @@ def create_macro(path, n_particles, positions, rotations, energies, world_size):
             f.write('/gps/ang/type iso \n')
             f.write('/gps/ang/mintheta 0 deg \n')
             f.write('/gps/ang/maxtheta 0.23 deg \n')
+            #f.write('/gps/ang/maxtheta 0.08 deg \n')
             f.write('/gps/ang/minphi 0 deg \n')
             f.write('/gps/ang/maxphi 360 deg \n')
             f.write('/gps/energy ' + str(ene) + ' keV \n')
@@ -81,7 +85,6 @@ def find_disp_pos(theta, z_disp):
 
     # find displaced postion needed to get an angular displacement
     x_disp = z_disp * np.tan(np.deg2rad(theta))
-    x_disp = np.sqrt((x_disp**2) / 2)
 
     return x_disp
     

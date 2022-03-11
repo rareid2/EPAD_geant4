@@ -5,28 +5,8 @@
 /event/verbose 0 
 /tracking/verbose 0 
 /gps/particle e- 
-/gps/pos/type Plane 
-/gps/pos/shape Circle 
-/gps/pos/centre 626.0588235294118 0 -502.7 cm 
-/gps/pos/rot1 0.0 1.0 -0.0 
-/gps/pos/rot2 -0.8482253780086149 0.0 -0.5296354483058535 
-/gps/ang/type iso 
-/gps/ang/mintheta 0 deg 
-/gps/ang/maxtheta 0.23 deg 
-/gps/ang/minphi 0 deg 
-/gps/ang/maxphi 360 deg 
-/gps/energy 500 keV 
-/run/beamOn 1000000 
-/gps/particle e- 
-/gps/pos/type Plane 
-/gps/pos/shape Circle 
-/gps/pos/centre 704.1188235294119 0 -502.7 cm 
-/gps/pos/rot1 0.0 1.0 -0.0 
-/gps/pos/rot2 -0.8183629195820274 0.0 -0.5747017764486031 
-/gps/ang/type iso 
-/gps/ang/mintheta 0 deg 
-/gps/ang/maxtheta 0.23 deg 
-/gps/ang/minphi 0 deg 
-/gps/ang/maxphi 360 deg 
-/gps/energy 500 keV 
+/gps/energy 9983.61 keV 
+/gps/position 0 0 -999.9 
+/gps/direction 0 0 1 
+/gps/pos/type Point 
 /run/beamOn 1000000 

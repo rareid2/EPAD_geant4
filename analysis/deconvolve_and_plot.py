@@ -158,7 +158,7 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     fname_save = 'results/parameter_sweeps/'+ ff
 
     # needs to be set for decoding
-    if nElements == 67:
+    if nElements == 67 or nElements == 31:
         check =0
     else:
         check=1
@@ -174,9 +174,17 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     energy_limit_kev = 1
     low_energy_electrons = 0
     
-    # remove the outer 
-    detector_sz = 6.3
-    out_size = (detector_sz-(nElements*boxdim/10))/2 # convert from mm to cm
+    # remove the outer
+    if nElements == 61:
+        multiplier = 4
+    else:
+        multiplier = 8
+
+    detector_sz = 1.364
+    #detector_sz = 6.3
+    #multiplier = 30
+    
+    out_size = round((detector_sz-(nElements*boxdim/10))/2,3) # convert from mm to cm
 
     shift = detector_sz/2
     rr = []
@@ -222,7 +230,6 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     #plt.show()
     #plt.close()
     # ------------------------------- ------------------------------- ------------------------------- -------------------------------
-    multiplier = 30
     heatmap, xedges, yedges = np.histogram2d(xxes, yxes, bins=multiplier*nElements)
 
     #fname_step = fname_save + '_raw.png'
@@ -278,6 +285,13 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     resolution = plot_peak(np.fliplr(result_image)[:,int(max_col)],fname_save,condition='half_val')
     # for diagonal
     #resolution = plot_peak(np.diagonal(np.fliplr(result_image)),fname_save,condition='half_val')
+
+    # for a moving diagonal
+    #result_image = np.fliplr(result_image)
+    #ind1 = (np.shape(result_image)[0]//2) - int(max_col)
+    #result_image_cut = result_image[:,ind1:]
+    #print(np.shape(result_image_cut))
+    #tesolution = plot_peak(np.diagonal(result_image_cut),fname_save,condition='half_val')
 
     del xxes, yxes
     del result_image, heatmap, xedges,yedges, mask,decode,rawIm

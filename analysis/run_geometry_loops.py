@@ -19,35 +19,45 @@ n_particles = 1000000
 
 detector_placement = world_size*.45 # cm
 
-uncertainty = 3.0
-
-# TODO add a new condition to correct for issues with ang res!
-
+uncertainty = 0
+unc = uncertainty
 # --------------------- --------------------- 
 # ranges of parameters!!
 
 # from nearly the size of the detector to max size!
-mask_size = [90] # mm
-ms = mask_size[0]
+mask_size = [26.84] # mm
+#ms = 90
 
 # from 400 to 3300 um --- thicknesses to check
 mask_thickness = np.linspace(400,3300,3)
-mask_thickness = [400]
-
+mask_thickness = [1850]
 # vary distance a bit
 mask_distance = np.linspace(1,9,15) # cm
-mask_distance = [2.75]
+mask_distance = mask_distance[1:]
+mask_distance = mask_distance[1:3]
 
 # running mosaicked masks
-mask_rank = [67]
-positions_list = np.linspace(1,760,18)
-positions_list = positions_list[9:15]
+mask_rank = [61]
+
+#positions_list = np.linspace(1,360,12)
+
 # loop through everything
 for ii, mt in enumerate(mask_thickness):
     for rr in mask_rank:
+        if rr == 31:
+            ms = 26.84
+        else:
+            ms = 26.62
         snrs = []
-        res = []
+        res_dists = []
+
         for md in mask_distance:  
+
+            if md < 3:
+                thetas = np.linspace(1,3,13)
+            else:
+                thetas = np.linspace(0.25,2,12)
+
             # placement of the source needs to be ..
             src_z = -1*(detector_placement)-md         
             
@@ -83,15 +93,50 @@ for ii, mt in enumerate(mask_thickness):
             f.write(str(mura_filename) + '\n')
 
             f.close()
+
+            #for pi,po in enumerate(positions_list):
+            po = 0
+            po = round(po,3)
             
-            for pi,po in enumerate(positions_list):
-                # first run the SNR
-                positions = [[po,0,src_z]]
-                rotations = [1]
-                energies = [500]
-                """
-                # create the macro file
-                create_macro(macro_path, n_particles, positions, rotations, energies,world_size) 
+            # first run the SNR
+            positions = [[0,0,src_z]]
+            rotations = [0]
+            energies = [500]
+            
+            # create the macro file
+            create_macro(macro_path, n_particles, positions, rotations, energies, world_size) 
+            
+            cwd = os.getcwd()
+            # go to build to run this
+            os.chdir('build')
+            cmd = './main ../macros/auto_run_beams.mac'
+            # run the simulation
+            os.system(cmd)
+            # load the results and re-name them
+            os.rename('../data/hits.csv', '../data/hits_'+str(rr)+'_'+str(thickness)+'_'+  str(round(distance,2))+ '_' + str(po)+ '_zero.csv')
+            #os.rename('../data/hits.csv', '../data/hits_'+str(rr)+'_'+str(thickness)+'_'+  str(round(distance,2))+'_zero.csv')
+            
+            os.chdir(cwd)
+
+            ff = str(rr)+'_'+str(thickness)+'_'+  str(round(distance,2))+  '_' + str(po)+ '_' +str(unc)
+            fname = 'data/hits_'+str(rr)+'_'+str(thickness)+'_'+  str(round(distance,2))+ '_' + str(po)+  '_zero.csv'
+            snr, resolution2 = dec_plt(fname,uncertainty,nElements,boxdim,ff,ms)                
+            snrs.append(snr)
+            
+            for ti,theta in enumerate(thetas):
+
+                disp = find_disp_pos(theta, np.abs(src_z) + (detector_placement-md))
+                disp = round(disp,2)
+
+                #positions = [[po,0,src_z],[po+disp,0,src_z]]
+                positions = [[0,0,src_z],[disp,0,src_z]]
+
+                rotations = [0,1]
+                energies = [500,500]
+
+                # create the macro file 
+                
+                create_macro(macro_path, n_particles, positions, rotations, energies, world_size) 
                 
                 cwd = os.getcwd()
                 # go to build to run this
@@ -100,66 +145,30 @@ for ii, mt in enumerate(mask_thickness):
                 # run the simulation
                 os.system(cmd)
                 # load the results and re-name them
-                os.rename('../data/hits.csv', '../data/hits_'+str(rr)+'_'+str(thickness)+'_'+  str(round(distance,2))+'_'+ str(ms) + '_' + str(po)+ '_zero.csv')
+                os.rename('../data/hits.csv', '../data/hits_'+str(rr)+'_'+str(thickness)+'_'+ str(round(distance,2))+'_' + str(theta)+'_' + str(po)+'.csv')
+                #os.rename('../data/hits.csv', '../data/hits_'+str(rr)+'_'+str(thickness)+'_'+ str(round(distance,2))+'_'+ str(ms) + '_' + str(theta)+'.csv')
                 os.chdir(cwd)
-
-                ff = str(rr)+'_'+str(thickness)+'_'+  str(round(distance,2))+'_'+ str(ms) + '_' + str(po) + '_snr_'+str(uncertainty)
-                fname = 'data/hits_'+str(rr)+'_'+str(thickness)+'_'+  str(round(distance,2))+'_'+ str(ms) +  '_' + str(po) + '_zero.csv'
-                snr, resolution2 = dec_plt(fname,uncertainty,nElements,boxdim,ff,ms)                
-                snrs.append(snr)
-                """
-
-
-                thetas = np.linspace(5.7,6.3,7)
                 
-                for ti,theta in enumerate(thetas):
+                # process it
+                fname = 'data/hits_'+str(rr)+'_'+str(thickness)+'_'+ str(round(distance,2))+'_'+str(theta)+'_' + str(po) + '.csv'
+                ff = str(rr)+'_'+str(thickness)+'_'+ str(round(distance,2)) + '_'+str(po) +'_'+str(theta)+'_' +str(unc)
+                snr_2, resolution = dec_plt(fname,uncertainty,nElements,boxdim,ff,ms)
 
-                    disp = find_disp_pos(theta, np.abs(src_z) + (detector_placement-md))
-                    disp = round(disp,2)
-
-                    positions = [[po,0,src_z],[po+disp,0,src_z]]
-
-                    rotations = [1,1]
-                    energies = [500,500]
-
-                    # create the macro file 
-                    
-                    create_macro(macro_path, n_particles, positions, rotations, energies, world_size) 
-
-                    
-                    cwd = os.getcwd()
-                    # go to build to run this
-                    os.chdir('build')
-                    cmd = './main ../macros/auto_run_beams.mac'
-                    # run the simulation
-                    os.system(cmd)
-                    # load the results and re-name them
-                    os.rename('../data/hits.csv', '../data/hits_'+str(rr)+'_'+str(thickness)+'_'+ str(round(distance,2))+'_'+ str(ms) + '_' + str(theta)+ '_' + str(po)+'.csv')
-                    #os.rename('../data/hits.csv', '../data/hits_'+str(rr)+'_'+str(thickness)+'_'+ str(round(distance,2))+'_'+ str(ms) + '_' + str(theta)+'.csv')
-                    os.chdir(cwd)
-                    
-                    # process it
-                    fname = 'data/hits_'+str(rr)+'_'+str(thickness)+'_'+ str(round(distance,2))+'_'+ str(ms) + '_' + str(theta)+ '_' + str(po)+'.csv'
-                    ff = str(rr)+'_'+str(thickness)+'_'+ str(round(distance,2))+'_'+ str(ms) + '_'+str(po)+'_'+str(theta)+'_'+str(uncertainty)
-                    snr_2, resolution = dec_plt(fname,uncertainty,nElements,boxdim,ff,ms)
-
-                    if resolution==True:
-                    #    res_dists.append(thetas[ti])
-                    #    print(thetas[ti])
-                        break
+                if resolution==True:
+                    res_dists.append(thetas[ti])
+                    break
+                else:
+                    if thetas[ti] == max(thetas):
+                        res_dists.append(max(thetas)+1)
+                        continue
                     else:
                         continue
-                        # could not resolve max deg!
-                    #    if thetas[ti] == max(thetas):
-                    #        res_dists.append(max(thetas)+1)
-                    #    else:
-                    #        continue
-                    
+                
         # save the results
-        #a_file = open('results/parameter_sweeps/'+str(rr)+'_'+str(thickness)+'_'+str(uncertainty)+'_snr.txt', "w")
+        #a_file = open('results/parameter_sweeps/'+str(rr)+'_'+str(thickness) + '_' + str(md) + '_' +str(unc) + '_snr.txt', "w")
         #np.savetxt(a_file,snrs)
         #a_file.close()
 
-        #a_file = open('results/parameter_sweeps/mosaic_sim5/'+str(rr)+'_'+str(thickness)+'_'+str(uncertainty)+'_res.txt', "w")
+        #a_file = open('results/parameter_sweeps/'+str(rr)+'_'+str(thickness)+'_' + str(md)+ '_' +str(unc) +'_res.txt', "w")
         #np.savetxt(a_file,res_dists)
         #a_file.close()

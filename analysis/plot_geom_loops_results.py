@@ -12,10 +12,10 @@ from os.path import isfile, join
 def plot_it(resolutions_list, labels, mt, colors):
     sns.set_palette("Paired")
     mask_distance = np.linspace(1,9,15) # cm
-    mask_distance = mask_distance[1:] # cm
-    positions_list = np.linspace(1,370,20)
-    positions_list = positions_list[:-2]
+    #mask_distance = mask_distance[1:] # cm
+    positions_list = np.linspace(1,225,15)
     mask_distance = 2*np.rad2deg(np.arctan(positions_list/999.9))
+    mask_distance = mask_distance[:-2]
 
     # fix figure size
     fig, ax = plt.subplots(figsize=(5,2.8))
@@ -26,32 +26,33 @@ def plot_it(resolutions_list, labels, mt, colors):
     ax.set_axisbelow(True)
     plt.locator_params(axis="y", nbins=7)
 
-    ax2=ax.twinx()
+    #ax2=ax.twinx()
 
     linestyles = ['dashed','dashed','dashed']
     ii=0
     for resolutions,label,color,linestyle in zip(resolutions_list,labels,colors,linestyles):
         ii+=1
-        ax2.plot(mask_distance,resolutions[0],label=label,linestyle=linestyle, marker='.',zorder=1,color=color)
-        ax2.plot(mask_distance,resolutions[1],label=label,linestyle=linestyle, marker='.',zorder=1,color=color)
-        ax2.fill_between(mask_distance, resolutions[0], resolutions[1], alpha=0.5,color=color)
+        ax.plot(mask_distance,resolutions,label=label,linestyle=linestyle, marker='.',zorder=1,color=color)
 
-        if ii==2:
-            ax.plot(mask_distance,resolutions[0],label=label,linestyle=linestyle, marker='.',zorder=1,color=color)
-            ax.plot(mask_distance,resolutions[1],label=label,linestyle=linestyle, marker='.',zorder=1,color=color)
-            ax.fill_between(mask_distance, resolutions[0], resolutions[1], alpha=0.5,color=color)
+        #ax.plot(mask_distance,resolutions[1],label=label,linestyle=linestyle, marker='.',zorder=1,color=color)
+        #ax.fill_between(mask_distance, resolutions[0], resolutions[1], alpha=0.5,color=color)
+
+        #if ii==2:
+        #    ax.plot(mask_distance,resolutions[0],label=label,linestyle=linestyle, marker='.',zorder=1,color=color)
+        #    ax.plot(mask_distance,resolutions[1],label=label,linestyle=linestyle, marker='.',zorder=1,color=color)
+        #    ax.fill_between(mask_distance, resolutions[0], resolutions[1], alpha=0.5,color=color)
     
     #plt.xlabel('distance between mask and detector [cm]')
-    ax.set_xlabel('fov [deg]')
+    ax.set_xlabel('geometric angle [deg]')
 
     #plt.xlabel('steps from center of mask')
     #plt.xlabel('position resolution [mm]')
     
-    #plt.ylabel('snr')
-    ax.set_ylabel('snr')
-    ax2.set_ylabel('ang res [deg]')
+    #plt.ylabel('fcfov [deg]')
+    #ax.set_ylabel('snr')
+    #ax2.set_ylabel('ang res [deg]')
 
-    #plt.ylabel('ang res [deg]')
+    plt.ylabel('ang res [deg]')
     #plt.title(str(mt)+' um',color='#BFACC8')
     #plt.title('SNR vs noise figure',color='#BFACC8')
     #plt.legend()
@@ -59,12 +60,12 @@ def plot_it(resolutions_list, labels, mt, colors):
     #plt.ylim([0,7])
     #plt.ylim([0,250])
     #plt.ylim([0,80])
-    plt.ylim([0,9])
+    plt.ylim([0,7])
+    #ax.set_ylim([5,50])
     #plt.xlim([1.25,9.25])
-    plt.xlim([0,38])
+    plt.xlim([-1,23])
 
-
-    fname_save = 'results/parameter_sweeps/'+str(mt)+'_fov_unc.png'
+    fname_save = 'results/parameter_sweeps/'+str(mt)+'_res.png'
 
     fig.tight_layout(pad=0.1)
     plt.savefig(fname_save,dpi=300)
@@ -74,40 +75,21 @@ def plot_it(resolutions_list, labels, mt, colors):
 all_res = []
 
 res = []
-data_file = 'results/parameter_sweeps/67_400_0.5_res.txt'
+data_file = 'results/parameter_sweeps/mosaic_sim12/31_3300_res.txt'
 res1 = np.loadtxt(data_file)
-data_file = 'results/parameter_sweeps/67_400_3.0_res.txt'
-res2 = np.loadtxt(data_file)
+#res1 = res1[:-2]
+
 res.append(res1)
-res.append(res2)
-all_res.append(res)
 
 
-res = []
-data_file = 'results/parameter_sweeps/67_400_0.5_snr.txt'
-res1 = np.loadtxt(data_file)
-data_file = 'results/parameter_sweeps/67_400_3.0_snr.txt'
-res2 = np.loadtxt(data_file)
-res.append(res1)
-res.append(res2)
-all_res.append(res)
-"""
-res = []
-data_file = 'results/parameter_sweeps/mosaic_sim6/97_3300_0.5_fov.txt'
-res1 = np.loadtxt(data_file)
-data_file = 'results/parameter_sweeps/mosaic_sim6/97_3300_3.0_fov.txt'
-res2 = np.loadtxt(data_file)
-res.append(res1)
-res.append(res2)
-all_res.append(res)
-"""
 my_pallette = ['#e07a5f','#3d405b','#81b29a']
+#"#9799CA"
 colors = my_pallette[:3]
 
 labels=['37','67','97']
 
 # plot the results
-plot_it(all_res, labels,'400', [colors[1],"#9799CA"])
+plot_it(res, labels,'3300', colors)
 
 
 

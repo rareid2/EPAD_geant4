@@ -1,8 +1,25 @@
 import pandas as pd
 import numpy as np
 
+
+def get_unc(uncertainty):
+    if uncertainty > 0:
+        mu, sigma = 0, uncertainty # mean and standard deviation
+
+        # generate random radius r with standard deviation sigma in mm
+        r = np.random.normal(mu, uncertainty/np.sqrt(2))
+        #r = np.random.poisson(uncertainty/np.sqrt(2))
+        #r = np.random.uniform(-1*uncertainty/np.sqrt(2),uncertainty/np.sqrt(2))
+        azimuth = np.random.uniform(0,2*np.pi)
+
+        newx = (r/10) * np.cos(azimuth) 
+    else:
+        newx = 0
+
+    return newx 
+
 # read in the detector hits and extract useful info
-def getDetHits(fname):
+def getDetHits(fname,uncertainty):
     # Read in raw hit data
     detector_hits = pd.read_csv(fname,
                                names=["det","x", "y", "z","energy"],
@@ -33,10 +50,10 @@ def getDetHits(fname):
                 pos2 = detector_hits['det'][count+1]
 
                 detector_hits['x'][count]
-                detector_hits['z'][count]
+                detector_hits['y'][count]
 
                 detector_hits['x'][count+1]
-                detector_hits['z'][count+1]
+                detector_hits['y'][count+1]
 
             except KeyError:
                 count = count + 1
@@ -47,8 +64,8 @@ def getDetHits(fname):
 
         # Checks if first hit detector == 1 and second hit detector == 2
         if np.equal(pos1, 1) & np.equal(pos2, 2):
-            deltaX[array_counter] = detector_hits['x'][count+1] - detector_hits['x'][count]
-            deltaZ[array_counter] = detector_hits['z'][count+1] - detector_hits['z'][count]
+            deltaX[array_counter] = (detector_hits['x'][count+1]+get_unc(uncertainty)) - (detector_hits['x'][count]+get_unc(uncertainty))
+            deltaZ[array_counter] = (detector_hits['y'][count+1]+get_unc(uncertainty)) - (detector_hits['y'][count]+get_unc(uncertainty))
             energies.append(detector_hits['energy'][count])
 
             # Successful pair, continues to next possible pair
