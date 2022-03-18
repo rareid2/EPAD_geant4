@@ -180,8 +180,9 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     else:
         multiplier = 8
 
-    detector_sz = 1.364
-    #detector_sz = 6.3
+    multiplier = 12
+    #detector_sz = 1.364
+    detector_sz = 4.422
     #multiplier = 30
     
     out_size = round((detector_sz-(nElements*boxdim/10))/2,3) # convert from mm to cm

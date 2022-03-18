@@ -124,35 +124,38 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   // ---------------- get detector config --------------
 
-  std::fstream configFile;
-  configFile.open("../src/config.txt", std::ios_base::in);
+  //std::fstream configFile;
+  //configFile.open("../src/config.txt", std::ios_base::in);
 
   // Initialize variables
-  G4double det1_thickness;
+  //G4double det1_thickness;
 
   // Load into variables
-  configFile >> det1_thickness;
+  //configFile >> det1_thickness;
 
-  configFile.close();
+  //configFile.close();
 
   // world offset
   G4double world_offset = env_sizeZ*.45;
 
   // Dimensions for detectors (detector 1 and 2 use the same planar dimensions)
-  G4double detector_dimX = 6.3*cm;
-  G4double detector_dimY = 6.3*cm;
+  //G4double detector_dimX = 6.3*cm;
+  //G4double detector_dimY = 6.3*cm;
 
   //G4double detector_dimX = 1.364*cm;
   //G4double detector_dimY = 1.364*cm;
 
-  G4double detector1_thickness = det1_thickness*um;
+  G4double detector_dimX = 4.422*cm;
+  G4double detector_dimY = 4.422*cm;
+
+  G4double detector1_thickness = 140.0*um;
   G4double detector2_thickness = 140.0*um;
 
   G4double distance_between_detectors = 30.0*mm;
 
   // Window dimensions
-  G4double window_dimX    = 6.3*cm; 
-  G4double window_dimY    = 6.3*cm;  
+  G4double window_dimX    = 9*cm; 
+  G4double window_dimY    = 9*cm;  
   G4double window_thickness = 100.0*um;
   G4double window_gap       = 1.0*mm;
 
@@ -236,7 +239,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                     checkOverlaps);          //overlaps checking
   
   // ---------------- create coded aperture --------------
-  /*
+  
   // comment this out for the 2 detector configuration
   std::fstream configFile;
   configFile.open("../src/config.txt", std::ios_base::in);
@@ -375,7 +378,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
       G4ThreeVector(0.5*(ca_size +2*hole_size - hole_size), 0,ca_pos), 
       ylogicOutline, "yphysOutline", logicEnv, false, 0, checkOverlaps);
   // always return the physical World
-  */
+  
 
   return physWorld;
 }

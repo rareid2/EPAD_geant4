@@ -12,10 +12,10 @@ from os.path import isfile, join
 def plot_it(resolutions_list, labels, mt, colors):
     sns.set_palette("Paired")
     mask_distance = np.linspace(1,9,15) # cm
-    #mask_distance = mask_distance[1:] # cm
-    positions_list = np.linspace(1,225,15)
+    mask_distance = mask_distance[1:] # cm
+    positions_list = np.linspace(1,380,15)
+    positions_list = positions_list[:-1]
     mask_distance = 2*np.rad2deg(np.arctan(positions_list/999.9))
-    mask_distance = mask_distance[:-2]
 
     # fix figure size
     fig, ax = plt.subplots(figsize=(5,2.8))
@@ -49,23 +49,24 @@ def plot_it(resolutions_list, labels, mt, colors):
     #plt.xlabel('position resolution [mm]')
     
     #plt.ylabel('fcfov [deg]')
-    #ax.set_ylabel('snr')
+    ax.set_ylabel('snr')
     #ax2.set_ylabel('ang res [deg]')
 
-    plt.ylabel('ang res [deg]')
+    #plt.ylabel('ang res [deg]')
     #plt.title(str(mt)+' um',color='#BFACC8')
     #plt.title('SNR vs noise figure',color='#BFACC8')
     #plt.legend()
     
     #plt.ylim([0,7])
     #plt.ylim([0,250])
-    #plt.ylim([0,80])
-    plt.ylim([0,7])
+    #plt.ylim([20,115])
+    plt.ylim([0,80])
+    #plt.ylim([0,7])
     #ax.set_ylim([5,50])
     #plt.xlim([1.25,9.25])
-    plt.xlim([-1,23])
+    #plt.xlim([-1,23])
 
-    fname_save = 'results/parameter_sweeps/'+str(mt)+'_res.png'
+    fname_save = 'results/parameter_sweeps/'+str(mt)+'_snr.png'
 
     fig.tight_layout(pad=0.1)
     plt.savefig(fname_save,dpi=300)
@@ -75,22 +76,20 @@ def plot_it(resolutions_list, labels, mt, colors):
 all_res = []
 
 res = []
-data_file = 'results/parameter_sweeps/mosaic_sim12/31_3300_res.txt'
+data_file = 'results/parameter_sweeps/67_3300_6_0_snr.txt'
 res1 = np.loadtxt(data_file)
 #res1 = res1[:-2]
 
 res.append(res1)
 
-
 my_pallette = ['#e07a5f','#3d405b','#81b29a']
 #"#9799CA"
 colors = my_pallette[:3]
 
-labels=['37','67','97']
+labels=['67']
 
 # plot the results
-plot_it(res, labels,'3300', colors)
-
+plot_it(res, labels, '3300', [colors[1]])
 
 
 # FOV RESULTS
