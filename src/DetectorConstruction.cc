@@ -156,8 +156,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // Window dimensions
   G4double window_dimX    = 9*cm; 
   G4double window_dimY    = 9*cm;  
-  G4double window_thickness = 100.0*um;
-  G4double window_gap       = 1.0*mm;
+  G4double window_thickness = 2000*um;
+  G4double window_gap       = 5.0*mm;
 
   // ---------------- set materials for the detectors --------------
 
