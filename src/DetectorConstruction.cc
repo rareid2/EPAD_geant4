@@ -154,10 +154,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double distance_between_detectors = 30.0*mm;
 
   // Window dimensions
-  G4double window_dimX    = 9*cm; 
-  G4double window_dimY    = 9*cm;  
-  G4double window_thickness = 2000*um;
-  G4double window_gap       = 5.0*mm;
+  G4double window_dimX    = 7*cm; 
+  G4double window_dimY    = 7*cm;  
+  G4double window_thickness = 100*um;
+  G4double window_gap       = 0.25*mm;
 
   // ---------------- set materials for the detectors --------------
 
@@ -346,7 +346,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   placementFile.close();
 
-  // finally add an outline of the 2*hole size around it
+  // finally add an outline of the hole size around it
   G4VSolid* xoutline = new G4Box("hole",
                   0.5*(ca_size+2*hole_size),0.5*hole_size,  0.5*ca_thickness);
   G4VSolid* youtline = new G4Box("hole",
@@ -378,8 +378,106 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
       G4ThreeVector(0.5*(ca_size +2*hole_size - hole_size), 0,ca_pos), 
       ylogicOutline, "yphysOutline", logicEnv, false, 0, checkOverlaps);
   // always return the physical World
+
+  // create an assembly
+  /*
+  G4AssemblyVolume* detectorAssembly = new G4AssemblyVolume();
+
+  G4RotationMatrix Rm;
+  G4ThreeVector    Tm;
+  G4Transform3D    Tr;
+
+  Tm.setX(0.); Tm.setY(-2.*cm); Tm.setZ(0.);
+  Tr = G4Transform3D(Rm, Tm); 
+  detectorAssembly->AddPlacedVolume(logicCollimator, Tr);
+  */
   
 
+  // --------------------------------- add shielding -------------------------------------
+  G4double shield_thick = 1.0*mm; 
+  G4double shield_length = 8.0*cm; 
+  G4Material* shield_material = nist->FindOrBuildMaterial("G4_W");
+  G4VSolid* xshield = new G4Box("shield",
+                  0.5*(ca_size+2*hole_size+2*shield_thick),0.5*shield_thick, 0.5*shield_length);
+  G4VSolid* yshield = new G4Box("shield",
+                  0.5*shield_thick,0.5*(ca_size+2*hole_size+2*shield_thick), 0.5*shield_length);
+  G4VSolid* zshield = new G4Box("shield",
+                  0.5*(ca_size+2*hole_size+2*shield_thick),0.5*(ca_size+2*hole_size+2*shield_thick), 0.5*shield_thick);      
+  
+  G4LogicalVolume* xshieldlogic =
+  new G4LogicalVolume(xshield,         // its solid
+                      shield_material,      // its material
+                      "xlogicshield");    // its name
+  G4LogicalVolume* yshieldlogic =
+  new G4LogicalVolume(yshield,         // its solid
+                      shield_material,      // its material
+                      "ylogicshield");    // its name
+  G4LogicalVolume* zshieldlogic =
+  new G4LogicalVolume(zshield,         // its solid
+                      shield_material,      // its material
+                      "zlogicshield");    // its name
+
+  // place the outline
+  G4VPhysicalVolume *xphysShield1 = new G4PVPlacement(0,  
+      G4ThreeVector(0, -0.5*(ca_size)-hole_size-0.5*shield_thick,ca_pos + shield_length*0.5), 
+      xshieldlogic, "xphysshield", logicEnv, false, 0, checkOverlaps);
+  
+  G4VPhysicalVolume *xphysShield2 = new G4PVPlacement(0,  
+      G4ThreeVector(0, 0.5*(ca_size)+hole_size+0.5*shield_thick,ca_pos + shield_length*0.5), 
+      xshieldlogic, "xphysshield", logicEnv, false, 0, checkOverlaps);
+  
+  G4VPhysicalVolume *yphysShield1 = new G4PVPlacement(0,  
+      G4ThreeVector(-0.5*(ca_size)-hole_size-0.5*shield_thick,0,ca_pos + shield_length*0.5), 
+      yshieldlogic, "yphysshield", logicEnv, false, 0, checkOverlaps);
+  
+  G4VPhysicalVolume *yphysShield2 = new G4PVPlacement(0,  
+      G4ThreeVector(0.5*(ca_size)+hole_size+0.5*shield_thick,0,ca_pos + shield_length*0.5), 
+      yshieldlogic, "yphysshield", logicEnv, false, 0, checkOverlaps);  
+  
+  G4VPhysicalVolume *zphysShield = new G4PVPlacement(0,  
+      G4ThreeVector(0,0,ca_pos + shield_length), 
+      zshieldlogic, "zphysshield", logicEnv, false, 0, checkOverlaps); 
+
+  // ------------------------------ add bus -----------------------------------
+  G4double bus_thick = 3.0*mm; 
+  G4double bus_length = shield_length + bus_thick; 
+  G4Material* bus_material = nist->FindOrBuildMaterial("G4_Al");
+  
+  G4VSolid* xbus = new G4Box("bus",
+                  0.5*(ca_size+2*hole_size+2*shield_thick+2*bus_thick),0.5*bus_thick, 0.5*bus_length);
+  G4VSolid* ybus = new G4Box("bus",
+                  0.5*bus_thick,0.5*(ca_size+2*hole_size+2*shield_thick+2*bus_thick), 0.5*bus_length);
+  G4VSolid* zbus = new G4Box("bus",
+                  0.5*(ca_size+2*hole_size+2*shield_thick+2*bus_thick),0.5*(ca_size+2*hole_size+2*shield_thick+2*bus_thick), 0.5*bus_thick); 
+
+  G4LogicalVolume* xbuslogic =
+  new G4LogicalVolume(xbus,         // its solid
+                      bus_material,      // its material
+                      "xlogicbus");    // its name
+  G4LogicalVolume* ybuslogic =
+  new G4LogicalVolume(ybus,         // its solid
+                      bus_material,      // its material
+                      "ylogicbus");    // its name
+  G4LogicalVolume* zbuslogic =
+  new G4LogicalVolume(zbus,         // its solid
+                      bus_material,      // its material
+                      "zlogicbus");    // its name
+
+  G4VPhysicalVolume *xphysbus1 = new G4PVPlacement(0,  
+      G4ThreeVector(0, -0.5*(ca_size)-hole_size-0.5*shield_thick-0.5*bus_thick,ca_pos + bus_length*0.5), 
+      xbuslogic, "xphysbus", logicEnv, false, 0, checkOverlaps);
+  G4VPhysicalVolume *xphysbus2 = new G4PVPlacement(0,  
+      G4ThreeVector(0, 0.5*(ca_size)+hole_size+0.5*shield_thick+0.5*bus_thick,ca_pos + bus_length*0.5), 
+      xbuslogic, "xphysbus", logicEnv, false, 0, checkOverlaps);  
+  G4VPhysicalVolume *yphysbus1 = new G4PVPlacement(0,  
+      G4ThreeVector(-0.5*(ca_size)-hole_size-0.5*shield_thick-0.5*bus_thick,0,ca_pos + bus_length*0.5), 
+      ybuslogic, "yphysbus", logicEnv, false, 0, checkOverlaps);
+  G4VPhysicalVolume *yphysbus2 = new G4PVPlacement(0,  
+      G4ThreeVector(0.5*(ca_size)+hole_size+0.5*shield_thick+0.5*bus_thick,0,ca_pos + bus_length*0.5), 
+      ybuslogic, "yphysbus", logicEnv, false, 0, checkOverlaps);
+  G4VPhysicalVolume *zphysbus = new G4PVPlacement(0,  
+      G4ThreeVector(0,0,ca_pos + bus_length), 
+      zbuslogic, "zphysshield", logicEnv, false, 0, checkOverlaps); 
   return physWorld;
 }
 

@@ -622,8 +622,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   // Constant sphere offsets
   G4double xShift = 0.;
-  G4double yShift = 2.*cm;
-  G4double zShift = 0.;
+  G4double yShift = 0.*cm;
+  G4double zShift = 500.*cm;
 
   // Struct that holds position, momentum direction, and energy
   ParticleSample* r = new ParticleSample();
