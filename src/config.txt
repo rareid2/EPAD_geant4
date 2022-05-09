@@ -1,5 +1,5 @@
 133
-500
-1.5714285714285714
+3300
+2
 0.66
 ../src/mask_designs/67mosaicMURA_matrix_87.78.txt

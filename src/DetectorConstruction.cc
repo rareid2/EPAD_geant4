@@ -377,25 +377,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4VPhysicalVolume *yphysOutline2 = new G4PVPlacement(0,  
       G4ThreeVector(0.5*(ca_size +2*hole_size - hole_size), 0,ca_pos), 
       ylogicOutline, "yphysOutline", logicEnv, false, 0, checkOverlaps);
-  // always return the physical World
-
-  // create an assembly
-  /*
-  G4AssemblyVolume* detectorAssembly = new G4AssemblyVolume();
-
-  G4RotationMatrix Rm;
-  G4ThreeVector    Tm;
-  G4Transform3D    Tr;
-
-  Tm.setX(0.); Tm.setY(-2.*cm); Tm.setZ(0.);
-  Tr = G4Transform3D(Rm, Tm); 
-  detectorAssembly->AddPlacedVolume(logicCollimator, Tr);
-  */
-  
 
   // --------------------------------- add shielding -------------------------------------
   G4double shield_thick = 1.0*mm; 
-  G4double shield_length = 8.0*cm; 
+  G4double shield_length = 10.0*cm; 
   G4Material* shield_material = nist->FindOrBuildMaterial("G4_W");
   G4VSolid* xshield = new G4Box("shield",
                   0.5*(ca_size+2*hole_size+2*shield_thick),0.5*shield_thick, 0.5*shield_length);

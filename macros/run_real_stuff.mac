@@ -7,41 +7,20 @@
 #/run/numberOfWorkers 4
 #
 # Initialize kernel
-
-
-# Set low energy EM processes, including fluorescence
-/process/em/fluo true
-/process/em/auger false
-/process/em/augerCascade false
-/process/em/pixe true
-/process/em/deexcitationIgnoreCut false
-
-
-#/cuts/setMaxCutEnergy 50 eV
+#/run/numberOfThreads 40 
 /run/initialize
-
 
 /control/verbose 0
 /run/verbose 0
 /event/verbose 0
 /tracking/verbose 0
-
-# Set hit and signal file names
-/dataCollection/setHitFileName hitBG_trappedOnly_noSCbus2.csv
-/dataCollection/setSignalFileName signalBG_trappedOnly_noSCbus2.csv
-
 # E0 of background distribution out of {100,200,300} keV
-/particleSource/setFoldingEnergy 100. # [keV]
+/particleSource/setFoldingEnergy 300. # [keV]
 
 # 0 = sin alpha 
-# 1 = sin 2 alpha
-# 2 = isotropic
 /particleSource/setBackgroundSpatialDistribution 0
 
 # 0 = background trapped electrons
 /particleSource/setBackgroundType 0 
-/run/beamOn 1e6 
+/run/beamOn 100000000
 
-# 1 = background loss cone electrons
-#/particleSource/setBackgroundType 1
-#/run/beamOn 1000000

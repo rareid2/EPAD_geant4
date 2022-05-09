@@ -233,8 +233,11 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     # ------------------------------- ------------------------------- ------------------------------- -------------------------------
     heatmap, xedges, yedges = np.histogram2d(xxes, yxes, bins=multiplier*nElements)
 
-    #fname_step = fname_save + '_raw.png'
-    #plot_step(heatmap,np.amax(heatmap),fname_step,label='# particles')
+    fname_step = fname_save + '_raw.png'
+    plot_step(heatmap,np.amax(heatmap),fname_step,label='# particles')
+
+    # add noise here -- poisson noise
+    # add isotropic low energy background(?)--one simulation 
 
     # first get the mask to use in 
     mask, decode = make_mosaic_MURA(nElements,boxdim,holes=False,generate_files=False)
@@ -258,6 +261,15 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     result_image = fft_conv(rawIm,decode)
     fname_step = fname_save + '_dc.png'
     plot_step(result_image,np.amax(result_image),fname_step,label='# particles')
+    #fig = plt.figure()
+    #ax = plt.axes(projection='3d')
+
+    #X = np.linspace(0, len(result_image), len(result_image));
+    #Y = np.linspace(0, len(result_image), len(result_image));
+    #X,Y = np.meshgrid(X,Y);
+
+    #ax.plot_surface(X, Y, result_image, cmap='coolwarm')
+    #plt.show()
 
     # take snr of only the noise floor - nope
     #if 'snr' in ff:
@@ -283,7 +295,7 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     if np.shape(max_col)[0] > 1:
         max_col = max_col[0]
 
-    resolution = plot_peak(np.fliplr(result_image)[:,int(max_col)],fname_save,condition='half_val')
+    #resolution = plot_peak(np.fliplr(result_image)[:,int(max_col)],fname_save,condition='half_val')
     # for diagonal
     #resolution = plot_peak(np.diagonal(np.fliplr(result_image)),fname_save,condition='half_val')
 
@@ -297,7 +309,8 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     del xxes, yxes
     del result_image, heatmap, xedges,yedges, mask,decode,rawIm
     gc.collect()
+    resolution = None
     
     return snr, resolution
 
-#dec_plt('data/hits.csv',False, 11, 3.0, 'test11')
+dec_plt('data/hits.csv',0, 67, 0.66, 'testing',87.78)
