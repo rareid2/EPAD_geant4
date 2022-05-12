@@ -117,21 +117,28 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
                     0,               // copy number
                     checkOverlaps);  // overlaps checking
 
-  // ---------------- get detector config --------------
-
-  // std::fstream configFile;
-  // configFile.open("../src/config.txt", std::ios_base::in);
-
-  // Initialize variables
-  // G4double det1_thickness;
-
-  // Load into variables
-  // configFile >> det1_thickness;
-
-  // configFile.close();
-
   // world offset
   G4double world_offset = env_sizeZ * .45;
+
+  // ---------------- get detector config --------------
+  // config used to set detector thickness and gap between the detectors
+
+  std::fstream det_configFile;
+  det_configFile.open("./src/det_config.txt", std::ios_base::in);
+
+  // Initialize variables
+  G4double det1_thickness, dist_between_det, win_thickness;
+
+  // Load into variables
+  det_configFile >> det1_thickness >> dist_between_det >> win_thickness;
+
+  det_configFile.close();
+
+  G4double detector1_thickness = det1_thickness * um;
+  G4double detector2_thickness =
+      140.0 * um; // set based on thinnest micron semiconductor PSD
+
+  G4double distance_between_detectors = dist_between_det * mm;
 
   // Dimensions for detectors (detector 1 and 2 use the same planar dimensions)
   // G4double detector_dimX = 6.3*cm;
@@ -143,15 +150,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4double detector_dimX = 4.422 * cm;
   G4double detector_dimY = 4.422 * cm;
 
-  G4double detector1_thickness = 140.0 * um;
-  G4double detector2_thickness = 140.0 * um;
-
-  G4double distance_between_detectors = 30.0 * mm;
-
   // Window dimensions
   G4double window_dimX = 7 * cm;
   G4double window_dimY = 7 * cm;
-  G4double window_thickness = 100 * um;
+  G4double window_thickness = win_thickness * um;
   G4double window_gap = 0.25 * mm;
 
   // ---------------- set materials for the detectors --------------
@@ -247,22 +249,19 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   // ---------------- create coded aperture --------------
 
   // comment this out for the 2 detector configuration
-  std::fstream configFile;
-  configFile.open("../src/config.txt", std::ios_base::in);
+  std::fstream ca_configFile;
+  ca_configFile.open("./src/ca_config.txt", std::ios_base::in);
 
   // Initialize variables
   G4double nelements, ca_thickness_um, ca_gap_cm, hole_size_mm;
   G4String filename;
 
   // Load into variables
-  configFile >> nelements >> ca_thickness_um >> ca_gap_cm >> hole_size_mm >>
+  ca_configFile >> nelements >> ca_thickness_um >> ca_gap_cm >> hole_size_mm >>
       filename;
 
-  configFile.close();
+  ca_configFile.close();
 
-  // mask size
-  // G4double nelements = 11;
-  // G4String filename = "../src/mask_designs/11mosaicMURA_matrix.txt";
   // set coded aperture parameters
 
   G4double ca_thickness = ca_thickness_um * um;
@@ -272,11 +271,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4double ca_pos = -(detector1_thickness / 2 + ca_gap - ca_thickness / 2) +
                     world_offset; // defined so that the gap is from the front
                                   // of the first detector to front of mask
-  G4double hole_size = hole_size_mm * mm; // 0.649*mm; // same as element size
-  G4double ca_size = (nelements * hole_size);
-
-  // for mosiac
-  // G4double ca_size = (nelements * hole_size * 2) - hole_size;
+  G4double hole_size = hole_size_mm * mm;     // same as element size
+  G4double ca_size = (nelements * hole_size); // set for mosaic or non-mosaicked
 
   G4double mask_offset =
       -(ca_size / 2 - hole_size / 2); // centering to correct for origin
@@ -388,8 +384,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
       0, G4ThreeVector(0.5 * (ca_size + 2 * hole_size - hole_size), 0, ca_pos),
       ylogicOutline, "yphysOutline", logicEnv, false, 0, checkOverlaps);
 
-  // --------------------------------- add shielding
-  // -------------------------------------
+  // ----------------------- add shielding -----------------------------
   G4double shield_thick = 1.0 * mm;
   G4double shield_length = 10.0 * cm;
   G4Material *shield_material = nist->FindOrBuildMaterial("G4_W");

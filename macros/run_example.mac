@@ -21,4 +21,4 @@
 /run/beamOn 500
 
 # to run: 
-# /control/execute macros/run_real_stuff.mac
+# /control/execute macros/run_example.mac
