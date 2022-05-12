@@ -31,9 +31,9 @@
 #ifndef PrimaryGeneratorAction_h
 #define PrimaryGeneratorAction_h 1
 
-#include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
-//#include "G4GeneralParticleSource.hh"
+#include "G4VUserPrimaryGeneratorAction.hh"
+// #include "G4GeneralParticleSource.hh"
 #include "globals.hh"
 
 class G4ParticleGun;
@@ -43,84 +43,85 @@ class G4Box;
 
 /// The primary generator action class with particle gun.
 ///
-/// The default kinematic is a 6 MeV gamma, randomly distribued 
+/// The default kinematic is a 6 MeV gamma, randomly distribued
 /// in front of the phantom across 80% of the (X,Y) phantom size.
 
-struct ParticleSample{
-G4double x, y, z;
-G4double xDir, yDir, zDir;
-G4double energy;
+struct ParticleSample {
+  G4double x, y, z;
+  G4double xDir, yDir, zDir;
+  G4double energy;
 };
 
-class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
-{
-  public:
-    PrimaryGeneratorAction();
-    virtual ~PrimaryGeneratorAction();
+class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
+public:
+  PrimaryGeneratorAction();
+  virtual ~PrimaryGeneratorAction();
 
-    // method from the base class
-    virtual void GeneratePrimaries(G4Event* anEvent);         
+  // method from the base class
+  virtual void GeneratePrimaries(G4Event *anEvent);
 
-    // Statistical selections of part. energy, position, and direction
-    void GenerateLossConeElectrons(ParticleSample*);
-    void GenerateTrappedElectrons(ParticleSample*);
-    void GenerateSignalSource(ParticleSample*);
-    void GenerateOtherDistributions(ParticleSample*);
-    void GenerateSignalFromFile(ParticleSample*);
-    
-    // Methods for messenger class
-    void SetWhichParticle(G4int partSelection) {fWhichParticle = partSelection;};
+  // Statistical selections of part. energy, position, and direction
+  void GenerateLossConeElectrons(ParticleSample *);
+  void GenerateTrappedElectrons(ParticleSample *);
+  void GenerateSignalSource(ParticleSample *);
+  void GenerateOtherDistributions(ParticleSample *);
+  void GenerateSignalFromFile(ParticleSample *);
 
-    // Sets background and signal folding energies
-    void SetFoldingEnergy(G4double E0) { fE_folding = E0; };
-    
-    // Under GenerateSignalPhotons, selects limiting zenith angle
-    void SetEventAngle(G4double ang) { fPhotonPhiLimitDeg = ang; };
-    
-    // Sets spatial distribution type under GenerateOtherDistributions
-    void SetSpatialDistribution(G4int type) {fSpatialSignalDist = type; };    
-    
-    // Sets background spatial distribution
-    void SetBackgroundSpatialDistribution(G4int type){fBackgroundSpatialDist=type;};
+  // Methods for messenger class
+  void SetWhichParticle(G4int partSelection) {
+    fWhichParticle = partSelection;
+  };
 
+  // Sets background and signal folding energies
+  void SetFoldingEnergy(G4double E0) { fE_folding = E0; };
 
-    void SetPhotonFileName(G4String fname){fPhotonFilename = fname;};
+  // Under GenerateSignalPhotons, selects limiting zenith angle
+  void SetEventAngle(G4double ang) { fPhotonPhiLimitDeg = ang; };
 
-    // Under SpatialDistributions case 3, sets Gaussian parameters
-    void SetThetaDirection(G4double ang) { fDirectionTheta = ang; }; 
-    void SetThetaSigma(G4double stddev) { fThetaSigma = stddev; }; 
-    void SetPhiDirection(G4double ang) { fDirectionPhi = ang; }; 
-    void SetPhiSigma(G4double stddev) { fPhiSigma = stddev; }; 
-    
-    // Method to access particle gun
-    const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
+  // Sets spatial distribution type under GenerateOtherDistributions
+  void SetSpatialDistribution(G4int type) { fSpatialSignalDist = type; };
 
-  private:
-    G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
-    
-    G4double fE_folding;
-    G4double fPI;
-    G4double fDeg2Rad;
-    G4double fSphereR;
-    G4double fLossConeAngleDeg;
-    G4double fPhotonPhiLimitDeg;
-    
-    G4double fDirectionTheta;
-    G4double fThetaSigma;
-    G4double fDirectionPhi;
-    G4double fPhiSigma;
+  // Sets background spatial distribution
+  void SetBackgroundSpatialDistribution(G4int type) {
+    fBackgroundSpatialDist = type;
+  };
 
-    G4int    fSpatialSignalDist;
-    G4int    fBackgroundEnergyDist;    
-    G4int    fBackgroundSpatialDist;
-    G4int    fWhichParticle;
+  void SetPhotonFileName(G4String fname) { fPhotonFilename = fname; };
 
-    G4String fPhotonFilename;
-    unsigned static int fPhotonFileLineCounter;
-    G4ParticleDefinition* fElectronParticle; 
-    G4ParticleDefinition* fPhotonParticle; 
-    PrimaryGeneratorMessenger* fPrimaryGeneratorMessenger;
+  // Under SpatialDistributions case 3, sets Gaussian parameters
+  void SetThetaDirection(G4double ang) { fDirectionTheta = ang; };
+  void SetThetaSigma(G4double stddev) { fThetaSigma = stddev; };
+  void SetPhiDirection(G4double ang) { fDirectionPhi = ang; };
+  void SetPhiSigma(G4double stddev) { fPhiSigma = stddev; };
 
+  // Method to access particle gun
+  const G4ParticleGun *GetParticleGun() const { return fParticleGun; }
+
+private:
+  G4ParticleGun *fParticleGun; // pointer a to G4 gun class
+
+  G4double fE_folding;
+  G4double fPI;
+  G4double fDeg2Rad;
+  G4double fSphereR;
+  G4double fLossConeAngleDeg;
+  G4double fPhotonPhiLimitDeg;
+
+  G4double fDirectionTheta;
+  G4double fThetaSigma;
+  G4double fDirectionPhi;
+  G4double fPhiSigma;
+
+  G4int fSpatialSignalDist;
+  G4int fBackgroundEnergyDist;
+  G4int fBackgroundSpatialDist;
+  G4int fWhichParticle;
+
+  G4String fPhotonFilename;
+  unsigned static int fPhotonFileLineCounter;
+  G4ParticleDefinition *fElectronParticle;
+  G4ParticleDefinition *fPhotonParticle;
+  PrimaryGeneratorMessenger *fPrimaryGeneratorMessenger;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

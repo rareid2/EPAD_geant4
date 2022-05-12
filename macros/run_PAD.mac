@@ -17,10 +17,11 @@
 # E0 of background distribution out of {100,200,300} keV
 /particleSource/setFoldingEnergy 300. # [keV]
 
-# 0 = sin alpha 
+# 0 = 90, 1 = sin, 2 = sin^2, 3 = triangle
 /particleSource/setBackgroundSpatialDistribution 0
 
 # 0 = background trapped electrons
 /particleSource/setBackgroundType 0 
-/run/beamOn 100000000
+/run/beamOn 1000000000
 
+# /control/execute ../macros/run_real_stuff.mac

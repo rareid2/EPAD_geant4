@@ -29,10 +29,10 @@
 /// \brief Implementation of the EventAction class
 
 #include "EventAction.hh"
-#include "RunAction.hh"
-#include "Hit.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4SDManager.hh"
+#include "Hit.hh"
+#include "RunAction.hh"
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
@@ -42,27 +42,21 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-EventAction::EventAction(RunAction* runAction)
-: G4UserEventAction(),
-  fRunAction(runAction),
-  fEdep(0.){
+EventAction::EventAction(RunAction *runAction)
+    : G4UserEventAction(), fRunAction(runAction), fEdep(0.) {
 
   // initialize ids to -1 to reconginze the start of the run
   hitsCollID1 = -1;
   hitsCollID2 = -1;
-
-  }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-EventAction::~EventAction()
-{}
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+EventAction::~EventAction() {}
 
-void EventAction::BeginOfEventAction(const G4Event* event)
-{
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void EventAction::BeginOfEventAction(const G4Event *event) {
 
   // Writes particle initial positions to file
   std::ofstream initialPositionsFile;
@@ -71,110 +65,108 @@ void EventAction::BeginOfEventAction(const G4Event* event)
   G4ThreeVector mom;
 
   initialPositionsFile.open("./data/init_pos.csv", std::ios_base::app);
-  if(initialPositionsFile.is_open())
-  {
-    initialPositionsFile << event->GetPrimaryVertex()->GetX0() / cm << ","
-    << event->GetPrimaryVertex()->GetY0() / cm << ","
-    << event->GetPrimaryVertex()->GetZ0() / cm << ","
-    << event->GetPrimaryVertex()->GetPrimary()->GetMomentumDirection().x() << ","
-    << event->GetPrimaryVertex()->GetPrimary()->GetMomentumDirection().y() << ","
-    << event->GetPrimaryVertex()->GetPrimary()->GetMomentumDirection().z() << "\n";
+  if (initialPositionsFile.is_open()) {
+    initialPositionsFile
+        << event->GetPrimaryVertex()->GetX0() / cm << ","
+        << event->GetPrimaryVertex()->GetY0() / cm << ","
+        << event->GetPrimaryVertex()->GetZ0() / cm << ","
+        << event->GetPrimaryVertex()->GetPrimary()->GetMomentumDirection().x()
+        << ","
+        << event->GetPrimaryVertex()->GetPrimary()->GetMomentumDirection().y()
+        << ","
+        << event->GetPrimaryVertex()->GetPrimary()->GetMomentumDirection().z()
+        << "\n";
 
     initialPositionsFile.close();
-
-
   }
   // gran the hits collection names for each detector
-  G4SDManager * SDman = G4SDManager::GetSDMpointer();
-  if(hitsCollID1<0){
+  G4SDManager *SDman = G4SDManager::GetSDMpointer();
+  if (hitsCollID1 < 0) {
 
     G4String colNam;
 
-    hitsCollID1 = SDman->GetCollectionID(colNam="SD1/hitsCollection");
-    hitsCollID2 = SDman->GetCollectionID(colNam="SD2/hitsCollection");
-
+    hitsCollID1 = SDman->GetCollectionID(colNam = "SD1/hitsCollection");
+    hitsCollID2 = SDman->GetCollectionID(colNam = "SD2/hitsCollection");
   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void EventAction::EndOfEventAction(const G4Event* event)
-{
-    // if -1 need to iniiailze
-   if(hitsCollID1<0) return;
-     G4HCofThisEvent * HCE = event->GetHCofThisEvent();
+void EventAction::EndOfEventAction(const G4Event *event) {
+  // if -1 need to iniiailze
+  if (hitsCollID1 < 0)
+    return;
+  G4HCofThisEvent *HCE = event->GetHCofThisEvent();
 
   // otherwise proceed with getting the hits and saving to the hits file
-  MyHitCollection* HC1 = 0;
-  MyHitCollection* HC2 = 0;
+  MyHitCollection *HC1 = 0;
+  MyHitCollection *HC2 = 0;
 
-  if(HCE)
+  if (HCE)
 
   {
 
-    HC1 = (MyHitCollection*)(HCE->GetHC(hitsCollID1));
-    HC2 = (MyHitCollection*)(HCE->GetHC(hitsCollID2));
-
+    HC1 = (MyHitCollection *)(HCE->GetHC(hitsCollID1));
+    HC2 = (MyHitCollection *)(HCE->GetHC(hitsCollID2));
   }
- 
-  if ( HC1 ) {
+
+  if (HC1) {
 
     int n_hit = HC1->entries();
 
-    for ( int i = 0 ; i < n_hit; i++){
+    for (int i = 0; i < n_hit; i++) {
 
       G4ThreeVector position = (*HC1)[i]->GetPosition();
 
       G4ThreeVector momentum = (*HC1)[i]->GetMomentum();
 
-      G4double      energy   = (*HC1)[i]->GetEnergy();
+      G4double energy = (*HC1)[i]->GetEnergy();
 
       G4cout << "---- Hit # " << i << G4endl;
 
-      G4cout << " Position " <<  position/cm <<  " [cm] " <<G4endl;
+      G4cout << " Position " << position / cm << " [cm] " << G4endl;
 
-      G4cout << " Momentum " <<  momentum/keV << " [keV] " <<G4endl;
+      G4cout << " Momentum " << momentum / keV << " [keV] " << G4endl;
 
-      G4cout << " Energy   " <<  energy/keV   << " [keV] " <<G4endl;
-      
+      G4cout << " Energy   " << energy / keV << " [keV] " << G4endl;
+
       std::ofstream hitFile;
       hitFile.open("../data/hits.csv", std::ios_base::app);
-      hitFile << "\n" << 1 << "," << position.x()/cm << "," << position.y()/cm << "," << position.z()/cm << ","
-      << energy/keV;
+      hitFile << "\n"
+              << 1 << "," << position.x() / cm << "," << position.y() / cm
+              << "," << position.z() / cm << "," << energy / keV;
       hitFile.close();
     }
   }
 
-
-  if ( HC2 ) {
+  if (HC2) {
 
     int n_hit = HC2->entries();
 
-    for ( int i = 0 ; i < n_hit; i++){
+    for (int i = 0; i < n_hit; i++) {
 
       G4ThreeVector position = (*HC2)[i]->GetPosition();
 
       G4ThreeVector momentum = (*HC2)[i]->GetMomentum();
 
-      G4double      energy   = (*HC2)[i]->GetEnergy();
+      G4double energy = (*HC2)[i]->GetEnergy();
 
       G4cout << "---- Hit # " << i << G4endl;
 
-      G4cout << " Position " <<  position/cm <<  " [cm] " <<G4endl;
+      G4cout << " Position " << position / cm << " [cm] " << G4endl;
 
-      G4cout << " Momentum " <<  momentum/keV << " [keV] " <<G4endl;
+      G4cout << " Momentum " << momentum / keV << " [keV] " << G4endl;
 
-      G4cout << " Energy   " <<  energy/keV   << " [keV] " <<G4endl;
-      
+      G4cout << " Energy   " << energy / keV << " [keV] " << G4endl;
+
       std::ofstream hitFile;
       hitFile.open("../data/hits.csv", std::ios_base::app);
-      hitFile << "\n" << 2 << "," << position.x()/cm << "," << position.y()/cm << "," << position.z()/cm << ","
-      << energy/keV;
+      hitFile << "\n"
+              << 2 << "," << position.x() / cm << "," << position.y() / cm
+              << "," << position.z() / cm << "," << energy / keV;
       hitFile.close();
     }
-
   }
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

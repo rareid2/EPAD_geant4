@@ -4,7 +4,7 @@ import random
 
 import seaborn as sns
 sns.set_theme()
-
+"""
 samples = []
 for i in range(10000):
     u = random.random() 
@@ -116,7 +116,7 @@ for vec in uvw:
 # for each random point on the sphere, the direction should be perpendicular to the z axis
 
 plt.hist(angs,bins=30)
-plt.show()
+#plt.show()
 plt.close()
 
 # okay lets work on the first part
@@ -141,3 +141,63 @@ ax.quiver(1, 1, 0, xx, yy, zz, length=.5, normalize=True)
 ax.set_zlim([-1,1])
 #plt.show()
 plt.close()
+
+# finally try sin2
+# use rejection method
+plt.clf()
+
+X_samps = []
+while len(X_samps) < 10000:
+    u = random.random()
+    y = random.random()*np.pi
+    if u < (np.sin(y))**2:
+        X_samps.append(np.rad2deg(y))
+    else:
+        pass
+
+plt.hist(X_samps,bins=30)
+plt.show()
+plt.close()
+
+"""
+fig, ax = plt.subplots()
+
+xx = np.linspace(0,np.pi)
+yy = np.sin(xx)
+yy2 = np.sin(xx)**2
+plt.plot(np.rad2deg(xx),yy,color='#D57A66',label='sine')
+plt.plot(np.rad2deg(xx),yy2,color='#713E5A',label='sine^2')
+plt.plot([75,90],[0,1],color='#8C5E58',label='triangular')
+plt.plot([90,105],[1,0],color='#8C5E58')
+
+plt.axvspan(90-35, 90+35, color='#CA6680', alpha=0.5, lw=0)
+plt.xlabel('pitch angle [deg]')
+plt.legend()
+plt.savefig('./results/parameter_sweeps/all_dists.png')
+
+plt.close()
+
+"""
+fc = 1/2
+a = 75
+b = 105
+c = 90
+xx=  []
+for i in range(10000):
+    U = random.random()
+
+    if U < fc:
+        X = a + np.sqrt(U * (b-a) * (c-a))
+    elif fc <= U < 1:
+        X = b - np.sqrt((1-U) * (b-a) * (c-a))
+    xx.append(X)
+
+#plt.hist(xx,bins=20,color='#713E5A')
+plt.axvspan(90-35, 90+35, color='#CA6680', alpha=0.5, lw=0)
+
+plt.plot([75,90],[0,1],color='#8C5E58')
+plt.xlim([0,180])
+plt.xlabel('pitch angle [deg]')
+plt.show()
+plt.close()
+"""

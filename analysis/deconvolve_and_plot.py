@@ -313,4 +313,4 @@ def dec_plt(fname,uncertainty,nElements,boxdim,ff,ms):
     
     return snr, resolution
 
-dec_plt('data/hits.csv',0, 67, 0.66, 'testing',87.78)
+dec_plt('data/hits.csv',0, 67, 0.66, 'testing_perp',87.78)

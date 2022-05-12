@@ -29,47 +29,42 @@
 /// \brief Implementation of the ActionInitialization class
 
 #include "ActionInitialization.hh"
+#include "EventAction.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "RunAction.hh"
-#include "EventAction.hh"
 #include "SteppingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-ActionInitialization::ActionInitialization()
- : G4VUserActionInitialization()
-{}
+ActionInitialization::ActionInitialization() : G4VUserActionInitialization() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-ActionInitialization::~ActionInitialization()
-{}
+ActionInitialization::~ActionInitialization() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void ActionInitialization::BuildForMaster() const
-{
-  RunAction* runAction = new RunAction;
+void ActionInitialization::BuildForMaster() const {
+  RunAction *runAction = new RunAction;
   SetUserAction(runAction);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void ActionInitialization::Build() const
-{
+void ActionInitialization::Build() const {
   // sets start action (generate a particle)
   SetUserAction(new PrimaryGeneratorAction);
 
   // starts the run
-  RunAction* runAction = new RunAction;
+  RunAction *runAction = new RunAction;
   SetUserAction(new RunAction);
-  
+
   // creates an event
-  EventAction* eventAction = new EventAction(runAction);
+  EventAction *eventAction = new EventAction(runAction);
   SetUserAction(eventAction);
-  
-  // steps through the event 
+
+  // steps through the event
   SetUserAction(new SteppingAction(eventAction));
-}  
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
