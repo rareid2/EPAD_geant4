@@ -28,26 +28,25 @@
 
 #include "Hit.hh"
 
-#include "G4VVisManager.hh"
-#include "G4VisAttributes.hh"
+#include "G4AttDef.hh"
+#include "G4AttDefStore.hh"
+#include "G4AttValue.hh"
 #include "G4Circle.hh"
 #include "G4Colour.hh"
-#include "G4AttDefStore.hh"
-#include "G4AttDef.hh"
-#include "G4AttValue.hh"
+#include "G4SystemOfUnits.hh"
 #include "G4UIcommand.hh"
 #include "G4UnitsTable.hh"
-#include "G4SystemOfUnits.hh"
+#include "G4VVisManager.hh"
+#include "G4VisAttributes.hh"
 #include "G4ios.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4ThreadLocal G4Allocator<MyHit>* MyHitAllocator;
+G4ThreadLocal G4Allocator<MyHit> *MyHitAllocator;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // this does nothing but i think its needed
-void MyHit::Print()
-{}
+void MyHit::Print() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

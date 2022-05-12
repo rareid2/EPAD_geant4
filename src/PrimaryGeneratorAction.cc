@@ -30,43 +30,286 @@
 
 #include "PrimaryGeneratorAction.hh"
 
-#include "G4LogicalVolumeStore.hh"
-#include "G4LogicalVolume.hh"
+#include "PrimaryGeneratorMessenger.hh"
+
 #include "G4Box.hh"
+#include "G4LogicalVolume.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4ParticleGun.hh"
 #include "G4RunManager.hh"
-#include "G4GeneralParticleSource.hh"
-#include "G4ParticleTable.hh"
+// #include "G4GeneralParticleSource.hh"
 #include "G4ParticleDefinition.hh"
+#include "G4ParticleTable.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
 #include "Randomize.hh"
 
+#include <fstream>
+#include <stdexcept>
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+unsigned int PrimaryGeneratorAction::fPhotonFileLineCounter = 1;
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
-: G4VUserPrimaryGeneratorAction(),
-  fParticleGun(0)
-{
-  // particle beam
-  fParticleGun  = new G4GeneralParticleSource();
+    : G4VUserPrimaryGeneratorAction(), fParticleGun(0), fE_folding(100.),
+      fPI(3.14159265358979323846), fDeg2Rad(3.14159265358979323846 / 180.),
+      // TODO: CHECK THE RADIUS
+      fSphereR(15. * cm), fLossConeAngleDeg(64.), fPhotonPhiLimitDeg(40.),
+      fDirectionTheta(0.), fThetaSigma(0.), fDirectionPhi(0.), fPhiSigma(0.),
+      fSpatialSignalDist(3), fBackgroundEnergyDist(0),
+      fBackgroundSpatialDist(2), fWhichParticle(0), fPhotonFilename(),
+      // fPhotonFileLineCounter(0),
+      fElectronParticle(0), fPhotonParticle(0), fPrimaryGeneratorMessenger(0) {
 
+  fParticleGun = new G4ParticleGun();
+
+  fPrimaryGeneratorMessenger = new PrimaryGeneratorMessenger(this);
+
+  fElectronParticle = G4ParticleTable::GetParticleTable()->FindParticle("e-");
+
+  fPhotonParticle = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
 }
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-PrimaryGeneratorAction::~PrimaryGeneratorAction()
-{
-  // memory things i think
+PrimaryGeneratorAction::~PrimaryGeneratorAction() {
   delete fParticleGun;
+  delete fPrimaryGeneratorMessenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
-{
-  // this function is called at the begining of each event
-  fParticleGun->GeneratePrimaryVertex(anEvent);
+void PrimaryGeneratorAction::GenerateLossConeElectrons(ParticleSample *r) {}
+
+void PrimaryGeneratorAction::GenerateSignalSource(ParticleSample *r) {}
+
+void PrimaryGeneratorAction::GenerateOtherDistributions(ParticleSample *r) {}
+
+void PrimaryGeneratorAction::GenerateTrappedElectrons(ParticleSample *r) {
+
+  G4double pitchAngle, gyroPhase, u1, u2;
+
+  // Switch-case for the background spatial distribution type
+  switch (fBackgroundSpatialDist) {
+
+  case (0): // 90 deg (all perpendicular) distribution
+  {
+
+    // generate two random uniformly dist vars -1 to 1
+    u1 = G4UniformRand() * 2. - 1.;
+    u2 = G4UniformRand() * 2. - 1.;
+
+    // sample spatially using rejection method
+    // enter while loop if not less than 1
+    while ((u1 * u1) + (u2 * u2) >= 1) {
+      u1 = G4UniformRand() * 2. - 1.;
+      u2 = G4UniformRand() * 2. - 1.;
+    }
+
+    // exit loop, condition met
+    r->z = fSphereR * 2 * u1 * std::sqrt(1 - (u1 * u1) - (u2 * u2));
+    r->x = fSphereR * 2 * u2 * std::sqrt(1 - (u1 * u1) - (u2 * u2));
+    r->y = fSphereR * (1 - 2 * ((u1 * u1) + (u2 * u2)));
+
+    // PITCH ANGLE DIST
+
+    // pitchAngle ~ all perpendicular
+    pitchAngle = fPI / 2;
+
+    // set unifrom gyrophase and direction
+    gyroPhase = G4UniformRand() * 2. * fPI;
+
+    r->zDir = -std::sin(pitchAngle) * std::cos(gyroPhase);
+    r->xDir = -std::sin(pitchAngle) * std::sin(gyroPhase);
+    r->yDir = -std::cos(pitchAngle);
+
+    break;
+  }
+
+  case (1): // sin(alpha) distribution
+  {
+
+    // generate two random uniformly dist vars -1 to 1
+    u1 = G4UniformRand() * 2. - 1.;
+    u2 = G4UniformRand() * 2. - 1.;
+
+    // sample spatially using rejection method
+    // enter while loop if not less than 1
+    while ((u1 * u1) + (u2 * u2) >= 1) {
+      u1 = G4UniformRand() * 2. - 1.;
+      u2 = G4UniformRand() * 2. - 1.;
+    }
+
+    // exit loop, condition met
+    r->z = fSphereR * 2 * u1 * std::sqrt(1 - (u1 * u1) - (u2 * u2));
+    r->x = fSphereR * 2 * u2 * std::sqrt(1 - (u1 * u1) - (u2 * u2));
+    r->y = fSphereR * (1 - 2 * ((u1 * u1) + (u2 * u2)));
+
+    // PITCH ANGLE DIST
+    // pitchAngle ~ sine -- inversion method
+    pitchAngle = std::acos(G4UniformRand() * 2. - 1.);
+
+    // set unifrom gyrophase and direction
+    gyroPhase = G4UniformRand() * 2. * fPI;
+
+    r->zDir = -std::sin(pitchAngle) * std::cos(gyroPhase);
+    r->xDir = -std::sin(pitchAngle) * std::sin(gyroPhase);
+    r->yDir = -std::cos(pitchAngle);
+
+    break;
+  }
+
+  case (2): // sin^2(alpha) distribution
+  {
+    G4double u1_sinsq, u2_sinsq;
+
+    // generate two random uniformly dist vars -1 to 1
+    u1 = G4UniformRand() * 2. - 1.;
+    u2 = G4UniformRand() * 2. - 1.;
+
+    // sample spatially using rejection method
+    // enter while loop if not less than 1
+    while ((u1 * u1) + (u2 * u2) >= 1) {
+      u1 = G4UniformRand() * 2. - 1.;
+      u2 = G4UniformRand() * 2. - 1.;
+    }
+
+    // exit loop, condition met
+    r->z = fSphereR * 2 * u1 * std::sqrt(1 - (u1 * u1) - (u2 * u2));
+    r->x = fSphereR * 2 * u2 * std::sqrt(1 - (u1 * u1) - (u2 * u2));
+    r->y = fSphereR * (1 - 2 * ((u1 * u1) + (u2 * u2)));
+
+    // PITCH ANGLE DIST
+    //  pitchAngle ~ sine^2 -- rejection sampling
+    u1_sinsq = G4UniformRand();
+    u2_sinsq = G4UniformRand() * fPI;
+
+    while (u1_sinsq < std::sin(u2_sinsq) * std::sin(u2_sinsq)) {
+      u1_sinsq = G4UniformRand();
+      u2_sinsq = G4UniformRand() * fPI;
+    }
+
+    pitchAngle = u2_sinsq;
+
+    // set unifrom gyrophase and direction
+    gyroPhase = G4UniformRand() * 2. * fPI;
+
+    r->zDir = -std::sin(pitchAngle) * std::cos(gyroPhase);
+    r->xDir = -std::sin(pitchAngle) * std::sin(gyroPhase);
+    r->yDir = -std::cos(pitchAngle);
+
+    break;
+  }
+
+  case (3): // triangle distribution
+  {
+    G4double fc, bound1, bound2, tri_center, u_tri, tri_s;
+
+    // generate two random uniformly dist vars -1 to 1
+    u1 = G4UniformRand() * 2. - 1.;
+    u2 = G4UniformRand() * 2. - 1.;
+
+    // sample spatially using rejection method
+    // enter while loop if not less than 1
+    while ((u1 * u1) + (u2 * u2) >= 1) {
+      u1 = G4UniformRand() * 2. - 1.;
+      u2 = G4UniformRand() * 2. - 1.;
+    }
+
+    // exit loop, condition met
+    r->z = fSphereR * 2 * u1 * std::sqrt(1 - (u1 * u1) - (u2 * u2));
+    r->x = fSphereR * 2 * u2 * std::sqrt(1 - (u1 * u1) - (u2 * u2));
+    r->y = fSphereR * (1 - 2 * ((u1 * u1) + (u2 * u2)));
+
+    // pitch angle ~ triangle -- inversion method
+    // in degrees
+    fc = 0.5;
+    bound1 = 75;
+    bound2 = 105;
+    tri_center = 90;
+    u_tri = G4UniformRand();
+
+    if (u_tri < fc) {
+      tri_s =
+          bound1 + std::sqrt(u_tri * (bound2 - bound1) * (tri_center - bound1));
+    } else if (u_tri >= fc) {
+      tri_s = bound2 - std::sqrt((1 - u_tri) * (bound2 - bound1) *
+                                 (tri_center - bound1));
+    } else {
+      tri_s = 0.;
+    }
+    // convret to radians
+    pitchAngle = tri_s * fPI / 180;
+
+    // set unifrom gyrophase and direction
+    gyroPhase = G4UniformRand() * 2. * fPI;
+
+    r->zDir = -std::sin(pitchAngle) * std::cos(gyroPhase);
+    r->xDir = -std::sin(pitchAngle) * std::sin(gyroPhase);
+    r->yDir = -std::cos(pitchAngle);
+
+    break;
+  }
+
+  default:
+    throw std::invalid_argument("Enter a background spatial distribution!");
+  }
+
+  // Switch-case for the energy distribution type
+  switch (fBackgroundEnergyDist) {
+  case (0): // exponential with folding energy fE_folding
+    r->energy = -fE_folding * std::log(G4UniformRand()) * keV;
+    break;
+
+  case (1): // monoenergetic with energy fE_folding
+    r->energy = fE_folding * keV;
+    break;
+
+  default:
+    throw std::invalid_argument("Enter a background energy distribution type!");
+  }
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
+  // Method called to populate member variables with number of
+  // particles to generate
+  // CalculateParticlesToGenerate();
 
+  // Selects electron for particle type
+  fParticleGun->SetParticleDefinition(fElectronParticle);
+
+  // Constant sphere offsets
+  G4double xShift = 0.;
+  G4double yShift = 0. * cm;
+  G4double zShift = 500. * cm;
+
+  // Struct that holds position, momentum direction, and energy
+  ParticleSample *r = new ParticleSample();
+  // r->x ~ x position
+  // r->y ~ y position
+  // r->z ~ z position
+  // r->xDir ~ x momentum direction
+  // r->yDir ~ y momentum direction
+  // r->zDir ~ z momentum direction
+  // r->energy ~ particle energy
+
+  switch (fWhichParticle) {
+  case (0): // Background electron, outside loss cone
+
+    GenerateTrappedElectrons(r);
+
+    fParticleGun->SetParticlePosition(
+        G4ThreeVector(r->x + xShift, r->y + yShift, r->z + zShift));
+    fParticleGun->SetParticleMomentumDirection(
+        G4ThreeVector(r->xDir, r->yDir, r->zDir));
+    fParticleGun->SetParticleEnergy(r->energy);
+    fParticleGun->GeneratePrimaryVertex(anEvent);
+    break;
+
+  default:
+    throw std::invalid_argument("Need to chose particle type!");
+  }
+
+  // Free particle utility struct
+  delete r;
+}
