@@ -1,22 +1,40 @@
-# EPAD
+<h3 align="center">EPAD</h3>
 
-Forward and reverse Monte Carlo simulation of electrons passing through a window
-material, first detector plate, and second detector plate.
+<h3 align="center"> Electron Pitch Angle Detector -- instrument name is a work in progress </h3>
 
+## About
+GEANT4 is a toolkit for simulating the passage of radiation through matter. GEANT4 is required to compile this repo. 
+Follow this [link](https://geant4.web.cern.ch/support/download) to install and build GEANT4. 
 
-To build:
+The purpose of this repo is to simulate an energetic electron detector for pitch angle measurements in the radiation belts. 
 
-mkdir build
+In this repo, you'll find:
+- code to build a solid state silicon detector
+- code to build a coded aperture with various designs into GEANT4, included Modified Uniformly Redundant Arrays (MURA)
+- GEANT4 macro files to simulate radiation belt fluxes with various pitch angle distributions 
 
-cd build
+## Getting Started
 
-cmake ../
+Once you have GEANT4 installed and built succesffully, clone this repo and navigate to the main directory. 
 
-make -j N
+Run:
 
+`mkdir build` 
 
-To run in interactive mode:
+`cd build`
 
-build/main
+`cmake ..`
 
-Idle> /control/execute macros/[run file].mac
+Finally, build with the following command, replace N with the number of cores you'd like to compile with: 
+
+`make -j N `
+
+## Runnning
+
+To run in interactive mode, run the following line from the main directory: 
+
+`build/main`
+
+To try running a pitch angle distribution in the visualization environment, run the following in the command line in the visualization environment:
+
+`Idle> /control/execute macros/run_example.mac`

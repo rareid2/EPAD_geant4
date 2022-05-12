@@ -1,21 +1,24 @@
-#/run/numberOfWorkers 4
-#
+# just for example run purposes
+
 # Initialize kernel
-#/run/numberOfThreads 40 
 /run/initialize
 
 /control/verbose 0
 /run/verbose 0
 /event/verbose 0
 /tracking/verbose 0
+
 # E0 of background distribution out of {100,200,300} keV
 /particleSource/setFoldingEnergy 300. # [keV]
 
-# 0 = 90, 1 = sin, 2 = sin^2, 3 = triangle
-/particleSource/setBackgroundSpatialDistribution 0
+# 0 = 90 deg, 1 = sin, 2 = sin^2, 3 = triangle
+/particleSource/setBackgroundSpatialDistribution 1
 
 # 0 = background trapped electrons
 /particleSource/setBackgroundType 0 
-/run/beamOn 1000000000
 
-# /control/execute ../macros/run_real_stuff.mac
+# run 500 for visualization
+/run/beamOn 500
+
+# to run: 
+# /control/execute macros/run_real_stuff.mac
