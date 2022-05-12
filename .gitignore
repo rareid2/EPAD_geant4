@@ -7,9 +7,3 @@ __pycache/
 */__pycache__
 */*/__pycache__
 */*/*/__pycache__
-
-*.idea
-/build/
-/analysis/__pychache__/*.pyc
-/data/*
-results/*
