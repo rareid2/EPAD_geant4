@@ -1,9 +1,2 @@
-*.macro
-*.swp
-*.o
-*.odt
-
-__pycache/
-*/__pycache__
-*/*/__pycache__
-*/*/*/__pycache__
+build/
+data/
