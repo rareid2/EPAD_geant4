@@ -31,6 +31,7 @@
 #ifndef DetectorConstruction_h
 #define DetectorConstruction_h 1
 
+#include "G4NistManager.hh"
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
 
@@ -39,21 +40,21 @@ class G4LogicalVolume;
 
 /// Detector construction class to define materials and geometry.
 
-class DetectorConstruction : public G4VUserDetectorConstruction
-{
-  public:
-    DetectorConstruction();
-    virtual ~DetectorConstruction();
+class DetectorConstruction : public G4VUserDetectorConstruction {
+public:
+  DetectorConstruction();
+  virtual ~DetectorConstruction();
 
-    virtual G4VPhysicalVolume* Construct();
-    
-    G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
+  // functions used to construct and create sensitive detector volume
+  virtual G4VPhysicalVolume *Construct();
+  virtual void ConstructSDandField();
 
-  protected:
-    G4LogicalVolume*  fScoringVolume;
+protected:
+  // assigned to detector for sensitive detector volumes
+  G4LogicalVolume *detector1;
+  G4LogicalVolume *detector2;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
-

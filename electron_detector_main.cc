@@ -41,10 +41,7 @@
 #endif
 
 // Physics lists
-#include "G4UImanager.hh"
-#include "FTFP_BERT.hh"
-#include "G4EmLivermorePhysics.hh"
-#include "G4PhysListFactory.hh"
+#include "QBBC.hh"
 
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
@@ -57,6 +54,11 @@
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
 
+#include "G4UImanager.hh"
+#include "G4RayTracer.hh"
+#include "G4VisManager.hh"
+#include "G4VisExecutive.hh"
+#include "G4UIExecutive.hh"
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -74,34 +76,38 @@ int main(int argc,char** argv)
   G4Random::setTheEngine(new CLHEP::RanecuEngine);
 
   // Construct the default run manager
-#ifndef G4MULTITHREADED
-  G4MTRunManager* runManager = new G4MTRunManager;
-  runManager->SetNumberOfThreads(4);  // (Grant's computer)
-#else
-  G4RunManager* runManager = new G4RunManager;
-#endif
+  #ifdef G4MULTITHREADED
+    std::cout<<"!!!! running multithreaded mode !!!!!"<<std::endl;
+    G4MTRunManager* runManager = new G4MTRunManager;
+    //runManager->SetNumberOfThreads(8);  // (Grant's computer)
+  #else
+    std::cout<<"!!!! running singlethreaded mode !!!!!"<<std::endl;
+    G4RunManager* runManager = new G4RunManager;
+  #endif
 
 
   // Physics list
-  // G4VModularPhysicsList* physicsList = new FTFP_BERT; //QBBC;
-  G4PhysListFactory factory;
-  G4VModularPhysicsList* physicsList = factory.GetReferencePhysList("FTFP_BERT_LIV");
-  physicsList->SetVerboseLevel(1);
+  G4VModularPhysicsList* physicsList = new QBBC;
+
+  // set verbosity
+  physicsList->SetVerboseLevel(0);
+
+  // initialize the construction
   runManager->SetUserInitialization(new DetectorConstruction());
+  // initialize the physics list
   runManager->SetUserInitialization(physicsList);
+  // initialize the action
   runManager->SetUserInitialization(new ActionInitialization());
 
+  // set limits on particle energy range
   G4double lowLimit = 250. * eV;
   G4double highLimit = 100. * GeV;
   G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(lowLimit, highLimit);
 
-  // runManager->SetUserInitialization(new PhysicsList);
-
+  // this is just naming the run action class
   RunAction* theRunAction = new RunAction;
 
-
   // Initialize visualization
-  //
   G4VisManager* visManager = new G4VisExecutive;
   // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
   visManager->Initialize();

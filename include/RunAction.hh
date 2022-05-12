@@ -31,8 +31,8 @@
 #ifndef RunAction_h
 #define RunAction_h 1
 
-#include "G4UserRunAction.hh"
 #include "G4Accumulable.hh"
+#include "G4UserRunAction.hh"
 #include "globals.hh"
 
 // Choose your fighter:
@@ -48,33 +48,31 @@ class G4Run;
 /// from the energy deposit accumulated via stepping and event actions.
 /// The computed dose is then printed on the screen.
 
-class RunAction : public G4UserRunAction
-{
-  public:
-    RunAction();
-    virtual ~RunAction();
+class RunAction : public G4UserRunAction {
+public:
+  RunAction();
+  virtual ~RunAction();
 
-    // virtual G4Run* GenerateRun();
-    virtual void BeginOfRunAction(const G4Run*);
-    virtual void   EndOfRunAction(const G4Run*);
+  // virtual G4Run* GenerateRun();
+  virtual void BeginOfRunAction(const G4Run *);
+  virtual void EndOfRunAction(const G4Run *);
 
-    void AddEdep (G4double edep);
+  // energy deposition (total)
+  void AddEdep(G4double edep);
 
-    void getFilenameToRunAction(G4String fileName){fFileName = fileName;}
+  // to get the needed run call
+  void getFilenameToRunAction(G4String fileName) { fFileName = fileName; }
 
+private:
+  G4Accumulable<G4double> fEdep;
+  G4Accumulable<G4double> fEdep2;
 
+  G4String fFileName;
 
-  private:
-    G4Accumulable<G4double> fEdep;
-    G4Accumulable<G4double> fEdep2;
+  G4String asciiFileName;
+  std::ofstream *asciiFile;
 
-    G4String fFileName;
-
-    G4String asciiFileName;
-    std::ofstream *asciiFile;
-
-    G4String histFileName;
-
+  G4String histFileName;
 };
 
 #endif

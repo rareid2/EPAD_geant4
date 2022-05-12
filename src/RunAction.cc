@@ -29,74 +29,38 @@
 /// \brief Implementation of the RunAction class
 
 #include "RunAction.hh"
-#include "PrimaryGeneratorAction.hh"
 #include "DetectorConstruction.hh"
-// #include "Run.hh"
-// #include "DetectorAnalysis.hh"
-
-#include "G4RunManager.hh"
-#include "G4Run.hh"
 #include "G4AccumulableManager.hh"
-#include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
-#include "G4UnitsTable.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4Run.hh"
+#include "G4RunManager.hh"
 #include "G4SystemOfUnits.hh"
-// #include "HistoManager.hh"
-
+#include "G4UnitsTable.hh"
+#include "PrimaryGeneratorAction.hh"
 
 #include <fstream>
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-
-
-RunAction::RunAction()
-: G4UserRunAction(),
-  fEdep(0.),
-  fEdep2(0.)
-{}
+RunAction::RunAction() : G4UserRunAction(), fEdep(0.), fEdep2(0.) {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-RunAction::~RunAction()
-{}
+RunAction::~RunAction() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void RunAction::BeginOfRunAction(const G4Run*)
-{
-
-  std::ofstream hitFile;
-  hitFile.open("../analysis/data/hits.csv", std::ios_base::app);
-
-  /*
-  if (!fFileName.empty()){
-
-    hitFile << fFileName << "\n";
-
-  }
-  else{
-
-    hitFile << "NFN\n"; // No File Name code
-
-  }
-
-  hitFile.close();
- */
-}
+void RunAction::BeginOfRunAction(const G4Run *) {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void RunAction::EndOfRunAction(const G4Run*)
-{
-
-}
+void RunAction::EndOfRunAction(const G4Run *) {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void RunAction::AddEdep(G4double edep)
-{
-  fEdep  += edep;
-  fEdep2 += edep*edep;
+void RunAction::AddEdep(G4double edep) {
+  fEdep += edep;
+  fEdep2 += edep * edep;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

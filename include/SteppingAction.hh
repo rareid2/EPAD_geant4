@@ -41,21 +41,18 @@ class G4LogicalVolume;
 /// Stepping action class
 ///
 
-class SteppingAction : public G4UserSteppingAction
-{
-  public:
-    SteppingAction(EventAction* eventAction);
+class SteppingAction : public G4UserSteppingAction {
+public:
+  SteppingAction(EventAction *eventAction);
 
-    virtual ~SteppingAction();
+  virtual ~SteppingAction();
 
-    // method from the base class
-    virtual void UserSteppingAction(const G4Step*);
+  // method from the base class
+  virtual void UserSteppingAction(const G4Step *);
 
 public:
-
-  private:
-    EventAction*  fEventAction;
-    // G4LogicalVolume* fScoringVolume;
+private:
+  EventAction *fEventAction;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
