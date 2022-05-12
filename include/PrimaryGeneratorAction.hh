@@ -33,7 +33,6 @@
 
 #include "G4ParticleGun.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
-// #include "G4GeneralParticleSource.hh"
 #include "globals.hh"
 
 class G4ParticleGun;
@@ -61,38 +60,13 @@ public:
   virtual void GeneratePrimaries(G4Event *anEvent);
 
   // Statistical selections of part. energy, position, and direction
-  void GenerateLossConeElectrons(ParticleSample *);
-  void GenerateTrappedElectrons(ParticleSample *);
-  void GenerateSignalSource(ParticleSample *);
-  void GenerateOtherDistributions(ParticleSample *);
-  void GenerateSignalFromFile(ParticleSample *);
-
-  // Methods for messenger class
-  void SetWhichParticle(G4int partSelection) {
-    fWhichParticle = partSelection;
-  };
+  void GenerateElectrons(ParticleSample *);
 
   // Sets background and signal folding energies
   void SetFoldingEnergy(G4double E0) { fE_folding = E0; };
 
-  // Under GenerateSignalPhotons, selects limiting zenith angle
-  void SetEventAngle(G4double ang) { fPhotonPhiLimitDeg = ang; };
-
-  // Sets spatial distribution type under GenerateOtherDistributions
-  void SetSpatialDistribution(G4int type) { fSpatialSignalDist = type; };
-
   // Sets background spatial distribution
-  void SetBackgroundSpatialDistribution(G4int type) {
-    fBackgroundSpatialDist = type;
-  };
-
-  void SetPhotonFileName(G4String fname) { fPhotonFilename = fname; };
-
-  // Under SpatialDistributions case 3, sets Gaussian parameters
-  void SetThetaDirection(G4double ang) { fDirectionTheta = ang; };
-  void SetThetaSigma(G4double stddev) { fThetaSigma = stddev; };
-  void SetPhiDirection(G4double ang) { fDirectionPhi = ang; };
-  void SetPhiSigma(G4double stddev) { fPhiSigma = stddev; };
+  void SetPitchAngleDistribution(G4int type) { fPitchAngleDist = type; };
 
   // Method to access particle gun
   const G4ParticleGun *GetParticleGun() const { return fParticleGun; }
@@ -102,25 +76,11 @@ private:
 
   G4double fE_folding;
   G4double fPI;
-  G4double fDeg2Rad;
   G4double fSphereR;
-  G4double fLossConeAngleDeg;
-  G4double fPhotonPhiLimitDeg;
 
-  G4double fDirectionTheta;
-  G4double fThetaSigma;
-  G4double fDirectionPhi;
-  G4double fPhiSigma;
+  G4int fPitchAngleDist;
 
-  G4int fSpatialSignalDist;
-  G4int fBackgroundEnergyDist;
-  G4int fBackgroundSpatialDist;
-  G4int fWhichParticle;
-
-  G4String fPhotonFilename;
-  unsigned static int fPhotonFileLineCounter;
   G4ParticleDefinition *fElectronParticle;
-  G4ParticleDefinition *fPhotonParticle;
   PrimaryGeneratorMessenger *fPrimaryGeneratorMessenger;
 };
 

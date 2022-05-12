@@ -35,11 +35,10 @@
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"
 #include "G4LogicalVolumeStore.hh"
-#include "G4ParticleGun.hh"
-#include "G4RunManager.hh"
-// #include "G4GeneralParticleSource.hh"
 #include "G4ParticleDefinition.hh"
+#include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
+#include "G4RunManager.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
 #include "Randomize.hh"
@@ -49,26 +48,16 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-unsigned int PrimaryGeneratorAction::fPhotonFileLineCounter = 1;
-
 PrimaryGeneratorAction::PrimaryGeneratorAction()
     : G4VUserPrimaryGeneratorAction(), fParticleGun(0), fE_folding(100.),
-      fPI(3.14159265358979323846), fDeg2Rad(3.14159265358979323846 / 180.),
-      // TODO: CHECK THE RADIUS
-      fSphereR(15. * cm), fLossConeAngleDeg(64.), fPhotonPhiLimitDeg(40.),
-      fDirectionTheta(0.), fThetaSigma(0.), fDirectionPhi(0.), fPhiSigma(0.),
-      fSpatialSignalDist(3), fBackgroundEnergyDist(0),
-      fBackgroundSpatialDist(2), fWhichParticle(0), fPhotonFilename(),
-      // fPhotonFileLineCounter(0),
-      fElectronParticle(0), fPhotonParticle(0), fPrimaryGeneratorMessenger(0) {
+      fPI(3.14159265358979323846), fSphereR(15. * cm), fPitchAngleDist(0),
+      fElectronParticle(0), fPrimaryGeneratorMessenger(0) {
 
   fParticleGun = new G4ParticleGun();
 
   fPrimaryGeneratorMessenger = new PrimaryGeneratorMessenger(this);
 
   fElectronParticle = G4ParticleTable::GetParticleTable()->FindParticle("e-");
-
-  fPhotonParticle = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -79,18 +68,12 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction() {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void PrimaryGeneratorAction::GenerateLossConeElectrons(ParticleSample *r) {}
-
-void PrimaryGeneratorAction::GenerateSignalSource(ParticleSample *r) {}
-
-void PrimaryGeneratorAction::GenerateOtherDistributions(ParticleSample *r) {}
-
-void PrimaryGeneratorAction::GenerateTrappedElectrons(ParticleSample *r) {
+void PrimaryGeneratorAction::GenerateElectrons(ParticleSample *r) {
 
   G4double pitchAngle, gyroPhase, u1, u2;
 
   // Switch-case for the background spatial distribution type
-  switch (fBackgroundSpatialDist) {
+  switch (fPitchAngleDist) {
 
   case (0): // 90 deg (all perpendicular) distribution
   {
@@ -252,28 +235,16 @@ void PrimaryGeneratorAction::GenerateTrappedElectrons(ParticleSample *r) {
   }
 
   default:
-    throw std::invalid_argument("Enter a background spatial distribution!");
+    throw std::invalid_argument("Enter a pitch angle distribution!");
   }
 
-  // Switch-case for the energy distribution type
-  switch (fBackgroundEnergyDist) {
-  case (0): // exponential with folding energy fE_folding
-    r->energy = -fE_folding * std::log(G4UniformRand()) * keV;
-    break;
-
-  case (1): // monoenergetic with energy fE_folding
-    r->energy = fE_folding * keV;
-    break;
-
-  default:
-    throw std::invalid_argument("Enter a background energy distribution type!");
-  }
+  // exponential with folding energy fE_folding
+  r->energy = -fE_folding * std::log(G4UniformRand()) * keV;
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
   // Method called to populate member variables with number of
   // particles to generate
-  // CalculateParticlesToGenerate();
 
   // Selects electron for particle type
   fParticleGun->SetParticleDefinition(fElectronParticle);
@@ -293,22 +264,14 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
   // r->zDir ~ z momentum direction
   // r->energy ~ particle energy
 
-  switch (fWhichParticle) {
-  case (0): // Background electron, outside loss cone
+  GenerateElectrons(r);
 
-    GenerateTrappedElectrons(r);
-
-    fParticleGun->SetParticlePosition(
-        G4ThreeVector(r->x + xShift, r->y + yShift, r->z + zShift));
-    fParticleGun->SetParticleMomentumDirection(
-        G4ThreeVector(r->xDir, r->yDir, r->zDir));
-    fParticleGun->SetParticleEnergy(r->energy);
-    fParticleGun->GeneratePrimaryVertex(anEvent);
-    break;
-
-  default:
-    throw std::invalid_argument("Need to chose particle type!");
-  }
+  fParticleGun->SetParticlePosition(
+      G4ThreeVector(r->x + xShift, r->y + yShift, r->z + zShift));
+  fParticleGun->SetParticleMomentumDirection(
+      G4ThreeVector(r->xDir, r->yDir, r->zDir));
+  fParticleGun->SetParticleEnergy(r->energy);
+  fParticleGun->GeneratePrimaryVertex(anEvent);
 
   // Free particle utility struct
   delete r;

@@ -11,12 +11,9 @@
 /particleSource/setFoldingEnergy 300. # [keV]
 
 # 0 = 90 deg, 1 = sin, 2 = sin^2, 3 = triangle
-/particleSource/setBackgroundSpatialDistribution 1
+/particleSource/setPitchAngleDistribution 1
 
-# 0 = background trapped electrons
-/particleSource/setBackgroundType 0 
-
-/run/beamOn 100000000
+/run/beamOn 10000
 
 # to run: 
 # /control/execute macros/run_PAD.mac
