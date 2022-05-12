@@ -101,7 +101,7 @@ void EventAction::EndOfEventAction(const G4Event *event) {
 
       G4double energy = (*HC1)[i]->GetEnergy();
 
-      // G4cout << "---- Hit # " << i << G4endl;
+      G4cout << "---- Hit # " << i << G4endl;
 
       // G4cout << " Position " << position / cm << " [cm] " << G4endl;
 
@@ -117,7 +117,7 @@ void EventAction::EndOfEventAction(const G4Event *event) {
       hitFile.close();
     }
   }
-  /* // uncomment for two detector configuration
+  // uncomment for two detector configuration
   if (HC2) {
 
     int n_hit = HC2->entries();
@@ -130,13 +130,13 @@ void EventAction::EndOfEventAction(const G4Event *event) {
 
       G4double energy = (*HC2)[i]->GetEnergy();
 
-      //G4cout << "---- Hit # " << i << G4endl;
+      // G4cout << "---- Hit # " << i << G4endl;
 
-      //G4cout << " Position " << position / cm << " [cm] " << G4endl;
+      // G4cout << " Position " << position / cm << " [cm] " << G4endl;
 
-      //G4cout << " Momentum " << momentum / keV << " [keV] " << G4endl;
+      // G4cout << " Momentum " << momentum / keV << " [keV] " << G4endl;
 
-      //G4cout << " Energy   " << energy / keV << " [keV] " << G4endl;
+      // G4cout << " Energy   " << energy / keV << " [keV] " << G4endl;
 
       std::ofstream hitFile;
       hitFile.open("../data/hits.csv", std::ios_base::app);
@@ -146,7 +146,6 @@ void EventAction::EndOfEventAction(const G4Event *event) {
       hitFile.close();
     }
   }
-  */
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
