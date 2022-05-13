@@ -46,7 +46,7 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     newHit->SetEnergy(aStep->GetPreStepPoint()->GetKineticEnergy());
     hitsCollection->insert(newHit);
 
-    // uncomment this for two detector configuration
+    // comment this for two detector configuration
     G4Track *aTrack = aStep->GetTrack();
     aTrack->SetTrackStatus(fStopAndKill);
   }
