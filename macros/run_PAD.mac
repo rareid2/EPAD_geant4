@@ -1,19 +1,9 @@
-# Initialize kernel
 /run/numberOfThreads 40 
-/run/initialize
-
-/control/verbose 0
-/run/verbose 0
-/event/verbose 0
-/tracking/verbose 0
-
-# E0 of background distribution out of {100,200,300} keV
-/particleSource/setFoldingEnergy 300. # [keV]
-
-# 0 = 90 deg, 1 = sin, 2 = sin^2, 3 = triangle
-/particleSource/setPitchAngleDistribution 1
-
-/run/beamOn 10000
-
-# to run: 
-# /control/execute macros/run_PAD.mac
+/run/initialize 
+/control/verbose 0 
+/run/verbose 0 
+/event/verbose 0 
+/tracking/verbose 0 
+/particleSource/setFoldingEnergy 100 
+/particleSource/setPitchAngleDistribution 1 
+/run/beamOn 100000 

@@ -12,10 +12,7 @@
 /particleSource/setFoldingEnergy 300. # [keV]
 
 # 0 = 90 deg, 1 = sin, 2 = sin^2, 3 = triangle
-/particleSource/setBackgroundSpatialDistribution 1
-
-# 0 = background trapped electrons
-/particleSource/setBackgroundType 0 
+/particleSource/setPitchAngleDistribution 1
 
 # run 500 for visualization
 /run/beamOn 500
