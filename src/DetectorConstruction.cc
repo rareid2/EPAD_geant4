@@ -127,10 +127,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   det_configFile.open("./src/det_config.txt", std::ios_base::in);
 
   // Initialize variables
-  G4double det1_thickness, dist_between_det, win_thickness;
+  G4double det1_thickness, dist_between_det, win_thickness, det_size;
 
   // Load into variables
-  det_configFile >> det1_thickness >> dist_between_det >> win_thickness;
+  det_configFile >> det1_thickness >> dist_between_det >> win_thickness >> det_size;
 
   det_configFile.close();
 
@@ -140,15 +140,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   G4double distance_between_detectors = dist_between_det * mm;
 
-  // Dimensions for detectors (detector 1 and 2 use the same planar dimensions)
-  // G4double detector_dimX = 6.3*cm;
-  // G4double detector_dimY = 6.3*cm;
-
-  // G4double detector_dimX = 1.364*cm;
-  // G4double detector_dimY = 1.364*cm;
-
-  G4double detector_dimX = 4.422 * cm;
-  G4double detector_dimY = 4.422 * cm;
+  G4double detector_dimX = det_size * cm;
+  G4double detector_dimY = det_size * cm;
 
   // Window dimensions
   G4double window_dimX = 7 * cm;
