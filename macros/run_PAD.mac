@@ -4,6 +4,6 @@
 /run/verbose 0 
 /event/verbose 0 
 /tracking/verbose 0 
-/particleSource/setFoldingEnergy 100 
-/particleSource/setPitchAngleDistribution 1 
-/run/beamOn 100000 
+/particleSource/setFoldingEnergy 300 
+/particleSource/setPitchAngleDistribution 2 
+/run/beamOn 1000000000 
