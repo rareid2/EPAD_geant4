@@ -29,8 +29,38 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 # Locate sources and headers for this project
 # NB: headers are included so they will show up in IDEs
 #
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+
+option(CONSTRUCT "which construction to use - coded aperture, two detectors, pinhole" CA) #coded aperture by default
+option(PARTICLE_SOURCE "configure with particle gun (pt src) or distribution" DS) #distribution by default 
+
+if((${CONSTRUCT} STREQUAL CA) AND (${PARTICLE_SOURCE} STREQUAL DS)) # default state
+
+  file(GLOB sources ${PROJECT_SOURCE_DIR}/src/ActionInitialization_DS.cc ${PROJECT_SOURCE_DIR}/src/EventAction_CA.cc ${PROJECT_SOURCE_DIR}/src/DetectorConstruction_CA.cc ${PROJECT_SOURCE_DIR}/src/Hit.cc ${PROJECT_SOURCE_DIR}/src/PrimaryGeneratorAction_DS.cc ${PROJECT_SOURCE_DIR}/src/PrimaryGeneratorMessenger.cc ${PROJECT_SOURCE_DIR}/src/RunAction_DS.cc ${PROJECT_SOURCE_DIR}/src/SensitiveDetector_CA.cc ${PROJECT_SOURCE_DIR}/src/SteppingAction.cc)  
+  file(GLOB headers ${PROJECT_SOURCE_DIR}/include/ActionInitialization.hh ${PROJECT_SOURCE_DIR}/include/DetectorConstruction.hh ${PROJECT_SOURCE_DIR}/include/EventAction.hh ${PROJECT_SOURCE_DIR}/include/Hit.hh ${PROJECT_SOURCE_DIR}/include/PrimaryGeneratorAction_DS.hh ${PROJECT_SOURCE_DIR}/include/PrimaryGeneratorMessenger.hh ${PROJECT_SOURCE_DIR}/include/RunAction.hh ${PROJECT_SOURCE_DIR}/include/SensitiveDetector.hh ${PROJECT_SOURCE_DIR}/include/SteppingAction.hh)
+
+elseif((${CONSTRUCT} STREQUAL CA) AND (${PARTICLE_SOURCE} STREQUAL PS))
+
+  file(GLOB sources ${PROJECT_SOURCE_DIR}/src/ActionInitialization_PS.cc ${PROJECT_SOURCE_DIR}/src/EventAction_CA.cc ${PROJECT_SOURCE_DIR}/src/DetectorConstruction_CA.cc ${PROJECT_SOURCE_DIR}/src/Hit.cc ${PROJECT_SOURCE_DIR}/src/PrimaryGeneratorAction_PS.cc ${PROJECT_SOURCE_DIR}/src/RunAction_PS.cc ${PROJECT_SOURCE_DIR}/src/SensitiveDetector_CA.cc ${PROJECT_SOURCE_DIR}/src/SteppingAction.cc)  
+  file(GLOB headers ${PROJECT_SOURCE_DIR}/include/ActionInitialization.hh ${PROJECT_SOURCE_DIR}/include/DetectorConstruction.hh ${PROJECT_SOURCE_DIR}/include/EventAction.hh ${PROJECT_SOURCE_DIR}/include/Hit.hh ${PROJECT_SOURCE_DIR}/include/PrimaryGeneratorAction_PS.hh ${PROJECT_SOURCE_DIR}/include/RunAction.hh ${PROJECT_SOURCE_DIR}/include/SensitiveDetector.hh ${PROJECT_SOURCE_DIR}/include/SteppingAction.hh)
+
+elseif((${CONSTRUCT} STREQUAL TD) AND (${PARTICLE_SOURCE} STREQUAL DS))
+
+  file(GLOB sources ${PROJECT_SOURCE_DIR}/src/ActionInitialization_DS.cc ${PROJECT_SOURCE_DIR}/src/EventAction_TD.cc ${PROJECT_SOURCE_DIR}/src/DetectorConstruction_TD.cc ${PROJECT_SOURCE_DIR}/src/Hit.cc ${PROJECT_SOURCE_DIR}/src/PrimaryGeneratorAction_DS.cc ${PROJECT_SOURCE_DIR}/src/PrimaryGeneratorMessenger.cc ${PROJECT_SOURCE_DIR}/src/RunAction_DS.cc ${PROJECT_SOURCE_DIR}/src/SensitiveDetector_TD.cc ${PROJECT_SOURCE_DIR}/src/SteppingAction.cc)  
+  file(GLOB headers ${PROJECT_SOURCE_DIR}/include/ActionInitialization.hh ${PROJECT_SOURCE_DIR}/include/DetectorConstruction.hh ${PROJECT_SOURCE_DIR}/include/EventAction.hh ${PROJECT_SOURCE_DIR}/include/Hit.hh ${PROJECT_SOURCE_DIR}/include/PrimaryGeneratorAction_DS.hh ${PROJECT_SOURCE_DIR}/include/PrimaryGeneratorMessenger.hh ${PROJECT_SOURCE_DIR}/include/RunAction.hh ${PROJECT_SOURCE_DIR}/include/SensitiveDetector.hh ${PROJECT_SOURCE_DIR}/include/SteppingAction.hh)
+
+elseif((${CONSTRUCT} STREQUAL TD) AND (${PARTICLE_SOURCE} STREQUAL PS))
+
+  file(GLOB sources ${PROJECT_SOURCE_DIR}/src/ActionInitialization_PS.cc ${PROJECT_SOURCE_DIR}/src/EventAction_TD.cc ${PROJECT_SOURCE_DIR}/src/DetectorConstruction_TD.cc ${PROJECT_SOURCE_DIR}/src/Hit.cc ${PROJECT_SOURCE_DIR}/src/PrimaryGeneratorAction_PS.cc ${PROJECT_SOURCE_DIR}/src/RunAction_PS.cc ${PROJECT_SOURCE_DIR}/src/SensitiveDetector_TD.cc ${PROJECT_SOURCE_DIR}/src/SteppingAction.cc)  
+  file(GLOB headers ${PROJECT_SOURCE_DIR}/include/ActionInitialization.hh ${PROJECT_SOURCE_DIR}/include/DetectorConstruction.hh ${PROJECT_SOURCE_DIR}/include/EventAction.hh ${PROJECT_SOURCE_DIR}/include/Hit.hh ${PROJECT_SOURCE_DIR}/include/PrimaryGeneratorAction_PS.hh ${PROJECT_SOURCE_DIR}/include/RunAction.hh ${PROJECT_SOURCE_DIR}/include/SensitiveDetector.hh ${PROJECT_SOURCE_DIR}/include/SteppingAction.hh)
+
+else() # default state
+
+  file(GLOB sources ${PROJECT_SOURCE_DIR}/src/ActionInitialization_DS.cc ${PROJECT_SOURCE_DIR}/src/EventAction_CA.cc ${PROJECT_SOURCE_DIR}/src/DetectorConstruction_CA.cc ${PROJECT_SOURCE_DIR}/src/Hit.cc ${PROJECT_SOURCE_DIR}/src/PrimaryGeneratorAction_DS.cc ${PROJECT_SOURCE_DIR}/src/PrimaryGeneratorMessenger.cc ${PROJECT_SOURCE_DIR}/src/RunAction_DS.cc ${PROJECT_SOURCE_DIR}/src/SensitiveDetector_CA.cc ${PROJECT_SOURCE_DIR}/src/SteppingAction.cc)  
+  file(GLOB headers ${PROJECT_SOURCE_DIR}/include/ActionInitialization.hh ${PROJECT_SOURCE_DIR}/include/DetectorConstruction.hh ${PROJECT_SOURCE_DIR}/include/EventAction.hh ${PROJECT_SOURCE_DIR}/include/Hit.hh ${PROJECT_SOURCE_DIR}/include/PrimaryGeneratorAction_DS.hh ${PROJECT_SOURCE_DIR}/include/PrimaryGeneratorMessenger.hh ${PROJECT_SOURCE_DIR}/include/RunAction.hh ${PROJECT_SOURCE_DIR}/include/SensitiveDetector.hh ${PROJECT_SOURCE_DIR}/include/SteppingAction.hh)
+
+endif()
+unset(CONSTRUCT CACHE) # <---- this is the important!!
+unset(PARTICLE_SOURCE CACHE) # <---- this is the important!!
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries

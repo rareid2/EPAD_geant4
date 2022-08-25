@@ -28,7 +28,7 @@
 /// \file PrimaryGeneratorAction.cc
 /// \brief Implementation of the PrimaryGeneratorAction class
 
-#include "PrimaryGeneratorAction.hh"
+#include "PrimaryGeneratorAction_DS.hh"
 
 #include "PrimaryGeneratorMessenger.hh"
 

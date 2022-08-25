@@ -6,7 +6,7 @@
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
 #include "G4UIdirectory.hh"
-#include "PrimaryGeneratorAction.hh"
+#include "PrimaryGeneratorAction_DS.hh"
 
 PrimaryGeneratorMessenger::PrimaryGeneratorMessenger(
     PrimaryGeneratorAction *prim)
