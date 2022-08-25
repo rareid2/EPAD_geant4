@@ -23,48 +23,44 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: ActionInitialization.cc 68058 2013-03-13 14:47:43Z gcosmo $
+// $Id: PrimaryGeneratorAction.cc 94307 2015-11-11 13:42:46Z gcosmo $
 //
-/// \file ActionInitialization.cc
-/// \brief Implementation of the ActionInitialization class
+/// \file PrimaryGeneratorAction.cc
+/// \brief Implementation of the PrimaryGeneratorAction class
 
-#include "ActionInitialization.hh"
-#include "EventAction.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "RunAction.hh"
-#include "SteppingAction.hh"
+#include "PrimaryGeneratorAction_PS.hh"
+
+#include "G4Box.hh"
+#include "G4GeneralParticleSource.hh"
+#include "G4LogicalVolume.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4ParticleTable.hh"
+#include "G4RunManager.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
+#include "Randomize.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-ActionInitialization::ActionInitialization() : G4VUserActionInitialization() {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-ActionInitialization::~ActionInitialization() {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void ActionInitialization::BuildForMaster() const {
-  RunAction *runAction = new RunAction;
-  SetUserAction(runAction);
+PrimaryGeneratorAction::PrimaryGeneratorAction()
+    : G4VUserPrimaryGeneratorAction(), fParticleGun(0) {
+  // particle beam
+  fParticleGun = new G4GeneralParticleSource();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void ActionInitialization::Build() const {
-  // sets start action (generate a particle)
-  SetUserAction(new PrimaryGeneratorAction);
+PrimaryGeneratorAction::~PrimaryGeneratorAction() {
+  // memory things i think
+  delete fParticleGun;
+}
 
-  // starts the run
-  RunAction *runAction = new RunAction;
-  SetUserAction(new RunAction);
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-  // creates an event
-  EventAction *eventAction = new EventAction(runAction);
-  SetUserAction(eventAction);
-
-  // steps through the event
-  SetUserAction(new SteppingAction(eventAction));
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
+  // this function is called at the begining of each event
+  fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
