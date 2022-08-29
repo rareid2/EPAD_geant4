@@ -7,5 +7,5 @@
 /gps/position 0 0 -500 cm 
 /gps/pos/type Point 
 /gps/direction 0 0 1 
-/gps/energy 500 keV 
+/gps/energy 5000 keV 
 /run/beamOn 10000 
