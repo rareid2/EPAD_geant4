@@ -265,7 +265,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
                     world_offset; // defined so that the gap is from the front
                                   // of the first detector to front of mask
   G4double hole_size = hole_size_mm * mm;     // same as element size
-  G4double ca_size = (nelements * hole_size); // set for mosaic or non-mosaicked
+  //G4double ca_size = (nelements * hole_size); // set for mosaic or non-mosaicked
+  G4double ca_size = 87.87 * mm;
 
   G4double mask_offset =
       -(ca_size / 2 - hole_size / 2); // centering to correct for origin
