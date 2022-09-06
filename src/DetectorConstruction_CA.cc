@@ -271,9 +271,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4double mask_offset =
       -(ca_size / 2 - hole_size / 2); // centering to correct for origin
 
-  // create the mask element -- pad with 0.5um to ensure overlap
+  // create the mask element -- pad with 0.005um to ensure overlap
   G4VSolid *ca_element =
-      new G4Box("hole", 0.5 * hole_size + 0.5 * um, 0.5 * hole_size + 0.5 * um,
+      new G4Box("hole", 0.5 * hole_size + 0.005 * um, 0.5 * hole_size + 0.005 * um,
                 0.5 * ca_thickness);
 
   G4LogicalVolume *logicMask = new G4LogicalVolume(ca_element,   // its solid
