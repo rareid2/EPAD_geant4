@@ -2,4 +2,5 @@
 400
 1
 1
-./src/mask_designs/1MURA_matrix_1.00.txt
+87
+./src/mask_designs/1MURA_matrix_87.00.txt
