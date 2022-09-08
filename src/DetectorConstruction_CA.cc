@@ -246,7 +246,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   ca_configFile.open("./src/ca_config.txt", std::ios_base::in);
 
   // Initialize variables
-  G4double nelements, ca_thickness_um, ca_gap_cm, hole_size_mm;
+  G4double nelements, ca_thickness_um, ca_gap_cm, hole_size_mm, ca_size_mm;
   G4String filename;
 
   // Load into variables
