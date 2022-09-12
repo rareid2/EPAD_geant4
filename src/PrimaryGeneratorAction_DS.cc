@@ -50,7 +50,7 @@
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
     : G4VUserPrimaryGeneratorAction(), fParticleGun(0), fE_folding(100.),
-      fPI(3.14159265358979323846), fSphereR(15. * cm), fPitchAngleDist(0),
+      fPI(3.14159265358979323846), fSphereR(12. * cm), fPitchAngleDist(0),
       fElectronParticle(0), fPrimaryGeneratorMessenger(0) {
 
   fParticleGun = new G4ParticleGun();
