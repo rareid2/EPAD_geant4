@@ -1,0 +1,16 @@
+/run/initialize 
+/control/verbose 0 
+/run/verbose 0 
+/event/verbose 0 
+/tracking/verbose 0 
+/gps/particle e- 
+/gps/pos/type Surface 
+/gps/pos/shape Sphere 
+/gps/pos/radius 8.00 cm 
+/gps/pos/centre 0 0 498.5 cm 
+/gps/ang/type cos 
+/gps/ang/mintheta 0 deg 
+/gps/ang/maxtheta 90 deg 
+/gps/ene/type Mono 
+/gps/ene/mono 500 keV 
+/run/beamOn 1000000000 

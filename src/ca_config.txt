@@ -1,6 +1,6 @@
 1
-400
-1
-3
-87
-./src/mask_designs/1MURA_matrix_87.00.txt
+500
+2.478
+0.88
+14.08
+./src/mask_designs/1MURA_matrix_14.08.txt

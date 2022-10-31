@@ -130,7 +130,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4double det1_thickness, dist_between_det, win_thickness, det_size;
 
   // Load into variables
-  det_configFile >> det1_thickness >> dist_between_det >> win_thickness >> det_size;
+  det_configFile >> det1_thickness >> dist_between_det >> win_thickness >>
+      det_size;
 
   det_configFile.close();
 
@@ -224,6 +225,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
       -(detector1_thickness / 2 + window_thickness / 2 + window_gap) +
           world_offset);
 
+  /* no window for now
   // ---------------- create window --------------
 
   G4LogicalVolume *window = new G4LogicalVolume(window_solid,    // its solid
@@ -238,7 +240,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
                     false,          // no boolean operation
                     0,              // copy number
                     checkOverlaps); // overlaps checking
-
+  */
   // ---------------- create coded aperture --------------
 
   // comment this out for the 2 detector configuration
@@ -250,8 +252,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4String filename;
 
   // Load into variables
-  ca_configFile >> nelements >> ca_thickness_um >> ca_gap_cm >> hole_size_mm >> ca_size_mm >>
-      filename;
+  ca_configFile >> nelements >> ca_thickness_um >> ca_gap_cm >> hole_size_mm >>
+      ca_size_mm >> filename;
 
   ca_configFile.close();
 
@@ -264,16 +266,16 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4double ca_pos = -(detector1_thickness / 2 + ca_gap - ca_thickness / 2) +
                     world_offset; // defined so that the gap is from the front
                                   // of the first detector to front of mask
-  G4double hole_size = hole_size_mm * mm;     // same as element size
-  G4double ca_size = ca_size_mm * mm; // set for mosaic or non-mosaicked
+  G4double hole_size = hole_size_mm * mm; // same as element size
+  G4double ca_size = ca_size_mm * mm;     // set for mosaic or non-mosaicked
 
   G4double mask_offset =
       -(ca_size / 2 - hole_size / 2); // centering to correct for origin
 
   // create the mask element -- pad with 0.005um to ensure overlap
   G4VSolid *ca_element =
-      new G4Box("hole", 0.5 * hole_size + 0.005 * um, 0.5 * hole_size + 0.005 * um,
-                0.5 * ca_thickness);
+      new G4Box("hole", 0.5 * hole_size + 0.005 * um,
+                0.5 * hole_size + 0.005 * um, 0.5 * ca_thickness);
 
   G4LogicalVolume *logicMask = new G4LogicalVolume(ca_element,   // its solid
                                                    ca_material,  // its material
@@ -379,7 +381,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   // ----------------------- add shielding -----------------------------
   G4double shield_thick = 1.0 * mm;
-  G4double shield_length = 10.0 * cm;
+  G4double shield_length = (dist_between_det+25) * mm;
   G4Material *shield_material = nist->FindOrBuildMaterial("G4_W");
   G4VSolid *xshield =
       new G4Box("shield", 0.5 * (ca_size + 2 * hole_size + 2 * shield_thick),
