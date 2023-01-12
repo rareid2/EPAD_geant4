@@ -381,7 +381,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   // ----------------------- add shielding -----------------------------
   G4double shield_thick = 1.0 * mm;
-  G4double shield_length = (dist_between_det+25) * mm;
+  G4double shield_length = (dist_between_det + 25) * mm;
   G4Material *shield_material = nist->FindOrBuildMaterial("G4_W");
   G4VSolid *xshield =
       new G4Box("shield", 0.5 * (ca_size + 2 * hole_size + 2 * shield_thick),
