@@ -110,7 +110,7 @@ void EventAction::EndOfEventAction(const G4Event *event) {
       // G4cout << " Energy   " << energy / keV << " [keV] " << G4endl;
 
       std::ofstream hitFile;
-      hitFile.open("../data/hits.csv", std::ios_base::app);
+      hitFile.open("../simulation_data/hits.csv", std::ios_base::app);
       hitFile << "\n"
               << 1 << "," << position.x() / cm << "," << position.y() / cm
               << "," << position.z() / cm << "," << energy / keV;
