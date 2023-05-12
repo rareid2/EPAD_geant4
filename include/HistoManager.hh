@@ -23,68 +23,32 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: RunAction.cc 99560 2016-09-27 07:03:29Z gcosmo $
+/// \file eventgenerator/exgps/include/HistoManager.hh
+/// \brief Definition of the HistoManager class
 //
-/// \file RunAction.cc
-/// \brief Implementation of the RunAction class
-
-#include "RunAction.hh"
-#include "DetectorConstruction.hh"
-#include "G4AccumulableManager.hh"
-#include "G4LogicalVolume.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4Run.hh"
-#include "G4RunManager.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4UnitsTable.hh"
-#include "PrimaryGeneratorAction_PS.hh"
-#include "HistoManager.hh"
-
-#include <fstream>
+// 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-RunAction::RunAction() : G4UserRunAction(), fEdep(0.), fEdep2(0.), fHistoManager(0)
+#ifndef HistoManager_h
+#define HistoManager_h 1
+
+#include "globals.hh"
+#include "G4AnalysisManager.hh"
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+class HistoManager
 {
- fHistoManager = new HistoManager(); 
-}
+  public:
+   HistoManager();
+  ~HistoManager();
+
+  private:
+    void Book();
+    G4String fFileName;
+};
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-RunAction::~RunAction() 
-{
-  delete fHistoManager;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void RunAction::BeginOfRunAction(const G4Run *) 
-{
-  //histograms
-  //
-  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  if ( analysisManager->IsActive() ) {
-    analysisManager->OpenFile();
-  }  
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void RunAction::EndOfRunAction(const G4Run *) 
-{
-  //save histograms
-  //      
-  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  if ( analysisManager->IsActive() ) {
-    analysisManager->Write();
-    analysisManager->CloseFile();
-  }  
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void RunAction::AddEdep(G4double edep) {
-  fEdep += edep;
-  fEdep2 += edep * edep;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#endif

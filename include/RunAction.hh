@@ -37,10 +37,10 @@
 
 // Choose your fighter:
 // #include "g4root.hh"
-#include "g4xml.hh"
-// #include "g4csv.hh"
+// #include "g4xml.hh"
 
 class G4Run;
+class HistoManager;
 
 /// Run action class
 ///
@@ -73,6 +73,8 @@ private:
   std::ofstream *asciiFile;
 
   G4String histFileName;
+
+  HistoManager* fHistoManager;
 };
 
 #endif

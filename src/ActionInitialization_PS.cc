@@ -33,6 +33,7 @@
 #include "PrimaryGeneratorAction_PS.hh"
 #include "RunAction.hh"
 #include "SteppingAction.hh"
+#include "TrackingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -54,6 +55,9 @@ void ActionInitialization::BuildForMaster() const {
 void ActionInitialization::Build() const {
   // sets start action (generate a particle)
   SetUserAction(new PrimaryGeneratorAction);
+  
+  // tracks stuff for histos
+  SetUserAction(new TrackingAction);
 
   // starts the run
   RunAction *runAction = new RunAction;
