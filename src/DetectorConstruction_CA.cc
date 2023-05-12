@@ -47,6 +47,7 @@
 #include "G4SystemOfUnits.hh"
 #include "G4Trd.hh"
 #include "G4UnionSolid.hh"
+#include "G4Ellipsoid.hh"
 #include <fstream>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -263,15 +264,15 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4double ca_gap = ca_gap_cm * cm;
   G4Material *ca_material = nist->FindOrBuildMaterial("G4_W");
 
-  G4double ca_pos = -(detector1_thickness / 2 + ca_gap - ca_thickness / 2) +
-                    world_offset; // defined so that the gap is from the front
-                                  // of the first detector to front of mask
+  G4double ca_pos = -(detector1_thickness / 2 + ca_gap + ca_thickness / 2) +
+                    world_offset; // defined so that the gap is from the center
+                                  // of mask to the center of detector
   G4double hole_size = hole_size_mm * mm; // same as element size
   G4double ca_size = ca_size_mm * mm;     // set for mosaic or non-mosaicked
 
   G4double mask_offset =
       -(ca_size / 2 - hole_size / 2); // centering to correct for origin
-
+  /*
   // create the mask element -- pad with 0.005um to ensure overlap
   G4VSolid *ca_element =
       new G4Box("hole", 0.5 * hole_size + 0.005 * um,
@@ -378,8 +379,41 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4VPhysicalVolume *yphysOutline2 = new G4PVPlacement(
       0, G4ThreeVector(0.5 * (ca_size + 2 * hole_size - hole_size), 0, ca_pos),
       ylogicOutline, "yphysOutline", logicEnv, false, 0, checkOverlaps);
+  */
+
+  // --------- create a volume to confine the source distribution ---------
+  G4double cap_radius = 4 * cm; // radius of sphere that forms the cap
+
+  std::ofstream ca_position_file;
+  ca_position_file.open ("coded_aperture_position.txt");
+  ca_position_file << "\n";
+  ca_position_file << ca_pos;
+  ca_position_file.close();
+
+  G4ThreeVector cap_pos = G4ThreeVector(0, 0, ca_pos);
+
+  G4Ellipsoid* fovCap = new G4Ellipsoid("fovCap", cap_radius, cap_radius, cap_radius, cap_radius - 2.5*cm, cap_radius);
+
+  G4LogicalVolume* fovCapLV = new G4LogicalVolume(fovCap, // its solid
+                                  vacuum_material, // its material
+                                  "fovCapLV");    // its name
+
+  G4RotationMatrix* Rotation = new G4RotationMatrix();
+  Rotation->rotateX(0*deg);
+  Rotation->rotateY(180*deg);
+  Rotation->rotateZ(0*deg);
+
+  new G4PVPlacement(Rotation,              // no rotation
+                    cap_pos,  // at position
+                    fovCapLV,      // its logical volume
+                    "fovCapPV",    // its name
+                    logicEnv,       // its mother  volume
+                    false,          // no boolean operation
+                    0,              // copy number
+                    checkOverlaps); // overlaps checking
 
   // ----------------------- add shielding -----------------------------
+  /*
   G4double shield_thick = 1.0 * mm;
   G4double shield_length = (dist_between_det + 25) * mm;
   G4Material *shield_material = nist->FindOrBuildMaterial("G4_W");
@@ -489,6 +523,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4VPhysicalVolume *zphysbus =
       new G4PVPlacement(0, G4ThreeVector(0, 0, ca_pos + bus_length), zbuslogic,
                         "zphysshield", logicEnv, false, 0, checkOverlaps);
+  */
   return physWorld;
 }
 
