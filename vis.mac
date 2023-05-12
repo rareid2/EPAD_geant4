@@ -68,8 +68,8 @@
 # "Envelope" is transparent blue to represent water
 /vis/geometry/set/visibility Envelope 0 false
 
-/vis/geometry/set/colour detector1 1 0 0 1 .5
-/vis/geometry/set/colour detector2  1 0 0 1 .5
+/vis/geometry/set/colour detector1 1 1 1 1 .5
+/vis/geometry/set/colour detector2  1 1 1 1 0
 /vis/geometry/set/colour window 1 1 1 1 .25
 
 # Re-establish auto refreshing and verbosity:
