@@ -36,7 +36,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 HistoManager::HistoManager()
-  : fFileName("main")
+  : hFileName("electron_detector_main")
 {
   Book();
 }
@@ -58,7 +58,7 @@ void HistoManager::Book()
   G4AnalysisManager* analysis = G4AnalysisManager::Instance();
   
   analysis->SetDefaultFileType("csv");
-  analysis->SetFileName(fFileName);
+  analysis->SetFileName("test");
   analysis->SetVerboseLevel(1);
   analysis->SetActivation(true);     //enable inactivation of histos, nTuples
     
