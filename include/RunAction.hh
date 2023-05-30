@@ -69,11 +69,6 @@ private:
 
   G4String fFileName;
 
-  G4String asciiFileName;
-  std::ofstream *asciiFile;
-
-  G4String histFileName;
-
   HistoManager* fHistoManager;
 };
 
