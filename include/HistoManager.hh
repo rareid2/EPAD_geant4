@@ -46,7 +46,7 @@ class HistoManager
 
   private:
     void Book();
-    G4String fFileName;
+    G4String hFileName;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
