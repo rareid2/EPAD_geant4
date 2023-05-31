@@ -74,6 +74,17 @@ int main(int argc,char** argv)
 
   // Choose the Random engine
   G4Random::setTheEngine(new CLHEP::RanecuEngine);
+  // set the seeds
+  long seeds[2];
+  time_t systime = time(NULL);
+  
+  // Seed built in c-rand engine
+  srand (systime);
+
+  // Geant rand engine
+  seeds[0] = (long) systime;
+  seeds[1] = (long) (systime*G4UniformRand());
+  G4Random::setTheSeeds(seeds);
 
   // Construct the default run manager
   #ifdef G4MULTITHREADED
