@@ -56,7 +56,6 @@ private:
   RunAction *fRunAction;
   G4double fEdep;
   G4int hitsCollID1;
-  G4int hitsCollID2;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

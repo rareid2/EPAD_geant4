@@ -52,7 +52,6 @@ public:
 protected:
   // assigned to detector for sensitive detector volumes
   G4LogicalVolume *detector1;
-  G4LogicalVolume *detector2;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

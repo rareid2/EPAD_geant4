@@ -47,7 +47,6 @@ EventAction::EventAction(RunAction *runAction)
 
   // initialize ids to -1 to reconginze the start of the run
   hitsCollID1 = -1;
-  hitsCollID2 = -1;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -65,7 +64,6 @@ void EventAction::BeginOfEventAction(const G4Event *event) {
     G4String colNam;
 
     hitsCollID1 = SDman->GetCollectionID(colNam = "SD1/hitsCollection");
-    hitsCollID2 = SDman->GetCollectionID(colNam = "SD2/hitsCollection");
   }
 }
 
@@ -79,14 +77,12 @@ void EventAction::EndOfEventAction(const G4Event *event) {
 
   // otherwise proceed with getting the hits and saving to the hits file
   MyHitCollection *HC1 = 0;
-  MyHitCollection *HC2 = 0;
 
   if (HCE)
 
   {
 
     HC1 = (MyHitCollection *)(HCE->GetHC(hitsCollID1));
-    HC2 = (MyHitCollection *)(HCE->GetHC(hitsCollID2));
   }
 
   if (HC1) {
@@ -117,36 +113,6 @@ void EventAction::EndOfEventAction(const G4Event *event) {
       hitFile.close();
     }
   }
-  /* // uncomment for two detector configuration
-  if (HC2) {
-
-    int n_hit = HC2->entries();
-
-    for (int i = 0; i < n_hit; i++) {
-
-      G4ThreeVector position = (*HC2)[i]->GetPosition();
-
-      G4ThreeVector momentum = (*HC2)[i]->GetMomentum();
-
-      G4double energy = (*HC2)[i]->GetEnergy();
-
-      //G4cout << "---- Hit # " << i << G4endl;
-
-      //G4cout << " Position " << position / cm << " [cm] " << G4endl;
-
-      //G4cout << " Momentum " << momentum / keV << " [keV] " << G4endl;
-
-      //G4cout << " Energy   " << energy / keV << " [keV] " << G4endl;
-
-      std::ofstream hitFile;
-      hitFile.open("../data/hits.csv", std::ios_base::app);
-      hitFile << "\n"
-              << 2 << "," << position.x() / cm << "," << position.y() / cm
-              << "," << position.z() / cm << "," << energy / keV;
-      hitFile.close();
-    }
-  }
-  */
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -193,24 +193,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
                     0,              // copy number
                     checkOverlaps); // overlaps checking
 
-  // ---------------- create detector 2 --------------
-  G4ThreeVector detector2_pos =
-      G4ThreeVector(0, 0,
-                    detector1_thickness / 2 + detector2_thickness / 2 +
-                        distance_between_detectors + world_offset);
-
-  detector2 = new G4LogicalVolume(detector2_solid, // its solid
-                                  DopedSilicon,    // its material
-                                  "detector2");    // its name
-
-  new G4PVPlacement(0,              // no rotation
-                    detector2_pos,  // at position
-                    detector2,      // its logical volume
-                    "detector2",    // its name
-                    logicEnv,       // its mother  volume
-                    false,          // no boolean operation
-                    0,              // copy number
-                    checkOverlaps); // overlaps checking
   // ---------------- set window material --------------
   // comment out the window for scattering distributions
 
@@ -387,10 +369,11 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   std::ofstream ca_position_file;
   ca_position_file.open ("coded_aperture_position.txt");
   ca_position_file << "\n";
-  ca_position_file << ca_pos;
+  ca_position_file <<  world_offset - (detector1_thickness/2);
+  //ca_position_file <<  ca_pos;
   ca_position_file.close();
 
-  G4ThreeVector cap_pos = G4ThreeVector(0, 0, ca_pos);
+  G4ThreeVector cap_pos = G4ThreeVector(0, 0, world_offset - (detector1_thickness/2));
 
   G4Ellipsoid* fovCap = new G4Ellipsoid("fovCap", cap_radius, cap_radius, cap_radius, cap_radius - 2.5*cm, cap_radius);
 
@@ -536,9 +519,6 @@ void DetectorConstruction::ConstructSDandField() {
   SDman->AddNewDetector(sd1);
   detector1->SetSensitiveDetector(sd1);
 
-  MySensitiveDetector *sd2 = new MySensitiveDetector(SDname = "/SD2");
-  SDman->AddNewDetector(sd2);
-  detector2->SetSensitiveDetector(sd2);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
