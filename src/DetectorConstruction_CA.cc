@@ -122,7 +122,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4double world_offset = env_sizeZ * .45;
 
   // ---------------- get detector config --------------
-  // config used to set detector thickness and gap between the detectors
+  // config used to set detector thickness and gap between the detectors (no longer using the second)
 
   std::fstream det_configFile;
   det_configFile.open("./src/det_config.txt", std::ios_base::in);
@@ -137,9 +137,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   det_configFile.close();
 
   G4double detector1_thickness = det1_thickness * um;
-  G4double detector2_thickness =
-      140.0 * um; // set based on thinnest micron semiconductor PSD
 
+  // unused
   G4double distance_between_detectors = dist_between_det * mm;
 
   G4double detector_dimX = det_size * cm;
@@ -173,10 +172,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4VSolid *detector1_solid =
       new G4Box("detector", 0.5 * detector_dimX, 0.5 * detector_dimY,
                 0.5 * detector1_thickness);
-
-  G4VSolid *detector2_solid =
-      new G4Box("detector", 0.5 * detector_dimX, 0.5 * detector_dimY,
-                0.5 * detector2_thickness);
 
   // ---------------- create detector 1 --------------
 
