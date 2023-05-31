@@ -1,3 +1,5 @@
+/run/numberOfThreads 40 
+/run/initialize 
 /control/verbose 0 
 /run/verbose 0 
 /event/verbose 0 
@@ -12,5 +14,12 @@
 /gps/ang/minphi 0 deg 
 /gps/ang/maxphi 360 deg 
 /gps/energy 500 keV 
-/run/printProgress 1000 
-/run/beamOn 1
+/analysis/setFileName pt-src-verify-v11 
+/analysis/h1/set 1 100 100 1000 keV 
+/analysis/h2/set 1 100 -5 5 cm none linear 100 -5 5 cm none linear 
+/analysis/h2/set 2 100 -5 5 cm none linear 100 -505 -495 cm none linear 
+/analysis/h2/set 3 100 -505 -495 cm none linear 100 -5 5 cm none linear 
+/analysis/h2/set 4 120 0 360 deg none linear 100 -1 1 none none linear 
+/analysis/h2/set 5 120 0 360 deg none linear  90 0 180 deg none linear 
+/run/printProgress 100000 
+/run/beamOn 1000000

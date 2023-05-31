@@ -391,9 +391,16 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
                     checkOverlaps); // overlaps checking
 
   // ----------------------- add shielding -----------------------------
-  /*
+
   G4double shield_thick = 1.0 * mm;
-  G4double shield_length = (dist_between_det + 25) * mm;
+
+  // set shield length so that goes from the front of the mask to 2mm behind detector
+  G4double back_gap = 2.0 * mm
+  G4double shield_length = back_gap + ca_gap + detector1_thickness + ca_thickness/2 
+
+  // with no aperture, set so that goes from front of sensor to 2 mm behind
+  G4double shield_length = detector1_thickness + back_gap
+
   G4Material *shield_material = nist->FindOrBuildMaterial("G4_W");
   G4VSolid *xshield =
       new G4Box("shield", 0.5 * (ca_size + 2 * hole_size + 2 * shield_thick),
@@ -446,7 +453,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4VPhysicalVolume *zphysShield = new G4PVPlacement(
       0, G4ThreeVector(0, 0, ca_pos + shield_length), zshieldlogic,
       "zphysshield", logicEnv, false, 0, checkOverlaps);
-
+  /*
   // ------------------------------ add bus -----------------------------------
   G4double bus_thick = 3.0 * mm;
   G4double bus_length = shield_length + bus_thick;
