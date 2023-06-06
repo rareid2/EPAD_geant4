@@ -362,7 +362,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   
 
   // --------- create a volume to confine the source distribution ---------
-  G4double cap_radius = 2.75 * cm; // radius of sphere that forms the cap
+  G4double cap_radius = 3.0 * cm; // radius of sphere that forms the cap
 
   std::ofstream ca_position_file;
   ca_position_file.open ("coded_aperture_position.txt");
@@ -446,7 +446,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
       yshieldlogic, "yphysshield", logicEnv, false, 0, checkOverlaps);
   
   G4VPhysicalVolume *zphysShield = new G4PVPlacement(
-      0, G4ThreeVector(0, 0, world_offset + (shield_thick * 1.5) - (detector1_thickness * 0.5)), zshieldlogic,
+      0, G4ThreeVector(0, 0, world_offset + (shield_thick * 0.5) + detector1_thickness), zshieldlogic,
       "zphysshield", logicEnv, false, 0, checkOverlaps);
   /*
   // ------------------------------ add bus -----------------------------------
