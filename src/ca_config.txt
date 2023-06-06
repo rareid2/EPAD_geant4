@@ -1,6 +1,6 @@
 21
 500
-2
+1
 1.21
 25.41
 ./src/mask_designs/11mosaicMURA_matrix_25.41.txt
