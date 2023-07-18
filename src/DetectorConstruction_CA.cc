@@ -226,12 +226,12 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   ca_configFile.open("./src/ca_config.txt", std::ios_base::in);
 
   // Initialize variables
-  G4double nelements, ca_thickness_um, ca_gap_cm, hole_size_mm, ca_size_mm;
+  G4double nelements, ca_thickness_um, ca_gap_cm, hole_size_mm, ca_size_mm, cap_radius_cm;
   G4String filename;
 
   // Load into variables
   ca_configFile >> nelements >> ca_thickness_um >> ca_gap_cm >> hole_size_mm >>
-      ca_size_mm >> filename;
+      ca_size_mm >> cap_radius_cm >> filename;
 
   ca_configFile.close();
 
@@ -361,13 +361,13 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4double mask_with_outline = ca_size + 2 * hole_size; 
 
   // --------- create a volume to confine the source distribution ---------
-  G4double cap_radius = 3.25 * cm; // radius of sphere that forms the cap
+  G4double cap_radius = cap_radius_cm * cm; // radius of sphere that forms the cap
 
   std::ofstream ca_position_file;
   ca_position_file.open ("coded_aperture_position.txt");
   ca_position_file << "\n";
   //ca_position_file <<  world_offset - (detector1_thickness/2);
-  ca_position_file <<  ca_pos;
+  ca_position_file <<  std::round(ca_pos * 1000.0) / 1000.0;;
   ca_position_file.close();
 
   G4ThreeVector cap_pos = G4ThreeVector(0, 0, ca_pos);
