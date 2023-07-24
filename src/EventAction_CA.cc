@@ -97,6 +97,11 @@ void EventAction::EndOfEventAction(const G4Event *event) {
 
       G4double energy = (*HC1)[i]->GetEnergy();
 
+      G4int particleID = (*HC1)[i]->GetID();
+
+      G4String particlename = (*HC1)[i]->GetName();
+
+
       // G4cout << "---- Hit # " << i << G4endl;
 
       // G4cout << " Position " << position / cm << " [cm] " << G4endl;
@@ -109,7 +114,7 @@ void EventAction::EndOfEventAction(const G4Event *event) {
       hitFile.open("../simulation-data/hits.csv", std::ios_base::app);
       hitFile << "\n"
               << 1 << "," << position.x() / cm << "," << position.y() / cm
-              << "," << position.z() / cm << "," << energy / keV;
+              << "," << position.z() / cm << "," << energy / keV << "," << particleID << "," << particlename;
       hitFile.close();
     }
   }

@@ -30,6 +30,8 @@ private:
   G4ThreeVector position;
   G4ThreeVector momentum;
   G4double energy;
+  G4int particleID;
+  G4String particlename;
 
 public:
   // all kinds of fun stuff here
@@ -44,6 +46,14 @@ public:
   inline void SetEnergy(G4double enep) { energy = enep; }
 
   inline G4double GetEnergy() { return energy; }
+
+  inline void SetID(G4int hid) { particleID = hid; }
+
+  inline G4int GetID() { return particleID; }
+
+  inline void SetName(G4String pname) { particlename = pname; }
+
+  inline G4String GetName() { return particlename; }
 };
 
 // defining what the hit collection is - not a class
