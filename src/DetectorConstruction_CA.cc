@@ -170,8 +170,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4ThreeVector detector1_pos = G4ThreeVector(0, 0, world_offset);
 
   G4VSolid *detector1_solid =
-      new G4Box("detector", 0.5 * detector_dimX, 0.5 * detector_dimY,
-                0.5 * detector1_thickness);
+      new G4Box("detector", 0.5 * detector_dimX, 0.5 * detector1_thickness, 0.5 * detector_dimY);
 
   // ---------------- create detector 1 --------------
 
@@ -241,8 +240,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4double ca_gap = ca_gap_cm * cm;
   G4Material *ca_material = nist->FindOrBuildMaterial("G4_W");
 
-  G4double ca_pos = -(detector1_thickness / 2 + ca_gap + ca_thickness / 2) +
-                    world_offset; // defined so that the gap is from the center
+  G4double ca_pos = (detector1_thickness / 2 + ca_gap + ca_thickness / 2); // defined so that the gap is from the center
                                   // of mask to the center of detector
   G4double hole_size = hole_size_mm * mm; // same as element size
   G4double ca_size = ca_size_mm * mm;     // set for mosaic or non-mosaicked
@@ -252,8 +250,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   // create the mask element -- pad with 0.005um to ensure overlap
   G4VSolid *ca_element =
-      new G4Box("hole", 0.5 * hole_size + 0.005 * um,
-                0.5 * hole_size + 0.005 * um, 0.5 * ca_thickness);
+      new G4Box("hole", 0.5 * hole_size + 0.005 * um, 0.5 * ca_thickness,
+                0.5 * hole_size + 0.005 * um);
 
   G4LogicalVolume *logicMask = new G4LogicalVolume(ca_element,   // its solid
                                                    ca_material,  // its material
@@ -295,8 +293,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   // place first element
   G4VPhysicalVolume *physMask = new G4PVPlacement(
       0,
-      G4ThreeVector(mask_offset + first_hole_x, -(mask_offset + first_hole_y),
-                    ca_pos),
+      G4ThreeVector(mask_offset + first_hole_x, ca_pos, world_offset + (mask_offset + first_hole_y)),
       logicMask, "physMask", logicEnv, false, 0, checkOverlaps);
 
   // start looping through the file ----------
@@ -318,7 +315,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
     G4VPhysicalVolume *physMask = new G4PVPlacement(
         0,
         G4ThreeVector(mask_offset + (0.1 * placementX * cm),
-                      -(mask_offset + (0.1 * placementY * cm)), ca_pos),
+                    ca_pos, world_offset + (mask_offset + (0.1 * placementY * cm))),
         logicMask, "physmask", logicEnv, false, 0, checkOverlaps);
   }
 
@@ -326,10 +323,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   // finally add an outline of the hole size around it
   G4VSolid *xoutline = new G4Box("hole", 0.5 * (ca_size + 2 * hole_size),
-                                 0.5 * hole_size, 0.5 * ca_thickness);
+                                 0.5 * ca_thickness, 0.5 * hole_size);
   G4VSolid *youtline =
-      new G4Box("hole", 0.5 * hole_size, 0.5 * (ca_size + 2 * hole_size),
-                0.5 * ca_thickness);
+      new G4Box("hole", 0.5 * hole_size, 0.5 * ca_thickness, 0.5 * (ca_size + 2 * hole_size));
 
   G4LogicalVolume *xlogicOutline =
       new G4LogicalVolume(xoutline,         // its solid
@@ -342,19 +338,19 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   // place the outline
   G4VPhysicalVolume *xphysOutline1 = new G4PVPlacement(
-      0, G4ThreeVector(0, -0.5 * (ca_size + 2 * hole_size - hole_size), ca_pos),
+      0, G4ThreeVector(0, ca_pos, world_offset - 0.5 * (ca_size + 2 * hole_size - hole_size)),
       xlogicOutline, "xphysOutline", logicEnv, false, 0, checkOverlaps);
   // place the outline
   G4VPhysicalVolume *xphysOutline2 = new G4PVPlacement(
-      0, G4ThreeVector(0, 0.5 * (ca_size + 2 * hole_size - hole_size), ca_pos),
+      0, G4ThreeVector(0, ca_pos, world_offset + 0.5 * (ca_size + 2 * hole_size - hole_size)),
       xlogicOutline, "xphysOutline", logicEnv, false, 0, checkOverlaps);
   // place the outline
   G4VPhysicalVolume *yphysOutline1 = new G4PVPlacement(
-      0, G4ThreeVector(-0.5 * (ca_size + 2 * hole_size - hole_size), 0, ca_pos),
+      0, G4ThreeVector(-0.5 * (ca_size + 2 * hole_size - hole_size), ca_pos, world_offset),
       ylogicOutline, "yphysOutline", logicEnv, false, 0, checkOverlaps);
   // place the outline
   G4VPhysicalVolume *yphysOutline2 = new G4PVPlacement(
-      0, G4ThreeVector(0.5 * (ca_size + 2 * hole_size - hole_size), 0, ca_pos),
+      0, G4ThreeVector(0.5 * (ca_size + 2 * hole_size - hole_size), ca_pos, world_offset),
       ylogicOutline, "yphysOutline", logicEnv, false, 0, checkOverlaps);
 
   // update the mask size with outline
@@ -370,7 +366,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   ca_position_file <<  std::round(ca_pos * 1000.0) / 1000.0;;
   ca_position_file.close();
 
-  G4ThreeVector cap_pos = G4ThreeVector(0, 0, ca_pos);
+  G4ThreeVector cap_pos = G4ThreeVector(0, ca_pos, world_offset);
 
   G4Ellipsoid* fovCap = new G4Ellipsoid("fovCap", cap_radius, cap_radius, cap_radius, cap_radius - cap_radius, cap_radius);
 
@@ -379,8 +375,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
                                   "fovCapLV");    // its name
 
   G4RotationMatrix* Rotation = new G4RotationMatrix();
-  Rotation->rotateX(0*deg);
-  Rotation->rotateY(180*deg);
+  Rotation->rotateX(90*deg);
+  Rotation->rotateY(0*deg);
   Rotation->rotateZ(0*deg);
 
   new G4PVPlacement(Rotation,              // no rotation
@@ -399,13 +395,13 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4Material *shield_material = nist->FindOrBuildMaterial("G4_W");
   G4VSolid *xshield =
       new G4Box("shield", 0.5 * (mask_with_outline + 2 * shield_thick),
-                0.5 * shield_thick, 0.5 * (shield_thick + ca_gap + ca_thickness));
+                0.5 * (shield_thick + ca_gap + ca_thickness), 0.5 * shield_thick);
   G4VSolid *yshield = new G4Box(
       "shield", 0.5 * shield_thick,
-      0.5 * (mask_with_outline), 0.5 * (shield_thick + ca_gap + ca_thickness));
+       0.5 * (shield_thick + ca_gap + ca_thickness), 0.5 * (mask_with_outline));
   G4VSolid *zshield = new G4Box(
       "shield", 0.5 * (mask_with_outline + 2 * shield_thick),
-      0.5 * (mask_with_outline + 2 * shield_thick), 0.5 * shield_thick);
+      0.5 * shield_thick, 0.5 * (mask_with_outline + 2 * shield_thick));
 
   G4LogicalVolume *xshieldlogic =
       new G4LogicalVolume(xshield,         // its solid
@@ -420,33 +416,33 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
                           shield_material, // its material
                           "zlogicshield"); // its name
 
-  // place the outline
+  // place the shielding
   G4VPhysicalVolume *xphysShield1 = new G4PVPlacement(
       0,
-      G4ThreeVector(0, -0.5 * (mask_with_outline) - 0.5 * shield_thick + 1.0 * mm,
-                    ca_pos + 0.5 * (shield_thick + ca_gap + ca_thickness) - (ca_thickness * 0.5)),
+      G4ThreeVector(0, ca_pos - 0.5 * (shield_thick + ca_gap), 
+                    world_offset + -0.5 * (mask_with_outline) - 0.5 * shield_thick),
       xshieldlogic, "xphysshield", logicEnv, false, 0, checkOverlaps);
 
   G4VPhysicalVolume *xphysShield2 = new G4PVPlacement(
       0,
-      G4ThreeVector(0, 0.5 * (mask_with_outline) + 0.5 * shield_thick - 1.0 * mm,
-                    ca_pos + 0.5 * (shield_thick + ca_gap + ca_thickness) - (ca_thickness * 0.5)),
+      G4ThreeVector(0, ca_pos - 0.5 * (shield_thick + ca_gap), 
+                    world_offset + 0.5 * (mask_with_outline) + 0.5 * shield_thick),
       xshieldlogic, "xphysshield", logicEnv, false, 0, checkOverlaps);
 
   G4VPhysicalVolume *yphysShield1 = new G4PVPlacement(
       0,
-      G4ThreeVector(-0.5 * (mask_with_outline) - 0.5 * shield_thick + 1.0 * mm, 0,
-                    ca_pos + 0.5 * (shield_thick + ca_gap + ca_thickness) - (ca_thickness * 0.5)),
+      G4ThreeVector(-0.5 * (mask_with_outline) - 0.5 * shield_thick, ca_pos - 0.5 * (shield_thick + ca_gap),
+                    world_offset),
       yshieldlogic, "yphysshield", logicEnv, false, 0, checkOverlaps);
 
   G4VPhysicalVolume *yphysShield2 = new G4PVPlacement(
       0,
-      G4ThreeVector(0.5 * (mask_with_outline) + 0.5 * shield_thick - 1.0 * mm, 0,
-                    ca_pos + 0.5 * (shield_thick + ca_gap + ca_thickness) - (ca_thickness * 0.5)),
+      G4ThreeVector(0.5 * (mask_with_outline) + 0.5 * shield_thick, ca_pos - 0.5 * (shield_thick + ca_gap),
+                    world_offset),
       yshieldlogic, "yphysshield", logicEnv, false, 0, checkOverlaps);
   
   G4VPhysicalVolume *zphysShield = new G4PVPlacement(
-      0, G4ThreeVector(0, 0, world_offset + (shield_thick * 1.5) - (detector1_thickness * 0.5)), zshieldlogic,
+      0, G4ThreeVector(0, (shield_thick + detector1_thickness) * -0.5, world_offset), zshieldlogic,
       "zphysshield", logicEnv, false, 0, checkOverlaps);
   /*
   // ------------------------------ add bus -----------------------------------
