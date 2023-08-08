@@ -7,15 +7,20 @@
 /gps/particle e- 
 /gps/pos/type Surface 
 /gps/pos/shape Sphere 
-/gps/pos/radius 4.93 cm 
-/gps/pos/centre 0 0 498.40099999999995 cm 
+/gps/pos/radius 3.25 cm 
+/gps/pos/centre 0 498.91 499.95 cm 
 /gps/pos/confine fovCapPV 
 /gps/ang/type cos 
 /gps/ang/mintheta 0 deg 
 /gps/ang/maxtheta 90 deg 
 /gps/ene/type Mono 
 /gps/ene/mono 500 keV 
-/analysis/setFileName test 
+/analysis/setFileName 11-None-0 
 /analysis/h1/set 1 100 100 1000 keV 
+/analysis/h2/set 1 100 -5 5 cm none linear 100 -5 5 cm none linear 
+/analysis/h2/set 2 100 -5 5 cm none linear 100 493.91 503.91 cm none linear 
+/analysis/h2/set 3 100 493.91 503.91 cm none linear 100 -5 5 cm none linear 
+/analysis/h2/set 4 120 0 360 deg none linear 100 -1 1 none none linear 
+/analysis/h2/set 5 120 0 360 deg none linear  90 0 180 deg none linear 
 /run/printProgress 10000000 
 /run/beamOn 100000000 
