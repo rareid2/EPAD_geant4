@@ -51,7 +51,7 @@
 
 # Axes, scale, etc.
 #/vis/scene/add/scale   # Simple scale line
-#/vis/scene/add/axes 0 0 0 2 cm   # Simple axes: x=red, y=green, z=blue.
+/vis/scene/add/axes 0 0 0 2 cm   # Simple axes: x=red, y=green, z=blue.
 /vis/scene/add/eventID # Drawn at end of event
 /vis/scene/add/date    # Date stamp
 
