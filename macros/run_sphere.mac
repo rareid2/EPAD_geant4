@@ -8,14 +8,15 @@
 /gps/pos/type Surface 
 /gps/pos/shape Sphere 
 /gps/pos/radius 3.25 cm 
-/gps/pos/centre 0 498.91 499.95 cm 
+/gps/pos/centre 0 0 498.91 cm 
 /gps/pos/confine fovCapPV 
 /gps/ang/type cos 
+/gps/ang/surfnorm true 
 /gps/ang/mintheta 0 deg 
 /gps/ang/maxtheta 90 deg 
 /gps/ene/type Mono 
-/gps/ene/mono 500 keV 
-/analysis/setFileName 11-None-0 
+/gps/ene/mono 300 keV 
+/analysis/setFileName 11-None-surftrue 
 /analysis/h1/set 1 100 100 1000 keV 
 /analysis/h2/set 1 100 -5 5 cm none linear 100 -5 5 cm none linear 
 /analysis/h2/set 2 100 -5 5 cm none linear 100 493.91 503.91 cm none linear 
