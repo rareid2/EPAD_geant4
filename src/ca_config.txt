@@ -1,7 +1,7 @@
-61
-300
-1.25
+1
+500
+1
 0.44
-26.84
+14.079999999999998
 3.25
-./src/mask_designs/31mosaicMURA_matrix_26.84.txt
+./src/mask_designs/1MURA_matrix_14.08.txt

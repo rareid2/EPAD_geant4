@@ -14,13 +14,13 @@
 /gps/ang/mintheta 0 deg 
 /gps/ang/maxtheta 90 deg 
 /gps/ene/type Mono 
-/gps/ene/mono 100 keV 
-/analysis/setFileName rotated-sphere-None-1 
+/gps/ene/mono 300 keV 
+/analysis/setFileName 11-None-nosurf-rotate-pinhole 
 /analysis/h1/set 1 100 100 1000 keV 
-/analysis/h2/set 1 100 -5 5 cm none linear 100 -5 5 cm none linear 
-/analysis/h2/set 2 100 -5 5 cm none linear 100 -3.7199999999999998 6.28 cm none linear 
-/analysis/h2/set 3 100 -3.7199999999999998 6.28 cm none linear 100 -5 5 cm none linear 
+/analysis/h2/set 1 100 -5 5 cm none linear 100 -3.96 6.04 cm none linear 
+/analysis/h2/set 2 100 -3.96 6.04 cm none linear 100 494.95 504.95 cm none linear 
+/analysis/h2/set 3 100 494.95 504.95 cm none linear 100 -5 5 cm none linear 
 /analysis/h2/set 4 120 0 360 deg none linear 100 -1 1 none none linear 
 /analysis/h2/set 5 120 0 360 deg none linear  90 0 180 deg none linear 
 /run/printProgress 10000000 
-/run/beamOn 1000 
+/run/beamOn 100000000 
