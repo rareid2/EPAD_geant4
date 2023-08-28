@@ -32,6 +32,7 @@ private:
   G4double energy;
   G4int particleID;
   G4String particlename;
+  G4ThreeVector vertex;
 
 public:
   // all kinds of fun stuff here
@@ -54,6 +55,10 @@ public:
   inline void SetName(G4String pname) { particlename = pname; }
 
   inline G4String GetName() { return particlename; }
+
+  inline void SetVertex(G4ThreeVector vert) {vertex = vert; }
+
+  inline G4ThreeVector GetVertex() { return vertex; }
 };
 
 // defining what the hit collection is - not a class

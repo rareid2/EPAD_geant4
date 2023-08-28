@@ -48,7 +48,8 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     G4Track *aTrack = aStep->GetTrack();
     newHit->SetID(aTrack->GetParentID());
     newHit->SetName(aTrack->GetParticleDefinition()->GetParticleName());
-
+    newHit->SetVertex(aTrack->GetVertexPosition());
+    
     hitsCollection->insert(newHit);
 
     aTrack->SetTrackStatus(fStopAndKill);
