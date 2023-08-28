@@ -371,7 +371,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   ca_position_file.close();
 
   G4ThreeVector cap_pos = G4ThreeVector(0, 0, ca_pos);
-
+  /*
   G4Ellipsoid* fovCap = new G4Ellipsoid("fovCap", cap_radius, cap_radius, cap_radius, cap_radius - cap_radius, cap_radius);
 
   G4LogicalVolume* fovCapLV = new G4LogicalVolume(fovCap, // its solid
@@ -391,7 +391,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
                     false,          // no boolean operation
                     0,              // copy number
                     checkOverlaps); // overlaps checking
-
+  */
   // ----------------------- add shielding -----------------------------
 
   G4double shield_thick = 5.0 * mm;
