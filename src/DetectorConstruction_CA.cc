@@ -49,6 +49,7 @@
 #include "G4UnionSolid.hh"
 #include "G4Ellipsoid.hh"
 #include <fstream>
+#include "G4GDMLParser.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction() {}
@@ -448,6 +449,15 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4VPhysicalVolume *zphysShield = new G4PVPlacement(
       0, G4ThreeVector(0, 0, world_offset + (shield_thick * 1.5) - (detector1_thickness * 0.5)), zshieldlogic,
       "zphysshield", logicEnv, false, 0, checkOverlaps);
+
+  // ------------------------------- lens hood --------------------------------
+  G4GDMLParser parser;
+  parser.Read("./src/lens_hood.gdml",false);
+  G4String volname = "lens_hood_Tungsten";
+  G4LogicalVolume *lenshoodlogic = parser.GetVolume(volname);
+  G4VPhysicalVolume *lenshood = new G4PVPlacement(
+      0, G4ThreeVector(0, 0, ca_pos - 40*mm - ca_thickness / 2), lenshoodlogic,
+      "lenshood", logicEnv, false, 0, checkOverlaps);
   /*
   // ------------------------------ add bus -----------------------------------
   G4double bus_thick = 3.0 * mm;
