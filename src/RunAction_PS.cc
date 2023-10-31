@@ -38,47 +38,24 @@
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
 #include "PrimaryGeneratorAction_PS.hh"
-#include "HistoManager.hh"
 
 #include <fstream>
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-RunAction::RunAction() : G4UserRunAction(), fEdep(0.), fEdep2(0.), fHistoManager(0)
-{
- fHistoManager = new HistoManager(); 
-}
+RunAction::RunAction() : G4UserRunAction(), fEdep(0.), fEdep2(0.) {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-RunAction::~RunAction() 
-{
-  delete fHistoManager;
-}
+RunAction::~RunAction() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void RunAction::BeginOfRunAction(const G4Run *) 
-{
-  //histograms
-  //
-  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  if ( analysisManager->IsActive() ) {
-    analysisManager->OpenFile();
-  }  
-}
+void RunAction::BeginOfRunAction(const G4Run *) {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void RunAction::EndOfRunAction(const G4Run *) 
-{
-  //save histograms
-  //      
-  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  if ( analysisManager->IsActive() ) {
-    analysisManager->Write();
-    analysisManager->CloseFile();
-  }  
-}
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
