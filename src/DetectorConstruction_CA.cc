@@ -451,13 +451,24 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
       "zphysshield", logicEnv, false, 0, checkOverlaps);
 
   // ------------------------------- lens hood --------------------------------
+    /*
   G4GDMLParser parser;
-  parser.Read("./src/lens_hood.gdml",false);
-  G4String volname = "lens_hood_Tungsten";
+  parser.Read("./src/lens_pyramid.gdml",false);
+  G4String volname = "lens_pyramid_Tungsten";
   G4LogicalVolume *lenshoodlogic = parser.GetVolume(volname);
   G4VPhysicalVolume *lenshood = new G4PVPlacement(
-      0, G4ThreeVector(0, 0, ca_pos - 40*mm - ca_thickness / 2), lenshoodlogic,
+      0, G4ThreeVector(0, 0, ca_pos-40.1), lenshoodlogic,
       "lenshood", logicEnv, false, 0, checkOverlaps);
+
+
+  parser.Read("./src/fov_limiter.gdml",false);
+  G4String volname_fov = "fov_limiter_Tungsten";
+  G4LogicalVolume *fovlogic = parser.GetVolume(volname_fov);
+  G4VPhysicalVolume *fovlimiter = new G4PVPlacement(
+      0, G4ThreeVector(0, 0, ca_pos), fovlogic,
+      "fovlimiter", logicEnv, false, 0, checkOverlaps);
+  */  
+
   /*
   // ------------------------------ add bus -----------------------------------
   G4double bus_thick = 3.0 * mm;

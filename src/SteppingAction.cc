@@ -55,6 +55,9 @@ void SteppingAction::UserSteppingAction(const G4Step *step) {
     G4Track* track = (G4Track*)(step->GetTrack());
     G4String volname = track->GetVolume()->GetName();
     if (volname == "lenshood") track->SetTrackStatus(fStopAndKill);
+    //if (volname == "fovlimiter") track->SetTrackStatus(fStopAndKill);
+    //G4double zpos = track->GetPosition().z();
+    //if (zpos > 501) track->SetTrackStatus(fStopAndKill);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -1,4 +1,4 @@
-/run/numberOfThreads 40 
+/run/numberOfThreads 12 
 /run/initialize 
 /control/verbose 0 
 /run/verbose 0 
@@ -7,19 +7,14 @@
 /gps/particle e- 
 /gps/pos/type Plane 
 /gps/pos/shape Square 
-/gps/pos/centre 0 0 -500 cm 
+/gps/pos/centre -1098.7281454893257 -1098.7281454893257 -500 cm 
+/gps/pos/rot1 -0.6730748571111885 0.0 0.7395743618627901 
+/gps/pos/rot2 0.4397670799835719 -0.8040055024143331 0.4002250210196741 
 /gps/ang/type iso 
 /gps/ang/mintheta 0 deg 
-/gps/ang/maxtheta 0.161345 deg 
+/gps/ang/maxtheta 0.200193 deg 
 /gps/ang/minphi 0 deg 
 /gps/ang/maxphi 360 deg 
-/gps/energy 500 keV 
-/analysis/setFileName pt-src-verify-v11 
-/analysis/h1/set 1 100 100 1000 keV 
-/analysis/h2/set 1 100 -5 5 cm none linear 100 -5 5 cm none linear 
-/analysis/h2/set 2 100 -5 5 cm none linear 100 -505 -495 cm none linear 
-/analysis/h2/set 3 100 -505 -495 cm none linear 100 -5 5 cm none linear 
-/analysis/h2/set 4 120 0 360 deg none linear 100 -1 1 none none linear 
-/analysis/h2/set 5 120 0 360 deg none linear  90 0 180 deg none linear 
+/gps/energy 0.235 keV 
 /run/printProgress 100000 
 /run/beamOn 1000000

@@ -42,6 +42,7 @@
 
 // Physics lists
 #include "QBBC.hh"
+#include "G4PhysListFactory.hh"
 
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
@@ -98,7 +99,10 @@ int main(int argc,char** argv)
 
 
   // Physics list
-  G4VModularPhysicsList* physicsList = new QBBC;
+  //G4VModularPhysicsList* physicsList = new QBBC;
+  G4PhysListFactory physListFactory;
+  const G4String plName = "QBBC_EMZ";
+  G4VModularPhysicsList* physicsList = physListFactory.GetReferencePhysList(plName);
 
   // set verbosity
   physicsList->SetVerboseLevel(0);
@@ -111,8 +115,8 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(new ActionInitialization());
 
   // set limits on particle energy range
-  G4double lowLimit = 250. * eV;
-  G4double highLimit = 100. * GeV;
+  G4double lowLimit = 1. * keV;
+  G4double highLimit = 100. * MeV;
   G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(lowLimit, highLimit);
 
   // this is just naming the run action class
