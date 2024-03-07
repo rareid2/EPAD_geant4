@@ -43,7 +43,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 EventAction::EventAction(RunAction *runAction)
-    : G4UserEventAction(), fRunAction(runAction), fEdep(0.) {
+    : G4UserEventAction(), fRunAction(runAction) {
 
   // initialize ids to -1 to reconginze the start of the run
   hitsCollID1 = -1;

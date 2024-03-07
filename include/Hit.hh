@@ -23,8 +23,6 @@ public:
   inline void *operator new(size_t);
   inline void operator delete(void *aHit);
 
-  void Print();
-
 private:
   // attributes?
   G4ThreeVector position;

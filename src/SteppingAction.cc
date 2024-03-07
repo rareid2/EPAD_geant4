@@ -30,7 +30,6 @@
 
 #include "SteppingAction.hh"
 #include "DetectorConstruction.hh"
-#include "EventAction.hh"
 #include "G4Event.hh"
 #include "G4LogicalVolume.hh"
 #include "G4RunManager.hh"
@@ -42,8 +41,8 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SteppingAction::SteppingAction(EventAction *eventAction)
-    : G4UserSteppingAction(), fEventAction(eventAction) {}
+SteppingAction::SteppingAction()
+    : G4UserSteppingAction() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

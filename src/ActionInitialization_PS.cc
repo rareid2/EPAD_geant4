@@ -29,7 +29,6 @@
 /// \brief Implementation of the ActionInitialization class
 
 #include "ActionInitialization.hh"
-#include "EventAction.hh"
 #include "PrimaryGeneratorAction_PS.hh"
 #include "RunAction.hh"
 #include "SteppingAction.hh"
@@ -44,13 +43,6 @@ ActionInitialization::~ActionInitialization() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void ActionInitialization::BuildForMaster() const {
-  RunAction *runAction = new RunAction;
-  SetUserAction(runAction);
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 void ActionInitialization::Build() const {
   // sets start action (generate a particle)
   SetUserAction(new PrimaryGeneratorAction);
@@ -60,12 +52,12 @@ void ActionInitialization::Build() const {
   RunAction *runAction = new RunAction;
   SetUserAction(new RunAction);
 
-  // creates an event
-  EventAction *eventAction = new EventAction(runAction);
-  SetUserAction(eventAction);
-
   // steps through the event
-  SetUserAction(new SteppingAction(eventAction));
+  SetUserAction(new SteppingAction);
+}
+
+void ActionInitialization::BuildForMaster() const {
+  SetUserAction(new RunAction);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

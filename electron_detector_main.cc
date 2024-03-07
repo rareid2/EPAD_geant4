@@ -91,7 +91,7 @@ int main(int argc,char** argv)
   #ifdef G4MULTITHREADED
     std::cout<<"!!!! running multithreaded mode !!!!!"<<std::endl;
     G4MTRunManager* runManager = new G4MTRunManager;
-    //runManager->SetNumberOfThreads(8);  // (Grant's computer)
+    runManager->SetNumberOfThreads(40);  // (Grant's computer)
   #else
     std::cout<<"!!!! running singlethreaded mode !!!!!"<<std::endl;
     G4RunManager* runManager = new G4RunManager;

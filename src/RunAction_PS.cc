@@ -29,6 +29,7 @@
 /// \brief Implementation of the RunAction class
 
 #include "RunAction.hh"
+#include "MyRun.hh"
 #include "DetectorConstruction.hh"
 #include "G4AccumulableManager.hh"
 #include "G4LogicalVolume.hh"
@@ -42,26 +43,20 @@
 #include <fstream>
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-RunAction::RunAction() : G4UserRunAction(), fEdep(0.), fEdep2(0.) {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+RunAction::RunAction() {}
 
 RunAction::~RunAction() {}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void RunAction::BeginOfRunAction(const G4Run *) {}
+G4Run* RunAction::GenerateRun()
+{ return new MyRun; }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void RunAction::EndOfRunAction(const G4Run *) 
-{}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void RunAction::AddEdep(G4double edep) {
-  fEdep += edep;
-  fEdep2 += edep * edep;
+void RunAction::EndOfRunAction(const G4Run* aRun)
+{
+  const MyRun* theRun = static_cast<const MyRun*>(aRun);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+

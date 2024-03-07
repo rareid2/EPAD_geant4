@@ -34,8 +34,6 @@
 #include "G4UserSteppingAction.hh"
 #include "globals.hh"
 
-class EventAction;
-
 class G4LogicalVolume;
 
 /// Stepping action class
@@ -43,7 +41,7 @@ class G4LogicalVolume;
 
 class SteppingAction : public G4UserSteppingAction {
 public:
-  SteppingAction(EventAction *eventAction);
+  SteppingAction();
 
   virtual ~SteppingAction();
 
@@ -52,7 +50,6 @@ public:
 
 public:
 private:
-  EventAction *fEventAction;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

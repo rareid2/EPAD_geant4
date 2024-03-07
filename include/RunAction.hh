@@ -34,6 +34,7 @@
 #include "G4Accumulable.hh"
 #include "G4UserRunAction.hh"
 #include "globals.hh"
+#include "G4Types.hh"
 
 // Choose your fighter:
 // #include "g4root.hh"
@@ -52,19 +53,13 @@ public:
   RunAction();
   virtual ~RunAction();
 
-  // virtual G4Run* GenerateRun();
-  virtual void BeginOfRunAction(const G4Run *);
-  virtual void EndOfRunAction(const G4Run *);
-
-  // energy deposition (total)
-  void AddEdep(G4double edep);
+  virtual G4Run* GenerateRun();
+  virtual void EndOfRunAction(const G4Run *aRun);
 
   // to get the needed run call
   void getFilenameToRunAction(G4String fileName) { fFileName = fileName; }
 
 private:
-  G4Accumulable<G4double> fEdep;
-  G4Accumulable<G4double> fEdep2;
 
   G4String fFileName;
 

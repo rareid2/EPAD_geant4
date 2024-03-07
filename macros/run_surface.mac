@@ -1,4 +1,4 @@
-/run/numberOfThreads 12 
+/run/numberOfThreads 10 
 /run/initialize 
 /control/verbose 0 
 /run/verbose 0 
@@ -9,13 +9,13 @@
 /gps/pos/shape Square 
 /gps/pos/halfx 5.054 cm 
 /gps/pos/halfy 5.054 cm 
-/gps/pos/centre 0 0 498.9618 cm 
+/gps/pos/centre 0 0 496.28 cm 
 /gps/ang/type iso 
 /gps/ang/rot1 -1 0 0 
 /gps/ang/rot2 0 1 0 
 /gps/ang/mintheta 0 deg 
-/gps/ang/maxtheta 46 deg 
+/gps/ang/maxtheta 2 deg 
 /gps/ene/type Mono 
 /gps/ene/mono 500.0000 keV 
-/run/printProgress 169282773 
-/run/beamOn 1692827734 
+/run/printProgress 337728 
+/run/beamOn 3377282 
