@@ -1,4 +1,4 @@
-/run/numberOfThreads 10 
+/run/numberOfThreads 14 
 /run/initialize 
 /control/verbose 0 
 /run/verbose 0 
@@ -14,8 +14,8 @@
 /gps/ang/rot1 -1 0 0 
 /gps/ang/rot2 0 1 0 
 /gps/ang/mintheta 0 deg 
-/gps/ang/maxtheta 2 deg 
+/gps/ang/maxtheta 46 deg 
 /gps/ene/type Mono 
 /gps/ene/mono 500.0000 keV 
-/run/printProgress 337728 
-/run/beamOn 3377282 
+/run/printProgress 1692827734 
+/run/beamOn 16928277345 
