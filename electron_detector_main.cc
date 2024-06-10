@@ -114,7 +114,7 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(new ActionInitialization());
 
   // set limits on particle energy range
-  G4double lowLimit = 1. * keV;
+  G4double lowLimit = 100. * eV;
   G4double highLimit = 100. * MeV;
   G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(lowLimit, highLimit);
 

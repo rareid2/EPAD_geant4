@@ -146,10 +146,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4double detector_dimY = det_size * cm;
 
   // Window dimensions
-  G4double window_dimX = 7 * cm;
-  G4double window_dimY = 7 * cm;
+  G4double window_dimX = det_size * cm;
+  G4double window_dimY = det_size * cm;
   G4double window_thickness = win_thickness * um;
-  G4double window_gap = 0.25 * mm;
+  G4double window_gap = 0.5 * mm;
 
   // ---------------- set materials for the detectors --------------
 
@@ -228,11 +228,11 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   // Initialize variables
   G4double nelements, ca_thickness_um, ca_gap_cm, hole_size_mm, ca_size_mm, cap_radius_cm;
-  G4String filename;
+  G4String filename, lens_volname;
 
   // Load into variables
   ca_configFile >> nelements >> ca_thickness_um >> ca_gap_cm >> hole_size_mm >>
-      ca_size_mm >> cap_radius_cm >> filename;
+      ca_size_mm >> cap_radius_cm >> filename >> lens_volname;
 
   ca_configFile.close();
 
@@ -240,7 +240,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   G4double ca_thickness = ca_thickness_um * um;
   G4double ca_gap = ca_gap_cm * cm;
-  G4Material *ca_material = nist->FindOrBuildMaterial("G4_W");
+  G4Material *ca_material = nist->FindOrBuildMaterial("G4_Al");
 
   G4double ca_pos = -(detector1_thickness / 2 + ca_gap + ca_thickness / 2) +
                     world_offset; // defined so that the gap is from the center
@@ -250,6 +250,21 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   G4double mask_offset =
       -(ca_size / 2 - hole_size / 2); // centering to correct for origin
+  /*
+  G4RotationMatrix* Rotation = new G4RotationMatrix();
+  Rotation->rotateX(90*deg);
+  Rotation->rotateY(0*deg);
+  Rotation->rotateZ(0*deg);
+  */
+  G4GDMLParser parser;
+  /*
+  parser.Read("./src/egg_crate.gdml",false);
+  G4String volname = "egg_crate_CarbonFibre";
+  G4LogicalVolume *eggcrate_logic = parser.GetVolume(volname);
+  G4VPhysicalVolume *egg_crate = new G4PVPlacement(
+      0, G4ThreeVector(0, 0, world_offset - detector1_thickness/2 - 1.5*mm), eggcrate_logic,
+      "egg_crate", logicEnv, false, 0, checkOverlaps);
+  */
 
   // create the mask element -- pad with 0.005um to ensure overlap
   G4VSolid *ca_element =
@@ -452,12 +467,12 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   // ------------------------------- lens hood --------------------------------
     /*
-  G4GDMLParser parser;
+  //G4GDMLParser parser;
   parser.Read("./src/lens_pyramid.gdml",false);
-  G4String volname = "lens_pyramid_Tungsten";
+  G4String volname = lens_volname;
   G4LogicalVolume *lenshoodlogic = parser.GetVolume(volname);
   G4VPhysicalVolume *lenshood = new G4PVPlacement(
-      0, G4ThreeVector(0, 0, ca_pos-40.1), lenshoodlogic,
+      0, G4ThreeVector(0, 0, ca_pos-70.05), lenshoodlogic,
       "lenshood", logicEnv, false, 0, checkOverlaps);
 
 
@@ -467,7 +482,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4VPhysicalVolume *fovlimiter = new G4PVPlacement(
       0, G4ThreeVector(0, 0, ca_pos), fovlogic,
       "fovlimiter", logicEnv, false, 0, checkOverlaps);
-  */  
+  */
 
   /*
   // ------------------------------ add bus -----------------------------------

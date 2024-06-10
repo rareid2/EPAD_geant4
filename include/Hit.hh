@@ -26,21 +26,18 @@ public:
 private:
   // attributes?
   G4ThreeVector position;
-  G4ThreeVector momentum;
   G4double energy;
   G4int particleID;
   G4String particlename;
-  G4ThreeVector vertex;
+  G4double vertexenergy;
+  G4ThreeVector vertexpos;
+  G4double Edep;
 
 public:
   // all kinds of fun stuff here
   inline void SetPosition(G4ThreeVector pos) { position = pos; }
 
   inline G4ThreeVector GetPosition() { return position; }
-
-  inline void SetMomentum(G4ThreeVector mom) { momentum = mom; }
-
-  inline G4ThreeVector GetMomentum() { return momentum; }
 
   inline void SetEnergy(G4double enep) { energy = enep; }
 
@@ -54,9 +51,18 @@ public:
 
   inline G4String GetName() { return particlename; }
 
-  inline void SetVertex(G4ThreeVector vert) {vertex = vert; }
+  inline void SetVertexEnergy(G4double vertenergy) {vertexenergy = vertenergy; }
 
-  inline G4ThreeVector GetVertex() { return vertex; }
+  inline G4double GetVertexEnergy() { return vertexenergy; }
+  
+  inline void SetVertexPosition(G4ThreeVector vpos) { vertexpos = vpos; }
+
+  inline G4ThreeVector GetVertexPosition() { return vertexpos; }
+
+  inline void SetEdep(G4double Edepenergy) {Edep = Edepenergy; }
+
+  inline G4double GetEdep() { return Edep; }
+
 };
 
 // defining what the hit collection is - not a class

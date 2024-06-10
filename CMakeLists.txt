@@ -43,8 +43,8 @@ if((${CONSTRUCT} STREQUAL CA) AND (${PARTICLE_SOURCE} STREQUAL DS)) # default st
 
 elseif((${CONSTRUCT} STREQUAL CA) AND (${PARTICLE_SOURCE} STREQUAL PS))
 
-  file(GLOB sources ${PROJECT_SOURCE_DIR}/src/ActionInitialization_PS.cc ${PROJECT_SOURCE_DIR}/src/MyRun.cc ${PROJECT_SOURCE_DIR}/src/DetectorConstruction_CA.cc ${PROJECT_SOURCE_DIR}/src/Hit.cc ${PROJECT_SOURCE_DIR}/src/PrimaryGeneratorAction_PS.cc ${PROJECT_SOURCE_DIR}/src/RunAction_PS.cc ${PROJECT_SOURCE_DIR}/src/SensitiveDetector_CA.cc ${PROJECT_SOURCE_DIR}/src/SteppingAction.cc)
-  file(GLOB headers ${PROJECT_SOURCE_DIR}/include/ActionInitialization.hh ${PROJECT_SOURCE_DIR}/include/DetectorConstruction.hh ${PROJECT_SOURCE_DIR}/include/MyRun.hh ${PROJECT_SOURCE_DIR}/include/Hit.hh ${PROJECT_SOURCE_DIR}/include/PrimaryGeneratorAction_PS.hh ${PROJECT_SOURCE_DIR}/include/RunAction.hh ${PROJECT_SOURCE_DIR}/include/SensitiveDetector.hh ${PROJECT_SOURCE_DIR}/include/SteppingAction.hh)
+  file(GLOB sources ${PROJECT_SOURCE_DIR}/src/ActionInitialization_PS.cc ${PROJECT_SOURCE_DIR}/src/MyRun.cc ${PROJECT_SOURCE_DIR}/src/DetectorConstruction_CA.cc ${PROJECT_SOURCE_DIR}/src/Hit.cc ${PROJECT_SOURCE_DIR}/src/PrimaryGeneratorAction_PS.cc ${PROJECT_SOURCE_DIR}/src/RunAction_PS.cc ${PROJECT_SOURCE_DIR}/src/SensitiveDetector_CA.cc ${PROJECT_SOURCE_DIR}/src/SteppingAction.cc ${PROJECT_SOURCE_DIR}/src/TrackingAction.cc ${PROJECT_SOURCE_DIR}/src/HistoManager.cc)
+  file(GLOB headers ${PROJECT_SOURCE_DIR}/include/ActionInitialization.hh ${PROJECT_SOURCE_DIR}/include/DetectorConstruction.hh ${PROJECT_SOURCE_DIR}/include/MyRun.hh ${PROJECT_SOURCE_DIR}/include/Hit.hh ${PROJECT_SOURCE_DIR}/include/PrimaryGeneratorAction_PS.hh ${PROJECT_SOURCE_DIR}/include/RunAction.hh ${PROJECT_SOURCE_DIR}/include/SensitiveDetector.hh ${PROJECT_SOURCE_DIR}/include/SteppingAction.hh ${PROJECT_SOURCE_DIR}/include/TrackingAction.hh ${PROJECT_SOURCE_DIR}/include/HistoManager.hh)
 
 elseif((${CONSTRUCT} STREQUAL TD) AND (${PARTICLE_SOURCE} STREQUAL DS))
 
@@ -58,8 +58,8 @@ elseif((${CONSTRUCT} STREQUAL TD) AND (${PARTICLE_SOURCE} STREQUAL PS))
 
 else() # default state -- point source with coded aperture
 
-  file(GLOB sources ${PROJECT_SOURCE_DIR}/src/ActionInitialization_PS.cc ${PROJECT_SOURCE_DIR}/src/MyRun.cc ${PROJECT_SOURCE_DIR}/src/DetectorConstruction_CA.cc ${PROJECT_SOURCE_DIR}/src/Hit.cc ${PROJECT_SOURCE_DIR}/src/PrimaryGeneratorAction_PS.cc ${PROJECT_SOURCE_DIR}/src/RunAction_PS.cc ${PROJECT_SOURCE_DIR}/src/SensitiveDetector_CA.cc ${PROJECT_SOURCE_DIR}/src/SteppingAction.cc)
-  file(GLOB headers ${PROJECT_SOURCE_DIR}/include/ActionInitialization.hh ${PROJECT_SOURCE_DIR}/include/DetectorConstruction.hh ${PROJECT_SOURCE_DIR}/include/MyRun.hh ${PROJECT_SOURCE_DIR}/include/Hit.hh ${PROJECT_SOURCE_DIR}/include/PrimaryGeneratorAction_PS.hh ${PROJECT_SOURCE_DIR}/include/RunAction.hh ${PROJECT_SOURCE_DIR}/include/SensitiveDetector.hh ${PROJECT_SOURCE_DIR}/include/SteppingAction.hh)
+  file(GLOB sources ${PROJECT_SOURCE_DIR}/src/ActionInitialization_PS.cc ${PROJECT_SOURCE_DIR}/src/MyRun.cc ${PROJECT_SOURCE_DIR}/src/DetectorConstruction_CA.cc ${PROJECT_SOURCE_DIR}/src/Hit.cc ${PROJECT_SOURCE_DIR}/src/PrimaryGeneratorAction_PS.cc ${PROJECT_SOURCE_DIR}/src/RunAction_PS.cc ${PROJECT_SOURCE_DIR}/src/SensitiveDetector_CA.cc ${PROJECT_SOURCE_DIR}/src/SteppingAction.cc ${PROJECT_SOURCE_DIR}/src/TrackingAction.cc ${PROJECT_SOURCE_DIR}/src/HistoManager.cc)
+  file(GLOB headers ${PROJECT_SOURCE_DIR}/include/ActionInitialization.hh ${PROJECT_SOURCE_DIR}/include/DetectorConstruction.hh ${PROJECT_SOURCE_DIR}/include/MyRun.hh ${PROJECT_SOURCE_DIR}/include/Hit.hh ${PROJECT_SOURCE_DIR}/include/PrimaryGeneratorAction_PS.hh ${PROJECT_SOURCE_DIR}/include/RunAction.hh ${PROJECT_SOURCE_DIR}/include/SensitiveDetector.hh ${PROJECT_SOURCE_DIR}/include/SteppingAction.hh ${PROJECT_SOURCE_DIR}/include/TrackingAction.hh ${PROJECT_SOURCE_DIR}/include/HistoManager.hh)
 
 endif()
 unset(CONSTRUCT CACHE) # <---- this is the important!!

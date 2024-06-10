@@ -1,0 +1,8 @@
+45
+100
+3.9
+2.1739
+97.83
+13.88
+./src/mask_designs/23mosaicMURA_matrix_97.83.txt
+lens_pyramid_Tungsten_58

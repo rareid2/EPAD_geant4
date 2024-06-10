@@ -1,4 +1,4 @@
-/run/numberOfThreads 12 
+/run/numberOfThreads 14 
 /run/initialize 
 /control/verbose 0 
 /run/verbose 0 
@@ -7,14 +7,16 @@
 /gps/particle e- 
 /gps/pos/type Plane 
 /gps/pos/shape Square 
-/gps/pos/centre -1098.7281454893257 -1098.7281454893257 -500 cm 
-/gps/pos/rot1 -0.6730748571111885 0.0 0.7395743618627901 
-/gps/pos/rot2 0.4397670799835719 -0.8040055024143331 0.4002250210196741 
+/gps/pos/centre -162.679392 -162.679392 -500 cm 
+/gps/pos/rot1 -0.9870230325740402 0.0 0.16057874444753015 
+/gps/pos/rot2 0.025459380442819136 -0.9873513290030997 0.15649016922248118 
 /gps/ang/type iso 
 /gps/ang/mintheta 0 deg 
-/gps/ang/maxtheta 0.200193 deg 
+/gps/ang/maxtheta 0.158421 deg 
 /gps/ang/minphi 0 deg 
 /gps/ang/maxphi 360 deg 
-/gps/energy 0.235 keV 
-/run/printProgress 100000 
-/run/beamOn 1000000
+/gps/energy 106.893 keV 
+/analysis/setFileName ../simulation-data/mock-hist 
+/analysis/h1/set 1 100 1 10 keV none log 
+/run/printProgress 1000000 
+/run/beamOn 10000000

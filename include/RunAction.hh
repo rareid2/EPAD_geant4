@@ -41,6 +41,7 @@
 // #include "g4xml.hh"
 
 class G4Run;
+class HistoManager;
 
 /// Run action class
 ///
@@ -62,7 +63,7 @@ public:
 private:
 
   G4String fFileName;
-
+  HistoManager* fHistoManager;
 };
 
 #endif

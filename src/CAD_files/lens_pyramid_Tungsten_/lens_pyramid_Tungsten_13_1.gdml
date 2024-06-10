@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+    <define>
+        <position name="lens_pyramid_Tungsten_13_1_v0" unit="mm" x="-48.075" y="-48.075" z="40"/>
+        <position name="lens_pyramid_Tungsten_13_1_v1" unit="mm" x="48.075" y="-48.075" z="40"/>
+        <position name="lens_pyramid_Tungsten_13_1_v2" unit="mm" x="-49.075" y="-49.075" z="38.6823"/>
+        <position name="lens_pyramid_Tungsten_13_1_v3" unit="mm" x="49.075" y="-49.075" z="38.6823"/>
+        <position name="lens_pyramid_Tungsten_13_1_v4" unit="mm" x="-48.075" y="48.075" z="40"/>
+        <position name="lens_pyramid_Tungsten_13_1_v5" unit="mm" x="-49.075" y="49.075" z="38.6823"/>
+        <position name="lens_pyramid_Tungsten_13_1_v6" unit="mm" x="48.075" y="48.075" z="40"/>
+        <position name="lens_pyramid_Tungsten_13_1_v7" unit="mm" x="49.075" y="49.075" z="38.6823"/>
+        <position name="lens_pyramid_Tungsten_13_1_v8" unit="mm" x="49.075" y="49.075" z="40"/>
+        <position name="lens_pyramid_Tungsten_13_1_v9" unit="mm" x="49.075" y="-49.075" z="40"/>
+        <position name="lens_pyramid_Tungsten_13_1_v10" unit="mm" x="-49.075" y="49.075" z="40"/>
+        <position name="lens_pyramid_Tungsten_13_1_v11" unit="mm" x="-49.075" y="-49.075" z="40"/>
+    </define>
+
+    <solids>
+        <tessellated aunit="deg" lunit="mm" name="lens_pyramid_Tungsten_13_1-SOL">
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v0" vertex2="lens_pyramid_Tungsten_13_1_v1" vertex3="lens_pyramid_Tungsten_13_1_v2"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v1" vertex2="lens_pyramid_Tungsten_13_1_v3" vertex3="lens_pyramid_Tungsten_13_1_v2"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v4" vertex2="lens_pyramid_Tungsten_13_1_v0" vertex3="lens_pyramid_Tungsten_13_1_v5"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v0" vertex2="lens_pyramid_Tungsten_13_1_v2" vertex3="lens_pyramid_Tungsten_13_1_v5"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v6" vertex2="lens_pyramid_Tungsten_13_1_v4" vertex3="lens_pyramid_Tungsten_13_1_v7"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v4" vertex2="lens_pyramid_Tungsten_13_1_v5" vertex3="lens_pyramid_Tungsten_13_1_v7"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v7" vertex2="lens_pyramid_Tungsten_13_1_v8" vertex3="lens_pyramid_Tungsten_13_1_v3"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v8" vertex2="lens_pyramid_Tungsten_13_1_v9" vertex3="lens_pyramid_Tungsten_13_1_v3"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v4" vertex2="lens_pyramid_Tungsten_13_1_v10" vertex3="lens_pyramid_Tungsten_13_1_v0"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v10" vertex2="lens_pyramid_Tungsten_13_1_v11" vertex3="lens_pyramid_Tungsten_13_1_v0"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v0" vertex2="lens_pyramid_Tungsten_13_1_v11" vertex3="lens_pyramid_Tungsten_13_1_v1"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v11" vertex2="lens_pyramid_Tungsten_13_1_v9" vertex3="lens_pyramid_Tungsten_13_1_v1"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v1" vertex2="lens_pyramid_Tungsten_13_1_v9" vertex3="lens_pyramid_Tungsten_13_1_v6"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v9" vertex2="lens_pyramid_Tungsten_13_1_v8" vertex3="lens_pyramid_Tungsten_13_1_v6"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v6" vertex2="lens_pyramid_Tungsten_13_1_v8" vertex3="lens_pyramid_Tungsten_13_1_v4"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v8" vertex2="lens_pyramid_Tungsten_13_1_v10" vertex3="lens_pyramid_Tungsten_13_1_v4"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v5" vertex2="lens_pyramid_Tungsten_13_1_v10" vertex3="lens_pyramid_Tungsten_13_1_v7"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v10" vertex2="lens_pyramid_Tungsten_13_1_v8" vertex3="lens_pyramid_Tungsten_13_1_v7"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v2" vertex2="lens_pyramid_Tungsten_13_1_v11" vertex3="lens_pyramid_Tungsten_13_1_v5"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v11" vertex2="lens_pyramid_Tungsten_13_1_v10" vertex3="lens_pyramid_Tungsten_13_1_v5"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v3" vertex2="lens_pyramid_Tungsten_13_1_v9" vertex3="lens_pyramid_Tungsten_13_1_v2"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v9" vertex2="lens_pyramid_Tungsten_13_1_v11" vertex3="lens_pyramid_Tungsten_13_1_v2"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v1" vertex2="lens_pyramid_Tungsten_13_1_v6" vertex3="lens_pyramid_Tungsten_13_1_v3"/>
+             <triangular vertex1="lens_pyramid_Tungsten_13_1_v6" vertex2="lens_pyramid_Tungsten_13_1_v7" vertex3="lens_pyramid_Tungsten_13_1_v3"/>
+        </tessellated>
+    </solids>
+
+    <structure>
+        <volume name="lens_pyramid_Tungsten_13_1">
+            <materialref ref="Tungsten"/>
+            <solidref ref="lens_pyramid_Tungsten_13_1-SOL"/>
+        </volume>
+    </structure>
+
+    <setup name="Default" version="1.0">
+        <world ref="lens_pyramid_Tungsten_13_1"/>
+    </setup>
+</gdml>

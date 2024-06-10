@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+    <define>
+        <position name="fov_limiter_Tungsten_v0" unit="mm" x="-10.95" y="10.95" z="-50.1698"/>
+        <position name="fov_limiter_Tungsten_v1" unit="mm" x="-21.75" y="21.75" z="-50.1698"/>
+        <position name="fov_limiter_Tungsten_v2" unit="mm" x="-10.95" y="-10.95" z="-50.1698"/>
+        <position name="fov_limiter_Tungsten_v3" unit="mm" x="-21.75" y="-21.75" z="-50.1698"/>
+        <position name="fov_limiter_Tungsten_v4" unit="mm" x="10.95" y="-10.95" z="-50.1698"/>
+        <position name="fov_limiter_Tungsten_v5" unit="mm" x="21.75" y="-21.75" z="-50.1698"/>
+        <position name="fov_limiter_Tungsten_v6" unit="mm" x="10.95" y="10.95" z="-50.1698"/>
+        <position name="fov_limiter_Tungsten_v7" unit="mm" x="21.75" y="21.75" z="-50.1698"/>
+        <position name="fov_limiter_Tungsten_v8" unit="mm" x="21.75" y="-21.75" z="0"/>
+        <position name="fov_limiter_Tungsten_v9" unit="mm" x="-21.75" y="-21.75" z="0"/>
+        <position name="fov_limiter_Tungsten_v10" unit="mm" x="-21.75" y="21.75" z="0"/>
+        <position name="fov_limiter_Tungsten_v11" unit="mm" x="21.75" y="21.75" z="0"/>
+        <position name="fov_limiter_Tungsten_v12" unit="mm" x="24" y="-24" z="0"/>
+        <position name="fov_limiter_Tungsten_v13" unit="mm" x="-24" y="-24" z="0"/>
+        <position name="fov_limiter_Tungsten_v14" unit="mm" x="24" y="-24" z="-51.1698"/>
+        <position name="fov_limiter_Tungsten_v15" unit="mm" x="-24" y="-24" z="-51.1698"/>
+        <position name="fov_limiter_Tungsten_v16" unit="mm" x="-24" y="24" z="0"/>
+        <position name="fov_limiter_Tungsten_v17" unit="mm" x="-24" y="24" z="-51.1698"/>
+        <position name="fov_limiter_Tungsten_v18" unit="mm" x="24" y="24" z="0"/>
+        <position name="fov_limiter_Tungsten_v19" unit="mm" x="24" y="24" z="-51.1698"/>
+        <position name="fov_limiter_Tungsten_v20" unit="mm" x="10.95" y="10.95" z="-51.1698"/>
+        <position name="fov_limiter_Tungsten_v21" unit="mm" x="10.95" y="-10.95" z="-51.1698"/>
+        <position name="fov_limiter_Tungsten_v22" unit="mm" x="-10.95" y="10.95" z="-51.1698"/>
+        <position name="fov_limiter_Tungsten_v23" unit="mm" x="-10.95" y="-10.95" z="-51.1698"/>
+    </define>
+
+    <solids>
+        <tessellated aunit="deg" lunit="mm" name="fov_limiter_Tungsten-SOL">
+             <triangular vertex1="fov_limiter_Tungsten_v0" vertex2="fov_limiter_Tungsten_v1" vertex3="fov_limiter_Tungsten_v2"/>
+             <triangular vertex1="fov_limiter_Tungsten_v1" vertex2="fov_limiter_Tungsten_v3" vertex3="fov_limiter_Tungsten_v2"/>
+             <triangular vertex1="fov_limiter_Tungsten_v2" vertex2="fov_limiter_Tungsten_v3" vertex3="fov_limiter_Tungsten_v4"/>
+             <triangular vertex1="fov_limiter_Tungsten_v3" vertex2="fov_limiter_Tungsten_v5" vertex3="fov_limiter_Tungsten_v4"/>
+             <triangular vertex1="fov_limiter_Tungsten_v4" vertex2="fov_limiter_Tungsten_v5" vertex3="fov_limiter_Tungsten_v6"/>
+             <triangular vertex1="fov_limiter_Tungsten_v5" vertex2="fov_limiter_Tungsten_v7" vertex3="fov_limiter_Tungsten_v6"/>
+             <triangular vertex1="fov_limiter_Tungsten_v6" vertex2="fov_limiter_Tungsten_v7" vertex3="fov_limiter_Tungsten_v0"/>
+             <triangular vertex1="fov_limiter_Tungsten_v7" vertex2="fov_limiter_Tungsten_v1" vertex3="fov_limiter_Tungsten_v0"/>
+             <triangular vertex1="fov_limiter_Tungsten_v5" vertex2="fov_limiter_Tungsten_v3" vertex3="fov_limiter_Tungsten_v8"/>
+             <triangular vertex1="fov_limiter_Tungsten_v3" vertex2="fov_limiter_Tungsten_v9" vertex3="fov_limiter_Tungsten_v8"/>
+             <triangular vertex1="fov_limiter_Tungsten_v3" vertex2="fov_limiter_Tungsten_v1" vertex3="fov_limiter_Tungsten_v9"/>
+             <triangular vertex1="fov_limiter_Tungsten_v1" vertex2="fov_limiter_Tungsten_v10" vertex3="fov_limiter_Tungsten_v9"/>
+             <triangular vertex1="fov_limiter_Tungsten_v1" vertex2="fov_limiter_Tungsten_v7" vertex3="fov_limiter_Tungsten_v10"/>
+             <triangular vertex1="fov_limiter_Tungsten_v7" vertex2="fov_limiter_Tungsten_v11" vertex3="fov_limiter_Tungsten_v10"/>
+             <triangular vertex1="fov_limiter_Tungsten_v7" vertex2="fov_limiter_Tungsten_v5" vertex3="fov_limiter_Tungsten_v11"/>
+             <triangular vertex1="fov_limiter_Tungsten_v5" vertex2="fov_limiter_Tungsten_v8" vertex3="fov_limiter_Tungsten_v11"/>
+             <triangular vertex1="fov_limiter_Tungsten_v12" vertex2="fov_limiter_Tungsten_v13" vertex3="fov_limiter_Tungsten_v14"/>
+             <triangular vertex1="fov_limiter_Tungsten_v13" vertex2="fov_limiter_Tungsten_v15" vertex3="fov_limiter_Tungsten_v14"/>
+             <triangular vertex1="fov_limiter_Tungsten_v13" vertex2="fov_limiter_Tungsten_v16" vertex3="fov_limiter_Tungsten_v15"/>
+             <triangular vertex1="fov_limiter_Tungsten_v16" vertex2="fov_limiter_Tungsten_v17" vertex3="fov_limiter_Tungsten_v15"/>
+             <triangular vertex1="fov_limiter_Tungsten_v18" vertex2="fov_limiter_Tungsten_v12" vertex3="fov_limiter_Tungsten_v19"/>
+             <triangular vertex1="fov_limiter_Tungsten_v12" vertex2="fov_limiter_Tungsten_v14" vertex3="fov_limiter_Tungsten_v19"/>
+             <triangular vertex1="fov_limiter_Tungsten_v6" vertex2="fov_limiter_Tungsten_v20" vertex3="fov_limiter_Tungsten_v4"/>
+             <triangular vertex1="fov_limiter_Tungsten_v20" vertex2="fov_limiter_Tungsten_v21" vertex3="fov_limiter_Tungsten_v4"/>
+             <triangular vertex1="fov_limiter_Tungsten_v10" vertex2="fov_limiter_Tungsten_v16" vertex3="fov_limiter_Tungsten_v9"/>
+             <triangular vertex1="fov_limiter_Tungsten_v16" vertex2="fov_limiter_Tungsten_v13" vertex3="fov_limiter_Tungsten_v9"/>
+             <triangular vertex1="fov_limiter_Tungsten_v9" vertex2="fov_limiter_Tungsten_v13" vertex3="fov_limiter_Tungsten_v8"/>
+             <triangular vertex1="fov_limiter_Tungsten_v13" vertex2="fov_limiter_Tungsten_v12" vertex3="fov_limiter_Tungsten_v8"/>
+             <triangular vertex1="fov_limiter_Tungsten_v8" vertex2="fov_limiter_Tungsten_v12" vertex3="fov_limiter_Tungsten_v11"/>
+             <triangular vertex1="fov_limiter_Tungsten_v12" vertex2="fov_limiter_Tungsten_v18" vertex3="fov_limiter_Tungsten_v11"/>
+             <triangular vertex1="fov_limiter_Tungsten_v11" vertex2="fov_limiter_Tungsten_v18" vertex3="fov_limiter_Tungsten_v10"/>
+             <triangular vertex1="fov_limiter_Tungsten_v18" vertex2="fov_limiter_Tungsten_v16" vertex3="fov_limiter_Tungsten_v10"/>
+             <triangular vertex1="fov_limiter_Tungsten_v22" vertex2="fov_limiter_Tungsten_v20" vertex3="fov_limiter_Tungsten_v0"/>
+             <triangular vertex1="fov_limiter_Tungsten_v20" vertex2="fov_limiter_Tungsten_v6" vertex3="fov_limiter_Tungsten_v0"/>
+             <triangular vertex1="fov_limiter_Tungsten_v16" vertex2="fov_limiter_Tungsten_v18" vertex3="fov_limiter_Tungsten_v17"/>
+             <triangular vertex1="fov_limiter_Tungsten_v18" vertex2="fov_limiter_Tungsten_v19" vertex3="fov_limiter_Tungsten_v17"/>
+             <triangular vertex1="fov_limiter_Tungsten_v21" vertex2="fov_limiter_Tungsten_v14" vertex3="fov_limiter_Tungsten_v23"/>
+             <triangular vertex1="fov_limiter_Tungsten_v14" vertex2="fov_limiter_Tungsten_v15" vertex3="fov_limiter_Tungsten_v23"/>
+             <triangular vertex1="fov_limiter_Tungsten_v23" vertex2="fov_limiter_Tungsten_v15" vertex3="fov_limiter_Tungsten_v22"/>
+             <triangular vertex1="fov_limiter_Tungsten_v15" vertex2="fov_limiter_Tungsten_v17" vertex3="fov_limiter_Tungsten_v22"/>
+             <triangular vertex1="fov_limiter_Tungsten_v22" vertex2="fov_limiter_Tungsten_v17" vertex3="fov_limiter_Tungsten_v20"/>
+             <triangular vertex1="fov_limiter_Tungsten_v17" vertex2="fov_limiter_Tungsten_v19" vertex3="fov_limiter_Tungsten_v20"/>
+             <triangular vertex1="fov_limiter_Tungsten_v20" vertex2="fov_limiter_Tungsten_v19" vertex3="fov_limiter_Tungsten_v21"/>
+             <triangular vertex1="fov_limiter_Tungsten_v19" vertex2="fov_limiter_Tungsten_v14" vertex3="fov_limiter_Tungsten_v21"/>
+             <triangular vertex1="fov_limiter_Tungsten_v23" vertex2="fov_limiter_Tungsten_v22" vertex3="fov_limiter_Tungsten_v2"/>
+             <triangular vertex1="fov_limiter_Tungsten_v22" vertex2="fov_limiter_Tungsten_v0" vertex3="fov_limiter_Tungsten_v2"/>
+             <triangular vertex1="fov_limiter_Tungsten_v4" vertex2="fov_limiter_Tungsten_v21" vertex3="fov_limiter_Tungsten_v2"/>
+             <triangular vertex1="fov_limiter_Tungsten_v21" vertex2="fov_limiter_Tungsten_v23" vertex3="fov_limiter_Tungsten_v2"/>
+        </tessellated>
+    </solids>
+
+    <structure>
+        <volume name="fov_limiter_Tungsten">
+            <materialref ref="Tungsten"/>
+            <solidref ref="fov_limiter_Tungsten-SOL"/>
+        </volume>
+    </structure>
+
+    <setup name="Default" version="1.0">
+        <world ref="fov_limiter_Tungsten"/>
+    </setup>
+</gdml>

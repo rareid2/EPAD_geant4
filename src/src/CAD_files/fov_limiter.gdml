@@ -488,7 +488,7 @@
             <solidref ref="world_solid"/>
 
             <physvol>
-                <file name="./src/lens_pyramid_Tungsten.gdml"/>
+                <file name="./src/fov_limiter_Tungsten.gdml"/>
              </physvol>
 
 

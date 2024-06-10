@@ -14,7 +14,7 @@
 # Specify view angle:
 /vis/viewer/set/upVector 0 -1 0 
 /vis/viewer/set/viewpointVector 1 -0.05 0.1
-/vis/viewer/set/lightsVector 0 0 1
+/vis/viewer/set/lightsVector 0 0 -1
 
 
 # Specify view angle:

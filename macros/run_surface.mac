@@ -7,15 +7,17 @@
 /gps/particle e- 
 /gps/pos/type Plane 
 /gps/pos/shape Square 
-/gps/pos/halfx 5.054 cm 
-/gps/pos/halfy 5.054 cm 
-/gps/pos/centre 0 0 496.28 cm 
+/gps/pos/halfx 4.124679487179487 cm 
+/gps/pos/halfy 4.124679487179487 cm 
+/gps/pos/centre 0 0 496.325 cm 
 /gps/ang/type iso 
 /gps/ang/rot1 -1 0 0 
 /gps/ang/rot2 0 1 0 
-/gps/ang/mintheta 0 deg 
-/gps/ang/maxtheta 46 deg 
+/gps/ang/mintheta 18.72 deg 
+/gps/ang/maxtheta 21.84 deg 
 /gps/ene/type Mono 
-/gps/ene/mono 500.0000 keV 
-/run/printProgress 1692827734 
-/run/beamOn 16928277345 
+/gps/ene/mono 0.1104 keV 
+/analysis/setFileName ../simulation-data/mock-hist 
+/analysis/h1/set 1 100 1 10 keV none log 
+/run/printProgress 6534000 
+/run/beamOn 65340009 
